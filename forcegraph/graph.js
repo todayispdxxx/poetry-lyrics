@@ -136,7 +136,7 @@ function createForceGraph(data, config) {
     svg.call(zoom)
        .call(zoom.transform, d3.zoomIdentity
             .translate(config.width / 2, config.height / 2)
-            .scale(0.6));
+            .scale(0.5));
 
     // 创建力导向模拟
     const simulation = d3.forceSimulation(data.nodes)
