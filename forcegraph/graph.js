@@ -4,76 +4,56 @@ function processData(rawData) {
         return { nodes: [], links: [] };
     }
 
-    // 分别统计歌手和诗词的连接数
-    const singerConnections = new Map();
-    const poetryConnections = new Map();
-    const nodes = new Set();
+    // 用于存储节点和连接信息
+    const nodes = new Map();
     const links = [];
     
-    // 第一次遍历：统计连接数
+    // 第一次遍历：收集所有节点和它们的连接信息
     rawData.forEach(item => {
         if (!item?.singer || !item?.poem_matches) return;
         
         const singer = item.singer;
-        const poemCount = Object.keys(item.poem_matches).length;
-        singerConnections.set(singer, (singerConnections.get(singer) || 0) + poemCount);
         
-        Object.values(item.poem_matches).forEach(poem => {
-            if (!poem?.title || !poem?.writer) return;
-            const poemId = `${poem.title}·${poem.writer}`;
-            poetryConnections.set(poemId, (poetryConnections.get(poemId) || 0) + 1);
-        });
-    });
-
-    // 创建两个独立的比例尺
-    const singerScale = d3.scaleSqrt()  // 使用平方根比例尺使差异更明显
-        .domain([
-            Math.min(...singerConnections.values()),
-            Math.max(...singerConnections.values())
-        ])
-        .range([CONFIG.radius.singer.min, CONFIG.radius.singer.max]);
-
-    const poetryScale = d3.scaleSqrt()
-        .domain([
-            Math.min(...poetryConnections.values()),
-            Math.max(...poetryConnections.values())
-        ])
-        .range([CONFIG.radius.poetry.min, CONFIG.radius.poetry.max]);
-
-    // 第二次遍历：创建节点和连接
-    rawData.forEach(item => {
-        if (!item?.singer || !item?.poem_matches) return;
-
-        // 添加歌手节点
-        const singerConnCount = singerConnections.get(item.singer);
-        nodes.add(JSON.stringify({
-            id: item.singer,
-            group: 1,
-            type: 'singer',
-            radius: singerScale(singerConnCount),
-            connections: singerConnCount,
-            displaySize: singerScale(singerConnCount).toFixed(1)  // 用于调试
-        }));
-
-        // 处理诗词匹配
+        // 初始化或更新歌手节点
+        if (!nodes.has(singer)) {
+            nodes.set(singer, {
+                id: singer,
+                group: 1,
+                type: 'singer',
+                connectedPoems: new Set(), // 存储连接的诗词
+                connections: 0
+            });
+        }
+        
+        // 处理诗词节点
         Object.entries(item.poem_matches).forEach(([_, poem]) => {
             if (!poem?.title || !poem?.writer) return;
-
+            
             const poemId = `${poem.title}·${poem.writer}`;
-            const poetryConnCount = poetryConnections.get(poemId);
-            nodes.add(JSON.stringify({
-                id: poemId,
-                group: 2,
-                type: 'poetry',
-                writer: poem.writer,
-                title: poem.title,
-                radius: poetryScale(poetryConnCount),
-                connections: poetryConnCount,
-                displaySize: poetryScale(poetryConnCount).toFixed(1)  // 用于调试
-            }));
-
+            
+            // 初始化或更新诗词节点
+            if (!nodes.has(poemId)) {
+                nodes.set(poemId, {
+                    id: poemId,
+                    group: 2,
+                    type: 'poetry',
+                    writer: poem.writer,
+                    title: poem.title,
+                    connectedSingers: new Set(), // 存储连接的歌手
+                    connections: 0
+                });
+            }
+            
+            // 更新连接计数
+            const singerNode = nodes.get(singer);
+            const poemNode = nodes.get(poemId);
+            
+            singerNode.connectedPoems.add(poemId);
+            poemNode.connectedSingers.add(singer);
+            
+            // 添加连接
             links.push({
-                source: item.singer,
+                source: singer,
                 target: poemId,
                 matchingChars: poem.chars.join(''),
                 songTitle: item.song
@@ -81,34 +61,82 @@ function processData(rawData) {
         });
     });
 
+    // 创建节点大小的比例尺
+    let singerSizes = Array.from(nodes.values())
+        .filter(n => n.group === 1)
+        .map(n => n.connectedPoems.size);
+    let poetrySizes = Array.from(nodes.values())
+        .filter(n => n.group === 2)
+        .map(n => n.connectedSingers.size);
+
+    const singerScale = d3.scaleSqrt()
+        .domain([Math.min(...singerSizes), Math.max(...singerSizes)])
+        .range([CONFIG.radius.singer.min, CONFIG.radius.singer.max]);
+
+    const poetryScale = d3.scaleSqrt()
+        .domain([Math.min(...poetrySizes), Math.max(...poetrySizes)])
+        .range([CONFIG.radius.poetry.min, CONFIG.radius.poetry.max]);
+
+    // 转换为最终的节点数组
+    const finalNodes = Array.from(nodes.values()).map(node => {
+        if (node.group === 1) {
+            // 歌手节点
+            return {
+                ...node,
+                radius: singerScale(node.connectedPoems.size),
+                poemCount: node.connectedPoems.size,
+                displaySize: singerScale(node.connectedPoems.size).toFixed(1)
+            };
+        } else {
+            // 诗词节点
+            return {
+                ...node,
+                radius: poetryScale(node.connectedSingers.size),
+                singerCount: node.connectedSingers.size,
+                displaySize: poetryScale(node.connectedSingers.size).toFixed(1)
+            };
+        }
+    });
+
     return {
-        nodes: Array.from(nodes).map(node => JSON.parse(node)),
-        links
+        nodes: finalNodes,
+        links: links
     };
 }
 
 function createForceGraph(data, config) {
+    // 清除已有的图表和提示框
     d3.select("#graph").selectAll("*").remove();
 
+    // 创建 SVG，设置为全屏
     const svg = d3.select("#graph")
         .append("svg")
-        .attr("width", "100%")  // 使用百分比
-        .attr("height", "100%") // 使用百分比
-        .attr("viewBox", [0, 0, config.width, config.height]);
+        .attr("width", config.width)
+        .attr("height", config.height)
+        .style("position", "fixed")  // 固定位置
+        .style("top", 0)
+        .style("left", 0);
 
-    // 添加缩放功能
+    // 创建提示框
+    const tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0)
+        .style("position", "absolute")
+        .style("z-index", 1000);
+
+    // 设置缩放行为
     const g = svg.append("g");
-    svg.call(d3.zoom()
+    const zoom = d3.zoom()
         .scaleExtent([config.zoom.min, config.zoom.max])
         .on("zoom", (event) => {
             g.attr("transform", event.transform);
-        }));
+        });
 
-    // 创建提示框
-    const tooltip = d3.select("#graph")
-        .append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
+    svg.call(zoom)
+       .call(zoom.transform, d3.zoomIdentity
+            .translate(config.width / 2, config.height / 2)
+            .scale(0.6));
 
     // 创建力导向模拟
     const simulation = d3.forceSimulation(data.nodes)
@@ -116,9 +144,11 @@ function createForceGraph(data, config) {
             .id(d => d.id)
             .distance(config.force.distance))
         .force("charge", d3.forceManyBody()
-            .strength(config.force.charge))
+            .strength(config.force.nodeStrength)
+            .distanceMax(500))
         .force("center", d3.forceCenter(config.width / 2, config.height / 2))
-        .force("collision", d3.forceCollide().radius(d => d.radius * 1.5)); // 增加碰撞半径
+        .force("collision", d3.forceCollide().radius(d => d.radius * 1.2))
+        .velocityDecay(0.6);
 
     // 绘制连接线
     const link = g.append("g")
@@ -140,37 +170,83 @@ function createForceGraph(data, config) {
     // 添加节点圆圈
     node.append("circle")
         .attr("r", d => d.radius)
-        .attr("fill", d => d.group === 1 ? config.colors.singer : config.colors.poetry);
+        .attr("fill", d => d.group === 1 ? config.colors.singer : config.colors.poetry)
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2);
 
     // 添加节点文本
     node.append("text")
-        .attr("dy", d => d.radius + 15) // 调整文本位置
-        .text(d => {
-            if (d.id.length > 12) {
-                return d.id.slice(0, 12) + '...';
-            }
-            return d.id;
-        })
-        .style("text-anchor", "middle")
-        .style("font-size", "14px"); // 增大字体大小
+        .attr("dy", d => d.radius + 15)
+        .text(d => d.id.length > 12 ? d.id.slice(0, 12) + '...' : d.id)
+        .attr("text-anchor", "middle")
+        .style("font-size", "14px")
+        .style("fill", "#2d3436");
 
-    // 节点交互事件
    // 节点交互事件
 node.on("mouseover", function(event, d) {
-    const content = d.group === 1 
-        ? `歌手: ${d.id}<br>连接数: ${d.connections}<br>节点大小: ${d.displaySize}`
-        : `诗词: ${d.id}<br>作者: ${d.writer}<br>连接数: ${d.connections}<br>节点大小: ${d.displaySize}`;
+    // 高亮当前节点
+    d3.select(this).select("circle")
+        .transition()
+        .duration(200)
+        .attr("stroke", config.colors.highlight)
+        .attr("stroke-width", 3);
+
+    // 构建提示框内容
+    let content = '';
+    if (d.group === 1) {
+        // 歌手节点信息
+        content = `
+            <div class="tooltip-title">${d.id}</div>
+            <div class="tooltip-content">
+                <div class="tooltip-item">
+                    <span class="tooltip-label">演唱诗词数量:</span>
+                    <span class="tooltip-value">${d.poemCount} 首</span>
+                </div>
+                <div class="tooltip-item">
+                    <span class="tooltip-label">节点大小:</span>
+                    <span class="tooltip-value">${d.displaySize}</span>
+                </div>
+            </div>
+        `;
+    } else {
+        // 诗词节点信息
+        content = `
+            <div class="tooltip-title">${d.title}</div>
+            <div class="tooltip-content">
+                <div class="tooltip-item">
+                    <span class="tooltip-label">作者:</span>
+                    <span class="tooltip-value">${d.writer}</span>
+                </div>
+                <div class="tooltip-item">
+                    <span class="tooltip-label">演唱歌手数:</span>
+                    <span class="tooltip-value">${d.singerCount} 位</span>
+                </div>
+                <div class="tooltip-item">
+                    <span class="tooltip-label">节点大小:</span>
+                    <span class="tooltip-value">${d.displaySize}</span>
+                </div>
+            </div>
+        `;
+    }
 
     tooltip.transition()
         .duration(200)
-        .style("opacity", .9);
+        .style("opacity", 1);  // 增加不透明度
+        
     tooltip.html(content)
-        .style("left", (event.pageX + 10) + "px")
-        .style("top", (event.pageY - 10) + "px");
+        .style("left", (event.pageX + 15) + "px")  // 稍微调整位置
+        .style("top", (event.pageY - 15) + "px");
 })
 .on("mouseout", function() {
+    // 恢复节点样式
+    d3.select(this).select("circle")
+        .transition()
+        .duration(200)
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2);
+
     tooltip.transition()
-        .duration(500)
+        .duration(300)  // 稍微加快消失速度
         .style("opacity", 0);
 });
 
@@ -188,7 +264,7 @@ node.on("mouseover", function(event, d) {
     // 拖拽函数
     function drag(simulation) {
         function dragstarted(event) {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
+            if (!event.active) simulation.alphaTarget(0.1).restart();
             event.subject.fx = event.subject.x;
             event.subject.fy = event.subject.y;
         }
