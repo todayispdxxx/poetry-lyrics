@@ -1,36 +1,29 @@
 const CONFIG = {
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: window.innerWidth,     // 使用整个窗口宽度
+    height: window.innerHeight,   // 使用整个窗口高度
     colors: {
         singer: '#ff6b6b',
-        poetry: '#4ecdc4'
+        poetry: '#4ecdc4',
+        highlight: '#ffd93d'
     },
     radius: {
         singer: {
-            min: 8,      // 歌手节点最小半径
-            max: 40      // 歌手节点最大半径
+            min: 10,             // 增大最小半径
+            max: 50              // 增大最大半径
         },
         poetry: {
-            min: 6,      // 诗词节点最小半径
-            max: 35      // 诗词节点最大半径
+            min: 10,
+            max: 65
         }
     },
     force: {
-        nodeStrength: -2000,
+        nodeStrength: -3000,
         linkStrength: 0.3,
-        distance: 200,
-        charge: -800
+        distance: 250,
+        charge: -1000
     },
     zoom: {
         min: 0.2,
-        max: 8
+        max: 10
     }
 };
-
-window.addEventListener('resize', () => {
-    CONFIG.width = window.innerWidth;
-    CONFIG.height = window.innerHeight;
-    if (typeof initializeGraph === 'function') {
-        initializeGraph();
-    }
-});
