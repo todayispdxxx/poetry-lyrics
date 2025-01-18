@@ -4,52 +4,60 @@
     box-sizing: border-box;
 }
 
-html, body {
-    width: 100%;
+body, html {
+    width: 150%;
     height: 100%;
     overflow: hidden;
-    font-family: 'Microsoft YaHei', sans-serif;
-    background-color: #f5f6fa;
 }
 
 #graph {
-    width: 100vw;  /* 使用视窗宽度 */
-    height: 100vh; /* 使用视窗高度 */
-    position: fixed; /* 固定位置 */
-    top: 0;
-    left: 0;
-}
-
-.node text {
-    font-size: 14px; /* 增大字体 */
-    fill: #2d3436;
-    text-anchor: middle;
-    dominant-baseline: middle;
-    pointer-events: none;
-}
-
-.link {
-    stroke-opacity: 0.4;
-}
-
-.node circle {
-    stroke: #fff;
-    stroke-width: 2px;
+    width: 200vw;
+    height: 150vh;
+    background-color: #f5f6fa;
 }
 
 .tooltip {
-    position: absolute;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #ddd;
+    padding: 15px;
+    background: #ffffff;  /* 纯白背景 */
+    border: 2px solid #2d3436;  /* 黑色边框 */
     border-radius: 8px;
     pointer-events: none;
     font-size: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 300px;
+    line-height: 1.6;
+    position: absolute;
     z-index: 1000;
 }
 
-.node:hover circle {
-    stroke: #2d3436;
-    stroke-width: 3px;
+.tooltip-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #2d3436;
+    border-bottom: 1px solid #dfe6e9;
+    padding-bottom: 8px;
+}
+
+.tooltip-content {
+    color: #2d3436;
+}
+
+.tooltip-content div {
+    margin-bottom: 5px;
+}
+
+.tooltip-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+}
+
+.tooltip-label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.tooltip-value {
+    color: #636e72;
 }
