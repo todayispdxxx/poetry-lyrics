@@ -23,7 +23,7 @@ const CONFIG = {
         charge: -1000
     },
     zoom: {
-        min: 0.2,
+        min: 0.1,
         max: 10
     }
 };
