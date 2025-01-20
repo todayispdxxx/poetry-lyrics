@@ -32,7 +32,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
     // 创建比例尺
     const linkDistanceScale = d3.scaleLinear()
         .domain([minMatchLyric, maxMatchLyric])
-        .range([100, 200]);  // 增加最大连线长度，调整连线变长
+        .range([100, 250]);  // 增加最大连线长度，调整连线变长
 
     const linkColorScale = d3.scaleLinear()
         .domain([minMatchLyric, maxMatchLyric])
