@@ -208,7 +208,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
     nodeGroup
         .on("mouseover", function(d) {
             const t = d3.transition()
-                .duration(50) // 适当增加过渡时间
+                .duration(100) // 适当增加过渡时间
                 .ease(d3.easeCubicOut);  // 使用更平滑的过渡效果
 
             const currentNode = d3.select(this);
