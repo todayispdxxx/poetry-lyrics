@@ -32,10 +32,10 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
     // 优化连线距离比例尺，增加最小和最大距离
     const linkDistanceScale = d3.scaleLinear()
         .domain([minMatchLyric, maxMatchLyric])
-        .range([120, 240]);  // 缩短连线的最小和最大距离
+        .range([100, 240]);  // 缩短连线的最小和最大距离
 
     // 使用更淡的灰色作为默认连线颜色
-    const defaultLinkColor = "#d1d1d1";
+    const defaultLinkColor = "#8B8386";
 
     // 调整节点大小
     const centerNodeSize = 45;
@@ -208,7 +208,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
     nodeGroup
         .on("mouseover", function(d) {
             const t = d3.transition()
-                .duration(100) // 适当增加过渡时间
+                .duration(50) // 适当增加过渡时间
                 .ease(d3.easeCubicOut);  // 使用更平滑的过渡效果
 
             const currentNode = d3.select(this);
