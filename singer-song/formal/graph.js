@@ -32,14 +32,14 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
     // 优化连线距离比例尺，增加最小和最大距离
     const linkDistanceScale = d3.scaleLinear()
         .domain([minMatchLyric, maxMatchLyric])
-        .range([100, 230]);  // 缩短连线的最小和最大距离
+        .range([120, 240]);  // 缩短连线的最小和最大距离
 
     // 使用更淡的灰色作为默认连线颜色
     const defaultLinkColor = "#d1d1d1";
 
     // 调整节点大小
-    const centerNodeSize = 35;
-    const surroundingNodeSize = 18;
+    const centerNodeSize = 45;
+    const surroundingNodeSize = 21;
 
     // 构建节点和连接数据
     const nodes = [
@@ -89,7 +89,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
     // 添加线条显示动画
     link.transition()
         .duration(1000)
-        .ease(d3.easeQuadOut)
+        .ease(d3.easeCubicOut) // 改为更柔和的过渡
         .attr("stroke-dashoffset", 0);
 
     // 创建节点组
@@ -138,22 +138,22 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             .strength(0.7))
         .force("charge", d3.forceManyBody()
             .strength(d => d.group === 1 ? -1200 : -600)
-            .distanceMax(450)
+            .distanceMax(500)
             .theta(0.8))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .force("collision", d3.forceCollide()
             .radius(d => (d.group === 1 ? centerNodeSize : surroundingNodeSize) + 15)
             .strength(0.5)
-            .iterations(2))
+            .iterations(4)) // 提高迭代次数
         .force("radial", d3.forceRadial(
             d => d.group === 1 ? 0 : 250,
             width / 2, 
             height / 2
         ).strength(0.3))
-        .alphaDecay(0.02)
-        .alphaMin(0.001)
-        .velocityDecay(0.3)
-        .alpha(0.5);
+        .alphaDecay(0.1)  // 减慢衰减速度
+        .alphaMin(0.01)    // 设置更小的alphaMin
+        .velocityDecay(0.20) // 降低速度衰减
+        .alpha(0.3);
 
     // 拖拽相关函数
     function dragstarted(d) {
@@ -208,14 +208,14 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
     nodeGroup
         .on("mouseover", function(d) {
             const t = d3.transition()
-                .duration(100) // 缩短过渡时间
-                .ease(d3.easeCubicOut);
+                .duration(100) // 适当增加过渡时间
+                .ease(d3.easeCubicOut);  // 使用更平滑的过渡效果
 
             const currentNode = d3.select(this);
 
-            // 只有当鼠标悬停在非中心节点时才改变连线颜色
+            // 高亮节点和连线的过渡
             link.transition(t)
-                .style("stroke", l => (l.source.id === d.id || l.target.id === d.id) && d.group !== 1 ? "#ff4d4d" : defaultLinkColor)
+                .style("stroke", l => (l.source.id === d.id || l.target.id === d.id) && d.group !== 1 ? "#FF6A6A" : defaultLinkColor)
                 .style("stroke-opacity", l => (l.source.id === d.id || l.target.id === d.id) && d.group !== 1 ? 1 : 0.1)
                 .style("stroke-width", l => {
                     if (l.source.id === d.id || l.target.id === d.id) {
@@ -224,7 +224,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
                     return 1 + (l.matchlyric_number / maxMatchLyric) * 2;
                 });
 
-            // 高亮节点
+            // 高亮节点的过渡效果
             currentNode.select("image")
                 .transition(t)
                 .style("stroke", "#ffd700")
@@ -253,20 +253,19 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
 
             const currentNode = d3.select(this);
 
-            // 恢复连线样式
+            // 恢复连线的过渡效果
             link.transition(t)
                 .style("stroke", defaultLinkColor)
                 .style("stroke-opacity", 0.6)
                 .style("stroke-width", d => 1 + (d.matchlyric_number / maxMatchLyric) * 1.4);
 
-            // 恢复节点样式
+            // 恢复节点的过渡效果
             currentNode.select("image")
                 .transition(t)
                 .style("stroke", "#fff")
                 .style("stroke-width", "1.5px")
                 .style("filter", "none");
 
-            // 恢复节点大小
             currentNode.select(".node-scale-group")
                 .transition(t)
                 .attr("transform", "scale(1)");
