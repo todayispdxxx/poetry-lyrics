@@ -2,9 +2,7 @@
     cursor: pointer;
     stroke: #fff;
     stroke-width: 1.5px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-    transform-box: fill-box;
-    transform-origin: center;
+    filter: none;
 }
 
 .node-scale-group {
@@ -30,11 +28,6 @@
     z-index: 1000;
     max-width: 300px;
     opacity: 0;
-}
-
-.d3-tooltip.visible {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .d3-tooltip .tooltip-title {
