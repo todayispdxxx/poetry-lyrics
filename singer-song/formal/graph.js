@@ -239,7 +239,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             tooltip.html(d.group === 1 
                 ? `<div class="tooltip-title">歌手名称：${d.singer}</div>
                    <div class="tooltip-content">歌曲数量：${d.songCount}</div>` 
-                : `<div class="tooltip-title">歌曲名称：${d.id}</div>
+                : `<div class="tooltip-title">《${d.id}》</div>
                    <div class="tooltip-content">引用古诗词字数：${d.matchlyric_number}</div>`)
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY - 10) + "px")
