@@ -175,79 +175,115 @@ function createForceGraph(data, config) {
         .attr("stroke-width", 2);
 
     // 添加节点文本
-    node.append("text")
-        .attr("dy", d => d.radius + 15)
-        .text(d => d.id.length > 12 ? d.id.slice(0, 12) + '...' : d.id)
-        .attr("text-anchor", "middle")
-        .style("font-size", "14px")
-        .style("fill", "#2d3436");
+   // node.append("text")
+        //.attr("dy", d => d.radius + 15)
+        //.text(d => d.id.length > 12 ? d.id.slice(0, 12) + '...' : d.id)
+        //.attr("text-anchor", "middle")
+       // .style("font-size", "14px")
+       // .style("fill", "#2d3436");
 
-   // 节点交互事件
-node.on("mouseover", function(event, d) {
-    // 高亮当前节点
-    d3.select(this).select("circle")
-        .transition()
-        .duration(200)
-        .attr("stroke", config.colors.highlight)
-        .attr("stroke-width", 3);
+    // 预计算节点连接关系
+    const nodeConnections = new Map();
+    data.links.forEach(l => {
+        if (!nodeConnections.has(l.source.id)) {
+            nodeConnections.set(l.source.id, new Set());
+        }
+        if (!nodeConnections.has(l.target.id)) {
+            nodeConnections.set(l.target.id, new Set());
+        }
+        nodeConnections.get(l.source.id).add(l.target.id);
+        nodeConnections.get(l.target.id).add(l.source.id);
+    });
 
-    // 构建提示框内容
-    let content = '';
-    if (d.group === 1) {
-        // 歌手节点信息
-        content = `
-            <div class="tooltip-title">${d.id}</div>
-            <div class="tooltip-content">
-                <div class="tooltip-item">
-                    <span class="tooltip-label">演唱诗词数量:</span>
-                    <span class="tooltip-value">${d.poemCount} 首</span>
-                </div>
-                <div class="tooltip-item">
-                    <span class="tooltip-label">节点大小:</span>
-                    <span class="tooltip-value">${d.displaySize}</span>
-                </div>
-            </div>
-        `;
-    } else {
-        // 诗词节点信息
-        content = `
-            <div class="tooltip-title">${d.title}</div>
-            <div class="tooltip-content">
-                <div class="tooltip-item">
-                    <span class="tooltip-label">作者:</span>
-                    <span class="tooltip-value">${d.writer}</span>
-                </div>
-                <div class="tooltip-item">
-                    <span class="tooltip-label">演唱歌手数:</span>
-                    <span class="tooltip-value">${d.singerCount} 位</span>
-                </div>
-                <div class="tooltip-item">
-                    <span class="tooltip-label">节点大小:</span>
-                    <span class="tooltip-value">${d.displaySize}</span>
-                </div>
-            </div>
-        `;
+    // 优化高亮性能
+    function highlightGraph(d) {
+        const connectedNodes = nodeConnections.get(d.id) || new Set();
+        
+        // 添加高亮类
+        node.classed('highlighted', n => n.id === d.id || connectedNodes.has(n.id));
+        link.classed('highlighted', l => l.source.id === d.id || l.target.id === d.id);
     }
 
-    tooltip.transition()
-        .duration(200)
-        .style("opacity", 1);  // 增加不透明度
+    function resetHighlight() {
+        // 清除所有高亮状态
+        node.classed('highlighted', false);
+        link.classed('highlighted', false);
         
-    tooltip.html(content)
-        .style("left", (event.pageX + 15) + "px")  // 稍微调整位置
-        .style("top", (event.pageY - 15) + "px");
+        // 恢复默认样式
+        node.selectAll("circle")
+            .style("opacity", 1)
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 2);
+
+        link
+            .style("opacity", 1)
+            .style("stroke", "#999")
+            .style("stroke-width", 1);
+    }
+
+    // 优化交互事件
+    node.on("mouseover", function(event, d) {
+        // 使用requestAnimationFrame优化性能
+        requestAnimationFrame(() => {
+            highlightGraph(d);
+            
+            // 更新提示框
+            let tooltipContent = `
+                <div class="tooltip-content">
+                    <h4 style="color: ${d.group === 1 ? '#FFB6C1' : '#87CEEB'}">${d.id}</h4>
+                    <p>类型: ${d.group === 1 ? '歌手' : '诗词'}</p>
+            `;
+
+            if (d.group === 1) {
+                tooltipContent += `
+                    <p>演唱古诗词数: ${d.poemCount}</p>
+                `;
+            } else {
+                tooltipContent += `
+                    <p>作者: ${d.writer}</p>
+                    <p>被演唱次数: ${d.singerCount}</p>
+                `;
+            }
+
+            tooltipContent += `</div>`;
+
+            // 计算提示框位置
+            const offsetX = 20;
+            const offsetY = 20;
+            const tooltipWidth = 300;
+            const tooltipHeight = 150;
+            
+            let left = event.pageX + offsetX;
+            let top = event.pageY + offsetY;
+            
+            // 防止提示框超出窗口
+            if (left + tooltipWidth > window.innerWidth) {
+                left = event.pageX - tooltipWidth - offsetX;
+            }
+            if (top + tooltipHeight > window.innerHeight) {
+                top = event.pageY - tooltipHeight - offsetY;
+            }
+
+            tooltip
+                .html(tooltipContent)
+                .style("left", left + "px")
+                .style("top", top + "px")
+                .transition()
+                .duration(200)
+                .style("opacity", 1);
+        });
+    })
+.on("mousemove", function(event) {
+    // 提示框跟随鼠标移动
+    tooltip
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 10) + "px");
 })
 .on("mouseout", function() {
-    // 恢复节点样式
-    d3.select(this).select("circle")
-        .transition()
-        .duration(200)
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 2);
-
-    tooltip.transition()
-        .duration(300)  // 稍微加快消失速度
-        .style("opacity", 0);
+    requestAnimationFrame(() => {
+        resetHighlight();
+        tooltip.style("opacity", 0);
+    });
 });
 
     // 更新力导向图位置
@@ -290,7 +326,7 @@ node.on("mouseover", function(event, d) {
 // 加载数据并初始化图表
 async function initializeGraph() {
     try {
-        const response = await d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/newdata.json");
+        const response = await d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/new_output_with_ids.json");
         const graphData = processData(response);
         createForceGraph(graphData, CONFIG);
     } catch (error) {
