@@ -75,31 +75,9 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/main/DATA/
     }
 
 // 创建比例尺
-let xScale = d3.scaleLinear()
+const xScale = d3.scaleLinear()
   .domain([0, totalLyrics])
   .range([decorationPadding, width - margin.left - margin.right - decorationPadding]);
-
-// Update visualization on window resize
-function updateVisualization() {
-  // Update scales
-  xScale.range([decorationPadding, width - margin.left - margin.right - decorationPadding]);
-
-  // Update timeline line
-  svg.select(".timeline-line")
-    .attr("x2", width - margin.left - margin.right + 20);
-
-  // Update endpoints
-  svg.selectAll(".endpoint")
-    .attr("cx", (d, i) => i === 0 ? 20 : width - margin.left - margin.right - 10);
-
-  // Update poem segments
-  svg.selectAll(".poem-segment")
-    .attr("x", d => xScale(d.start))
-    .attr("width", d => Math.min(
-        xScale(d.end - d.start + 1),
-        width - margin.left - margin.right - decorationPadding - xScale(d.start)
-    ));
-}
 
     // 创建虚线背景
     svg.append("line")
