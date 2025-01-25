@@ -1,34 +1,64 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body, html {
-    width: 200%;
-    height: 150%;
-    overflow: hidden;
-}
-
-#graph {
-    width: 200vw;
-    height: 150vh;
-    background-color: #f5f6fa;
-}
-
+/* 提示框样式 */
 .tooltip {
-    padding: 15px;
-    background: #ffffff;  /* 纯白背景 */
-    border: 2px solid #2d3436;  /* 黑色边框 */
-    border-radius: 8px;
-    pointer-events: none;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
     font-size: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    line-height: 1.4;
+    max-width: 300px;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.tooltip-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: #FFD700;
+}
+
+.tooltip-content p {
+    margin: 4px 0;
+}
+
+/* 高亮样式 */
+.node.highlighted circle {
+    stroke: #FFD700 !important;
+    stroke-width: 3px !important;
+}
+
+.link.highlighted {
+    stroke: #FFD700 !important;
+    stroke-width: 4px !important;
+}
+.tooltip {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.95); /* 半透明背景 */
+    border: 1px solid #2d3436;
+    border-radius: 8px;
+    pointer-events: none; /* 禁止鼠标交互 */
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     max-width: 300px;
     line-height: 1.6;
     position: absolute;
     z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transform: translateY(-10px); /* 默认偏移 */
 }
+
+.tooltip.hidden {
+    opacity: 0; /* 隐藏状态 */
+    pointer-events: none;
+}
+
+.tooltip.show {
+    opacity: 1; /* 显示状态 */
+    transform: translateY(0); /* 回归位置 */
+}
+
+
 
 .tooltip-title {
     font-weight: bold;
@@ -47,17 +77,57 @@ body, html {
     margin-bottom: 5px;
 }
 
-.tooltip-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 3px 0;
+/* 节点与边的高亮与模糊样式 */
+.node circle.highlight {
+    stroke: #ffd93d;
+    stroke-width: 3px;
+    transition: stroke 0.2s ease-in-out, stroke-width 0.2s ease-in-out;
+    filter: drop-shadow(0 0 6px #ffd93d);
 }
 
-.tooltip-label {
-    font-weight: 500;
-    margin-right: 10px;
+.link.highlight {
+    stroke: #ff4757;
+    stroke-width: 2px;
+    opacity: 1;
+    transition: stroke 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 
-.tooltip-value {
-    color: #636e72;
+.node.dimmed circle,
+.link.dimmed {
+    opacity: 0.2;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* 连接线默认样式 */
+.link {
+    stroke: #999;
+    stroke-width: 1px;
+    transition: all 0.2s ease;
+}
+
+/* 连接线高亮样式 */
+.link.highlighted {
+    stroke: #FFD700;
+    stroke-width: 3px;
+    stroke-opacity: 1;
+}
+
+/* 节点默认样式 */
+.node circle {
+    transition: all 0.2s ease;
+}
+
+/* 节点高亮样式 */
+.node.highlighted circle {
+    stroke: #FFD700;
+    stroke-width: 3px;
+}
+
+/* 非高亮状态的节点和连接线 */
+.node.faded circle {
+    opacity: 0.1;
+}
+
+.link.faded {
+    opacity: 0.1;
 }
