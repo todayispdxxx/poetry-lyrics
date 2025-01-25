@@ -9,18 +9,18 @@ const CONFIG = {
     radius: {
         singer: {
             min: 10,             // 增大最小半径
-            max: 50              // 增大最大半径
+            max: 35              // 增大最大半径
         },
         poetry: {
             min: 10,
-            max: 65
+            max: 40
         }
     },
     force: {
-        nodeStrength: -3000,
+        nodeStrength: -300,
         linkStrength: 0.3,
-        distance: 250,
-        charge: -1000
+        distance: 200,
+        charge: -100
     },
     zoom: {
         min: 0.1,
