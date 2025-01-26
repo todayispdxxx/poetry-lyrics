@@ -23,7 +23,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       throw new Error("加载的数据格式不正确");
     }
 
-    const songData = data.find(d => d.actual_song === "但愿人长久" && d.actual_singer === "邓丽君");
+    const songData = data.find(d => d.actual_song === "天若有情" && d.actual_singer === "黄丽玲");
     if (!songData) {
       throw new Error("未找到歌曲的数据");
     }
@@ -153,22 +153,11 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       .style("background", "rgba(255, 255, 255, 0.95)")
       .style("border", "1px solid #ddd")
       .style("border-radius", "4px")
-      .style("padding", null)
-      .style("font-size", null)
-      .style("pointer-events", "auto")  // 允许与tooltip交互
-      .style("text-align", "left")  // 确保文本左对齐
-      .style("white-space", "pre")  // 保持原始格式
-      .on("mouseenter", function() {
-        // 当鼠标进入tooltip时保持显示
-        tooltip.transition().duration(200).style("opacity", 1);
-      })
-      .on("mouseleave", function() {
-        // 当鼠标离开tooltip时隐藏
-        tooltip.transition()
-          .duration(200)
-          .style("opacity", 0)
-          .on("end", () => tooltip.style("display", "none"));
-      });
+      .style("padding", "8px")
+      .style("pointer-events", "auto"); // 允许鼠标事件
+
+    // 添加tooltip显示延迟
+    let tooltipTimeout;
 
     // 创建古诗词位置的圆角矩形
     let prevEnd = -Infinity;
@@ -186,7 +175,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       })
       .attr("y", height/2 - margin.top - 4)
       .attr("width", d => {
-        // 根据字符数量计算宽度，增加1.5倍比例因子
+        // 根据字符数量计算宽度
         const charCount = d.end - d.start + 1;
         const charWidth = effectiveWidth / totalLyrics;
         const minWidth = 10;
@@ -202,6 +191,11 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       .style("opacity", 0.7)
       .style("transition", "all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)")
     .on("mouseenter", function(event, d) {
+        // 清除之前的延迟
+        clearTimeout(tooltipTimeout);
+        
+        // 设置新的延迟
+        tooltipTimeout = setTimeout(() => {
         // 获取所有匹配的古诗词信息
         const chars = [];
         for (let pos = d.start; pos <= d.end; pos++) {
@@ -248,7 +242,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
 
           tooltipContent += `
             <div>
-              <div style="color: #666; line-height: 1.2;">出自：《${match.title}》</div>
+              <div style="color: #666; line-height: 1.3;">出自：《${match.title}》</div>
               <div style="white-space: pre-wrap; line-height: 1.3;">${highlightedContent}</div>
             </div>
           `;
@@ -259,12 +253,19 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
         
         // 显示tooltip
         console.log(tooltipContent);  // 调试输出提示框内容
-        tooltip
-            .style("display", "block")
-            .style("opacity", 0)
-            .html(tooltipContent)
-            .style("left", (event.pageX + 10) + "px") 
-            .style("top", (event.pageY - tooltip.node().offsetHeight - 10) + "px") // 向上偏移避免遮挡
+            // 统一显示在下方
+            const tooltipX = Math.min(
+              event.pageX + 10,
+              window.innerWidth - tooltip.node().offsetWidth - 20
+            );
+            const tooltipY = event.pageY + 20;
+            
+            tooltip
+                .style("display", "block")
+                .style("opacity", 0)
+                .html(tooltipContent)
+                .style("left", tooltipX + "px")
+                .style("top", tooltipY + "px")
             .transition()
             .duration(200)
             .style("opacity", 1);
@@ -275,6 +276,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             .duration(200)
             .style("opacity", 1)
             .style("stroke-width", "1.5px");
+        }, 200); // 200ms延迟
     })
     .on("mouseleave", function(event) {
         // 无论鼠标是否进入tooltip，都恢复样式
@@ -294,10 +296,80 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             .style("opacity", 0)
             .on("end", () => tooltip.style("display", "none"));
         }
-    })
-    .on("mousemove", function(event) {
-        tooltip
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY + 10) + "px");
+    });
+
+    // 添加tooltip的鼠标事件
+    tooltip
+      .on("mouseenter", function() {
+        clearTimeout(tooltipTimeout);
+      })
+      .on("mouseleave", function() {
+        tooltipTimeout = setTimeout(() => {
+          tooltip.transition()
+            .duration(200)
+            .style("opacity", 0)
+            .on("end", () => tooltip.style("display", "none"));
+        }, 100);
+      });
+
+    let isTooltipFixed = false;
+    let fixedPosition = {x: 0, y: 0};
+
+    svg.selectAll(".poem-segment")
+      .on("mousemove", function(event) {
+        if (!isTooltipFixed) {
+            // 统一显示在下方
+            const tooltipX = Math.min(
+              event.pageX + 10,
+              window.innerWidth - tooltip.node().offsetWidth - 20
+            );
+            const tooltipY = event.pageY + 20;
+            
+            tooltip
+                .style("left", tooltipX + "px")
+                .style("top", tooltipY + "px");
+        }
+    });
+
+    // 当鼠标进入tooltip时固定位置
+    tooltip.on("mouseenter", function() {
+        isTooltipFixed = true;
+        // 记录当前tooltip位置
+        fixedPosition = {
+            x: parseFloat(tooltip.style("left")),
+            y: parseFloat(tooltip.style("top"))
+        };
+        tooltip.transition().duration(200).style("opacity", 1);
+    });
+
+    // 当鼠标离开tooltip时恢复跟随
+    tooltip.on("mouseleave", function() {
+        isTooltipFixed = false;
+        tooltip.transition()
+            .duration(200)
+            .style("opacity", 0)
+            .on("end", () => tooltip.style("display", "none"));
+    });
+
+    // 更新mousemove事件处理
+    svg.selectAll(".poem-segment")
+      .on("mousemove", function(event) {
+        if (!isTooltipFixed) {
+            // 统一显示在下方
+            const tooltipX = Math.min(
+              event.pageX + 10,
+              window.innerWidth - tooltip.node().offsetWidth - 20
+            );
+            const tooltipY = event.pageY + 20;
+            
+            tooltip
+                .style("left", tooltipX + "px")
+                .style("top", tooltipY + "px");
+        } else {
+            // 如果tooltip固定，使用固定位置
+            tooltip
+                .style("left", fixedPosition.x + "px")
+                .style("top", fixedPosition.y + "px");
+        }
     });
   });
