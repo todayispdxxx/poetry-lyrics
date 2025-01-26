@@ -23,7 +23,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/main/DATA/
       throw new Error("加载的数据格式不正确");
     }
 
-    const songData = data.find(d => d.actual_song === "天若有情" && d.actual_singer === "黄丽玲");
+    const songData = data.find(d => d.actual_song === "但愿人长久" && d.actual_singer === "邓丽君");
     if (!songData) {
       throw new Error("未找到歌曲《淡淡幽情》的数据");
     }
@@ -77,7 +77,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/main/DATA/
 // 创建比例尺
 const xScale = d3.scaleLinear()
   .domain([0, totalLyrics])
-  .range([decorationPadding, width - margin.left - margin.right - decorationPadding]);
+  .range([decorationPadding + decorationRadius * 2, width - margin.left - margin.right - decorationPadding - decorationRadius * 2]);
 
     // 创建虚线背景
     svg.append("line")
@@ -94,7 +94,7 @@ const xScale = d3.scaleLinear()
       .data([0, totalLyrics])
       .join("circle")
       .attr("class", "endpoint")
-      .attr("cx", (d, i) => i === 0 ? 20 : width - margin.left - margin.right - 15)
+      .attr("cx", (d, i) => i === 0 ? 15 : width - margin.left - margin.right - 10)
       .attr("cy", height/2 - margin.top)
       .attr("r", decorationRadius)
       .attr("fill", "#666666")
@@ -159,7 +159,7 @@ const xScale = d3.scaleLinear()
       .attr("y", height/2 - margin.top - 4)
       .attr("width", d => Math.min(
           xScale(d.end - d.start + 1),
-          width - margin.left - margin.right - decorationPadding - xScale(d.start)
+          width - margin.left - margin.right - decorationPadding - decorationRadius * 2 - xScale(d.start)
       ))
       .attr("height", 8)
       .attr("rx", 4)
