@@ -1,7 +1,7 @@
 // 配置
 const width = 800;
-const height = 100;
-const margin = {top: 30, right: 50, bottom: 20, left: 50}; // 增加左侧边距
+const height = 300;
+const margin = {top: 130, right: 50, bottom: 20, left: 70}; // 增加左侧边距
 const dotRadius = 1.5;
 const decorationRadius = 3.5;
 const decorationPadding = 10;
@@ -15,7 +15,7 @@ const svg = d3.select("#chart")
     .attr("transform", `translate(${margin.left + 40},${margin.top})`); // 向右移动40px
 
 // 从GitHub加载数据
-d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/main/DATA/new_output_with_ids.json")
+d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/newdata_with_poem_content.json")
   .then(data => {
     console.log("数据加载成功:", data);
 
@@ -25,7 +25,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/main/DATA/
 
     const songData = data.find(d => d.actual_song === "但愿人长久" && d.actual_singer === "邓丽君");
     if (!songData) {
-      throw new Error("未找到歌曲《淡淡幽情》的数据");
+      throw new Error("未找到歌曲的数据");
     }
 
     const poemMatches = songData.poem_matches;
@@ -74,39 +74,46 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/main/DATA/
       });
     }
 
-// 创建比例尺
-const xScale = d3.scaleLinear()
-  .domain([0, totalLyrics])
-  .range([decorationPadding + decorationRadius * 2, width - margin.left - margin.right - decorationPadding - decorationRadius * 2]);
+    // 创建比例尺（排除装饰点区域）
+    const xScale = d3.scaleLinear()
+      .domain([0, totalLyrics])
+      .range([decorationPadding + decorationRadius * 4, width - margin.left - margin.right - decorationPadding - decorationRadius * 4])
+      .clamp(true); // 防止超出范围
 
-       // 创建虚线背景
-       svg.append("line")
-       .attr("x1", decorationPadding + decorationRadius * 2 + 5)  // 起点向右移动
-       .attr("y1", height/2 - margin.top)
-       .attr("x2", width - margin.left - margin.right - decorationPadding - decorationRadius * 2 - 5)  // 终点向左移动
-       .attr("y2", height/2 - margin.top)
-       .attr("stroke", "#cccccc")
-       .attr("stroke-width", 1.0)
-       .attr("stroke-dasharray", "3,3");
+    // 计算有效宽度（不包括装饰点区域）
+    const effectiveWidth = width - margin.left - margin.right - decorationPadding * 2 - decorationRadius * 8;
+
+    // 创建虚线背景
+    svg.append("line")
+      .attr("x1", decorationPadding + decorationRadius * 2 + 5)  // 起点向右移动
+      .attr("y1", height/2 - margin.top)
+      .attr("x2", width - margin.left - margin.right - decorationPadding - decorationRadius * 2 - 5)  // 终点向左移动
+      .attr("y2", height/2 - margin.top)
+      .attr("stroke", "#cccccc")
+      .attr("stroke-width", 1.0)
+      .attr("stroke-dasharray", "3,3");
 
     // 添加头尾装饰点
     svg.selectAll(".endpoint")
       .data([0, totalLyrics])
       .join("circle")
       .attr("class", "endpoint")
-      .attr("cx", (d, i) => i === 0 ? 15 : width - margin.left - margin.right - 10)
+      .attr("cx", (d, i) => i === 0 ? decorationPadding + decorationRadius * 2 : width - margin.left - margin.right - decorationPadding - decorationRadius * 2)
       .attr("cy", height/2 - margin.top)
       .attr("r", decorationRadius)
       .attr("fill", "#666666")
       .style("pointer-events", "none") // 防止装饰点干扰鼠标事件
       .style("display", "block"); // 确保装饰点显示
 
-    // 在进度条前添加圆形装饰
-    svg.append("circle")
-      .attr("cx", -30)
-      .attr("cy", height/2 - margin.top -5)
-      .attr("r", 35)
-      .attr("fill", "#999");
+    // 在进度条前添加图片装饰
+    svg.append("image")
+      .attr("x", -70)
+      .attr("y", height/2 - margin.top - 35)
+      .attr("width", 70)
+      .attr("height", 70)
+      .attr("xlink:href", "image.png")
+      .style("border", "2px solid black")
+      .style("border-radius", "50%");
 
     // 添加标题组
     const titleGroup = svg.append("g")
@@ -146,119 +153,151 @@ const xScale = d3.scaleLinear()
       .style("background", "rgba(255, 255, 255, 0.95)")
       .style("border", "1px solid #ddd")
       .style("border-radius", "4px")
-      .style("padding", "8px")
-      .style("font-size", "12px")
-      .style("pointer-events", "none");
+      .style("padding", null)
+      .style("font-size", null)
+      .style("pointer-events", "auto")  // 允许与tooltip交互
+      .style("text-align", "left")  // 确保文本左对齐
+      .style("white-space", "pre")  // 保持原始格式
+      .on("mouseenter", function() {
+        // 当鼠标进入tooltip时保持显示
+        tooltip.transition().duration(200).style("opacity", 1);
+      })
+      .on("mouseleave", function() {
+        // 当鼠标离开tooltip时隐藏
+        tooltip.transition()
+          .duration(200)
+          .style("opacity", 0)
+          .on("end", () => tooltip.style("display", "none"));
+      });
 
     // 创建古诗词位置的圆角矩形
+    let prevEnd = -Infinity;
     svg.selectAll(".poem-segment")
       .data(segments)
       .join("rect")
       .attr("class", "poem-segment")
-      .attr("x", d => xScale(d.start))
+      .attr("x", d => {
+        const xPos = Math.max(xScale(d.start), decorationPadding + decorationRadius * 4);
+        if (xPos < prevEnd + 10) {
+            return prevEnd + 10;
+        }
+        prevEnd = xPos;
+        return xPos;
+      })
       .attr("y", height/2 - margin.top - 4)
-      .attr("width", d => Math.min(
-          xScale(d.end - d.start + 1),
-          width - margin.left - margin.right - decorationPadding - decorationRadius * 2 - xScale(d.start)
-      ))
-      .attr("height", 10)
+      .attr("width", d => {
+        // 根据字符数量计算宽度，增加1.5倍比例因子
+        const charCount = d.end - d.start + 1;
+        const charWidth = effectiveWidth / totalLyrics;
+        const minWidth = 10;
+        const maxWidth = effectiveWidth - (xScale(d.start) - (decorationPadding + decorationRadius * 4));
+        return Math.max(minWidth, Math.min(charCount * charWidth * 1, maxWidth));
+      })
+      .attr("height", 8)
       .attr("rx", 4)
       .attr("ry", 4)
       .attr("fill", "#1CCEAC")
       .style("stroke", "#666666")
       .style("stroke-width", "1px")
-      .style("transition", "all 0.15s cubic-bezier(0.4, 0, 0.2, 1)")
-      .on("mouseover", function(event, d) {
-          // 先准备tooltip内容
-          const segmentChars = [];
+      .style("opacity", 0.7)
+      .style("transition", "all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)")
+    .on("mouseenter", function(event, d) {
+        // 获取所有匹配的古诗词信息
+        const chars = [];
+        for (let pos = d.start; pos <= d.end; pos++) {
+          if (positionToChars.has(pos)) {
+            chars.push(positionToChars.get(pos));
+          }
+        }
+        
+        // 收集所有匹配的古诗词
+        const matches = Object.values(poemMatches).filter(m => 
+          m.positions.some(pos => pos >= d.start && pos <= d.end)
+        );
+        
+        // 格式化tooltip内容
+        let tooltipContent = `
+            <div style="text-align: center; margin-bottom: 1px; font-style: italic; color: #999;">${chars.join("").trim()}</div>
+        `;
+        
+        matches.forEach((match, index) => {
+          // 高亮匹配的字符片段
+          let highlightedContent = match.content;
+          const normalizedContent = match.content.replace(/[\s\p{P}]/gu, ''); // 去除标点、空格和换行符
+          const normalizedPositions = match.positions.filter(pos => {
+            const char = positionToChars.get(pos);
+            return char && !/[\s\p{P}]/u.test(char); // 仅保留有效字符的位置
+          });
+
+          // 获取歌词片段并规范化
+          const lyricSegment = [];
           for (let pos = d.start; pos <= d.end; pos++) {
-            if (positionToChars.has(pos)) {
-              segmentChars.push(positionToChars.get(pos));
+            const char = positionToChars.get(pos);
+            if (char) {
+              lyricSegment.push(char);
             }
           }
+          const lyricText = lyricSegment.join('');
+          const normalizedLyric = lyricText.replace(/[\s\p{P}]/gu, ''); // 去除标点、空格和换行符
           
-          const allTitles = new Set();
-          Object.values(poemMatches).forEach(match => {
-            const matchPositions = match.positions;
-            const hasOverlap = matchPositions.some(pos => pos >= d.start && pos <= d.end);
-            if (hasOverlap) {
-              allTitles.add(`《${match.title}》`);
-            }
-          });
-          
-          const charsToShow = segmentChars.length > 0 ? 
-            segmentChars.join("") : "无匹配字符";
-          const charCount = segmentChars.length;
-          const positionRange = `${d.start + 1}-${d.end + 1}`;
-          
-          const rect = this.getBoundingClientRect();
-          const tooltipContent = `
-            <div style="text-align: center">
-              <div>
-                <span style="color: #666; font-style: italic">${charsToShow}</span>
-              </div>
-              <div style="margin-top: 4px; color: #666">
-                <div style="text-align: left">出处：</div>
-                ${Array.from(allTitles).map(title => `<div style="text-align: left; text-indent: 2em">${title}</div>`).join("")}
-                <div style="text-align: left">字数：${charCount} 字</div>
-                <div style="text-align: left">位置：${positionRange}</div>
-              </div>
+          // 查找匹配位置 - 仅在完全匹配时高亮
+          if (normalizedContent === normalizedLyric) {
+            const highlightedSegment = `<span style="color: #FF7F50; font-weight: bold;">${match.content}</span>`;
+            highlightedContent = highlightedSegment;
+          }
+
+          tooltipContent += `
+            <div>
+              <div style="color: #666; line-height: 1.2;">出自：《${match.title}》</div>
+              <div style="white-space: pre-wrap; line-height: 1.3;">${highlightedContent}</div>
             </div>
           `;
+          if (index < matches.length - 1) {
+            tooltipContent += `<hr style="border: 0; border-top: 1px solid #eee; margin: 0;">`;
+          }
+        });
+        
+        // 显示tooltip
+        console.log(tooltipContent);  // 调试输出提示框内容
+        tooltip
+            .style("display", "block")
+            .style("opacity", 0)
+            .html(tooltipContent)
+            .style("left", (event.pageX + 10) + "px") 
+            .style("top", (event.pageY - tooltip.node().offsetHeight - 10) + "px") // 向上偏移避免遮挡
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
 
-          // 先停止所有正在进行的动画
-          d3.select(this).interrupt();
-          tooltip.interrupt();
+        // 高亮效果
+        d3.select(this)
+            .transition()
+            .duration(200)
+            .style("opacity", 1)
+            .style("stroke-width", "1.5px");
+    })
+    .on("mouseleave", function(event) {
+        // 无论鼠标是否进入tooltip，都恢复样式
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .style("opacity", 0.7)
+          .style("stroke-width", "1px");
 
-          // 同时执行矩形和tooltip动画
-          d3.select(this)
-              .transition()
-              .duration(150)
-              .ease(d3.easeCubicOut)
-              .attr("height", 10)
-              .style("stroke-width", "1.5px")
-              .style("fill", "#19b798")
-              .style("transform", "scale(1.02)");
-
-          tooltip.html(tooltipContent)
-              .style("left", (rect.left + window.scrollX + rect.width/2) + "px")
-              .style("top", (rect.bottom + window.scrollY + 5) + "px")
-              .style("transform", "translateX(-50%)")
-              .style("opacity", 0)
-              .transition()
-              .duration(150)
-              .ease(d3.easeCubicOut)
-              .style("opacity", 0.9);
-      })
-      .on("mouseout", function() {
-          // 先停止所有正在进行的动画
-          d3.select(this).interrupt();
-          tooltip.interrupt();
-
-          // 同时执行矩形和tooltip消失动画
-          d3.select(this)
-              .transition()
-              .duration(150)
-              .ease(d3.easeCubicOut)
-              .attr("height", 8)
-              .style("stroke-width", "1px")
-              .style("fill", "#1CCEAC")
-              .style("transform", "scale(1)");
-
+        // 检查鼠标是否移动到tooltip上
+        const isOverTooltip = d3.select(".tooltip").node().contains(event.relatedTarget);
+        
+        // 如果鼠标离开矩形且不在tooltip上
+        if (!isOverTooltip) {
           tooltip.transition()
-              .duration(150)
-              .ease(d3.easeCubicOut)
-              .style("opacity", 0)
-              .on("end", () => {
-                  tooltip.style("display", "none");
-                  // 确保最终状态正确
-                  d3.select(this)
-                      .attr("height", 10)
-                      .style("stroke-width", "1px")
-                      .style("fill", "#1CCEAC");
-              });
-      })
-      .on("mouseenter", function() {
-          tooltip.style("display", "block");
-      });
-  })
+            .duration(200)
+            .style("opacity", 0)
+            .on("end", () => tooltip.style("display", "none"));
+        }
+    })
+    .on("mousemove", function(event) {
+        tooltip
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY + 10) + "px");
+    });
+  });
