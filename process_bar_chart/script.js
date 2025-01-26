@@ -1,7 +1,7 @@
 // 配置
 const width = 800;
 const height = 100;
-const margin = {top: 30, right: 30, bottom: 20, left: 50}; // 增加左侧边距
+const margin = {top: 30, right: 50, bottom: 20, left: 50}; // 增加左侧边距
 const dotRadius = 1.5;
 const decorationRadius = 3.5;
 const decorationPadding = 10;
@@ -79,15 +79,15 @@ const xScale = d3.scaleLinear()
   .domain([0, totalLyrics])
   .range([decorationPadding + decorationRadius * 2, width - margin.left - margin.right - decorationPadding - decorationRadius * 2]);
 
-    // 创建虚线背景
-    svg.append("line")
-      .attr("x1", 20)
-      .attr("y1", height/2 - margin.top)
-      .attr("x2", width - margin.left - margin.right + 20)
-      .attr("y2", height/2 - margin.top)
-      .attr("stroke", "#cccccc")
-      .attr("stroke-width", 1.0)
-      .attr("stroke-dasharray", "3,3");
+       // 创建虚线背景
+       svg.append("line")
+       .attr("x1", decorationPadding + decorationRadius * 2 + 5)  // 起点向右移动
+       .attr("y1", height/2 - margin.top)
+       .attr("x2", width - margin.left - margin.right - decorationPadding - decorationRadius * 2 - 5)  // 终点向左移动
+       .attr("y2", height/2 - margin.top)
+       .attr("stroke", "#cccccc")
+       .attr("stroke-width", 1.0)
+       .attr("stroke-dasharray", "3,3");
 
     // 添加头尾装饰点
     svg.selectAll(".endpoint")
@@ -161,7 +161,7 @@ const xScale = d3.scaleLinear()
           xScale(d.end - d.start + 1),
           width - margin.left - margin.right - decorationPadding - decorationRadius * 2 - xScale(d.start)
       ))
-      .attr("height", 8)
+      .attr("height", 10)
       .attr("rx", 4)
       .attr("ry", 4)
       .attr("fill", "#1CCEAC")
@@ -253,7 +253,7 @@ const xScale = d3.scaleLinear()
                   tooltip.style("display", "none");
                   // 确保最终状态正确
                   d3.select(this)
-                      .attr("height", 8)
+                      .attr("height", 10)
                       .style("stroke-width", "1px")
                       .style("fill", "#1CCEAC");
               });
