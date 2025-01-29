@@ -2,9 +2,9 @@
 const width = 800;
 const height = 300;
 const margin = {top: 130, right: 50, bottom: 20, left: 70}; // 增加左侧边距
-const dotRadius = 1.5;
-const decorationRadius = 3.5;
-const decorationPadding = 10;
+const dotRadius = 1.5;  
+const decorationRadius = 3.5;   
+const decorationPadding = 10;   
 
 // 创建SVG容器
 const svg = d3.select("#chart")
@@ -209,47 +209,35 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           m.positions.some(pos => pos >= d.start && pos <= d.end)
         );
         
-        // 格式化tooltip内容
         let tooltipContent = `
-            <div style="text-align: center; margin-bottom: 1px; font-style: italic; color: #999;">${chars.join("").trim()}</div>
+        <div class="lyric">${chars.join("").trim()}</div>
+        <div class="divider"></div>
+      `;
+      
+      matches.forEach((match, index) => {
+        // 高亮匹配的字符片段（逻辑优化）
+        let highlightedContent = match.content;
+        const normalizedLyric = chars.join("").replace(/[\s\p{P}]/gu, '');
+        const normalizedPoem = match.content.replace(/[\s\p{P}]/gu, '');
+      
+        // 当完全匹配时添加高亮
+        if (normalizedPoem === normalizedLyric) {
+          highlightedContent = `<span class="highlight">${match.content}</span>`;
+        }
+      
+        tooltipContent += `
+          <div class="match-item">
+            <div class="source">《${match.title}》</div>
+            <div class="content">${highlightedContent}</div>
+          </div>
         `;
-        
-        matches.forEach((match, index) => {
-          // 高亮匹配的字符片段
-          let highlightedContent = match.content;
-          const normalizedContent = match.content.replace(/[\s\p{P}]/gu, ''); // 去除标点、空格和换行符
-          const normalizedPositions = match.positions.filter(pos => {
-            const char = positionToChars.get(pos);
-            return char && !/[\s\p{P}]/u.test(char); // 仅保留有效字符的位置
-          });
-
-          // 获取歌词片段并规范化
-          const lyricSegment = [];
-          for (let pos = d.start; pos <= d.end; pos++) {
-            const char = positionToChars.get(pos);
-            if (char) {
-              lyricSegment.push(char);
-            }
-          }
-          const lyricText = lyricSegment.join('');
-          const normalizedLyric = lyricText.replace(/[\s\p{P}]/gu, ''); // 去除标点、空格和换行符
-          
-          // 查找匹配位置 - 仅在完全匹配时高亮
-          if (normalizedContent === normalizedLyric) {
-            const highlightedSegment = `<span style="color: #FF7F50; font-weight: bold;">${match.content}</span>`;
-            highlightedContent = highlightedSegment;
-          }
-
-          tooltipContent += `
-            <div>
-              <div style="color: #666; line-height: 1.3;">出自：《${match.title}》</div>
-              <div style="white-space: pre-wrap; line-height: 1.3;">${highlightedContent}</div>
-            </div>
-          `;
-          if (index < matches.length - 1) {
-            tooltipContent += `<hr style="border: 0; border-top: 1px solid #eee; margin: 0;">`;
-          }
-        });
+      
+        // 最后一个条目后不加分隔线
+        if (index < matches.length - 1) {
+          tooltipContent += `<div class="divider"></div>`;
+        }
+      });
+      
         
         // 显示tooltip
         console.log(tooltipContent);  // 调试输出提示框内容
@@ -319,17 +307,18 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       .on("mousemove", function(event) {
         if (!isTooltipFixed) {
             // 统一显示在下方
+            const tooltipWidth = 280;  // 与CSS的max-width保持一致
             const tooltipX = Math.min(
-              event.pageX + 10,
-              window.innerWidth - tooltip.node().offsetWidth - 20
+              event.pageX - tooltipWidth/2,
+              window.innerWidth - tooltipWidth - 20
             );
-            const tooltipY = event.pageY + 20;
-            
+            const tooltipY = event.pageY + 15;  // 留出小箭头空间
+          
             tooltip
-                .style("left", tooltipX + "px")
-                .style("top", tooltipY + "px");
-        }
-    });
+              .html(tooltipContent)
+              .style("left", `${Math.max(10, tooltipX)}px`)
+              .style("top", `${tooltipY}px`);
+          }});
 
     // 当鼠标进入tooltip时固定位置
     tooltip.on("mouseenter", function() {
