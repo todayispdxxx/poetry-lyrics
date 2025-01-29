@@ -14,6 +14,21 @@ const svg = d3.select("#chart")
   .append("g")
     .attr("transform", `translate(${margin.left + 40},${margin.top})`); // 向右移动40px
 
+    // 增强版文本处理函数
+function processContent(content) {
+  const noBrackets = content.replace(/\([^)]*\)/g, ''); // 移除所有括号及其内容
+  const cleanedChars = [];
+  const originalIndices = [];
+  const regex = /[^\s\p{P}]/gu;
+  let match;
+
+  while ((match = regex.exec(noBrackets)) !== null) {
+      cleanedChars.push(match[0]);
+      originalIndices.push(match.index);
+  }
+  return { cleanedChars, originalIndices, original: noBrackets };
+}
+
 // 从GitHub加载数据
 d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/newdata_with_poem_content.json")
   .then(data => {
@@ -23,7 +38,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       throw new Error("加载的数据格式不正确");
     }
 
-    const songData = data.find(d => d.actual_song === "天若有情" && d.actual_singer === "黄丽玲");
+    const songData = data.find(d => d.actual_song === "但愿人长久" && d.actual_singer === "邓丽君");
     if (!songData) {
       throw new Error("未找到歌曲的数据");
     }
@@ -182,7 +197,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
         const maxWidth = effectiveWidth - (xScale(d.start) - (decorationPadding + decorationRadius * 4));
         return Math.max(minWidth, Math.min(charCount * charWidth * 1, maxWidth));
       })
-      .attr("height", 8)
+      .attr("height", 10)
       .attr("rx", 4)
       .attr("ry", 4)
       .attr("fill", "#1CCEAC")
@@ -190,175 +205,165 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       .style("stroke-width", "1px")
       .style("opacity", 0.7)
       .style("transition", "all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)")
-    .on("mouseenter", function(event, d) {
-        // 清除之前的延迟
+      .on("mouseenter", function(event, d) {
         clearTimeout(tooltipTimeout);
-        
-        // 设置新的延迟
         tooltipTimeout = setTimeout(() => {
-        // 获取所有匹配的古诗词信息
-        const chars = [];
-        for (let pos = d.start; pos <= d.end; pos++) {
-          if (positionToChars.has(pos)) {
-            chars.push(positionToChars.get(pos));
-          }
-        }
-        
-        // 收集所有匹配的古诗词
-        const matches = Object.values(poemMatches).filter(m => 
-          m.positions.some(pos => pos >= d.start && pos <= d.end)
-        );
-        
-        let tooltipContent = `
-        <div class="lyric">${chars.join("").trim()}</div>
-        <div class="divider"></div>
-      `;
-      
-      matches.forEach((match, index) => {
-        // 高亮匹配的字符片段（逻辑优化）
-        let highlightedContent = match.content;
-        const normalizedLyric = chars.join("").replace(/[\s\p{P}]/gu, '');
-        const normalizedPoem = match.content.replace(/[\s\p{P}]/gu, '');
-      
-        // 当完全匹配时添加高亮
-        if (normalizedPoem === normalizedLyric) {
-          highlightedContent = `<span class="highlight">${match.content}</span>`;
-        }
-      
-        tooltipContent += `
-          <div class="match-item">
-            <div class="source">《${match.title}》</div>
-            <div class="content">${highlightedContent}</div>
-          </div>
-        `;
-      
-        // 最后一个条目后不加分隔线
-        if (index < matches.length - 1) {
-          tooltipContent += `<div class="divider"></div>`;
-        }
-      });
-      
-        
-        // 显示tooltip
-        console.log(tooltipContent);  // 调试输出提示框内容
-            // 统一显示在下方
-            const tooltipX = Math.min(
-              event.pageX + 10,
-              window.innerWidth - tooltip.node().offsetWidth - 20
-            );
-            const tooltipY = event.pageY + 20;
-            
-            tooltip
-                .style("display", "block")
-                .style("opacity", 0)
-                .html(tooltipContent)
-                .style("left", tooltipX + "px")
-                .style("top", tooltipY + "px")
-            .transition()
-            .duration(200)
-            .style("opacity", 1);
+            const chars = Array.from(
+                {length: d.end - d.start + 1}, 
+                (_,i) => positionToChars.get(d.start + i) || ""
+            ).join("").trim();
 
-        // 高亮效果
-        d3.select(this)
-            .transition()
-            .duration(200)
-            .style("opacity", 1)
-            .style("stroke-width", "1.5px");
-        }, 200); // 200ms延迟
+            const normalizedLyric = chars.replace(/[\s\p{P}]/gu, '');
+
+            const matches = Object.values(poemMatches).filter(m => 
+                m.positions.some(pos => pos >= d.start && pos <= d.end)
+            );
+
+            let tooltipContent = `<div class="lyric">${chars}</div><div class="divider"></div>`;
+
+            matches.forEach((match, index) => {
+                const { cleanedChars, originalIndices, original } = processContent(match.content);
+                const strPoem = cleanedChars.join('');
+                let highlighted = original;
+
+                if (strPoem.includes(normalizedLyric)) {
+                    const highlights = [];
+                    let startIdx = strPoem.indexOf(normalizedLyric);
+                    
+                    while (startIdx !== -1) {
+                        const endIdx = startIdx + normalizedLyric.length;
+                        if (endIdx > cleanedChars.length) break;
+
+                        const highlightStart = originalIndices[startIdx];
+                        const highlightEnd = originalIndices[endIdx - 1] + 1;
+
+                        highlights.push({ highlightStart, highlightEnd });
+                        startIdx = strPoem.indexOf(normalizedLyric, endIdx);
+                    }
+
+                    let lastPos = 0;
+                    highlighted = highlights.reduce((acc, hl) => {
+                        acc += original.slice(lastPos, hl.highlightStart);
+                        acc += `<span class="highlight">${original.slice(hl.highlightStart, hl.highlightEnd)}</span>`;
+                        lastPos = hl.highlightEnd;
+                        return acc;
+                    }, '') + original.slice(lastPos);
+                }
+
+      
+                tooltipContent += `
+                <div class="match-item">
+                    <div class="source">《${match.title}》</div>
+                    <div class="content">${highlighted}</div>
+                </div>
+                ${index < matches.length-1 ? '<div class="divider"></div>' : ''}
+            `;
+        });
+
+        showTooltip(event, tooltipContent);
+      }, 100);
     })
     .on("mouseleave", function(event) {
-        // 无论鼠标是否进入tooltip，都恢复样式
-        d3.select(this)
-          .transition()
+      clearTimeout(tooltipTimeout);
+      hideTooltip(event);
+    });
+      
+     // 显示 tooltip 并处理位置
+function showTooltip(event, tooltipContent) {
+  console.log(tooltipContent); // 调试输出提示框内容
+  
+  const tooltipX = Math.min(
+      event.pageX + 10,
+      window.innerWidth - tooltip.node().offsetWidth - 20
+  );
+  const tooltipY = event.pageY + 20;
+
+  tooltip
+      .style("display", "block")
+      .style("opacity", 0)
+      .html(tooltipContent)
+      .style("left", `${tooltipX}px`)
+      .style("top", `${tooltipY}px`)
+      .transition()
+      .duration(200)
+      .style("opacity", 1);
+
+  d3.select(event.target)
+      .transition()
+      .duration(200)
+      .style("opacity", 1)
+      .style("stroke-width", "1.5px");
+}
+
+// 隐藏 tooltip
+function hideTooltip(event) {
+  d3.select(event.target)
+      .transition()
+      .duration(200)
+      .style("opacity", 0.7)
+      .style("stroke-width", "1px");
+
+  const isOverTooltip = d3.select(".tooltip").node().contains(event.relatedTarget);
+  if (!isOverTooltip) {
+      tooltip.transition()
           .duration(200)
-          .style("opacity", 0.7)
-          .style("stroke-width", "1px");
+          .style("opacity", 0)
+          .on("end", () => tooltip.style("display", "none"));
+  }
+}
 
-        // 检查鼠标是否移动到tooltip上
-        const isOverTooltip = d3.select(".tooltip").node().contains(event.relatedTarget);
-        
-        // 如果鼠标离开矩形且不在tooltip上
-        if (!isOverTooltip) {
+// 监听 tooltip 进入和离开的事件
+tooltip
+  .on("mouseenter", () => clearTimeout(tooltipTimeout))
+  .on("mouseleave", () => {
+      tooltipTimeout = setTimeout(() => {
           tooltip.transition()
-            .duration(200)
-            .style("opacity", 0)
-            .on("end", () => tooltip.style("display", "none"));
-        }
-    });
+              .duration(200)
+              .style("opacity", 0)
+              .on("end", () => tooltip.style("display", "none"));
+      }, 100);
+  });
 
-    // 添加tooltip的鼠标事件
-    tooltip
-      .on("mouseenter", function() {
-        clearTimeout(tooltipTimeout);
-      })
-      .on("mouseleave", function() {
-        tooltipTimeout = setTimeout(() => {
-          tooltip.transition()
-            .duration(200)
-            .style("opacity", 0)
-            .on("end", () => tooltip.style("display", "none"));
-        }, 100);
-      });
+let isTooltipFixed = false;
+let fixedPosition = {x: 0, y: 0};
 
-    let isTooltipFixed = false;
-    let fixedPosition = {x: 0, y: 0};
-
-    svg.selectAll(".poem-segment")
-      .on("mousemove", function(event) {
-        if (!isTooltipFixed) {
-            // 统一显示在下方
-            const tooltipWidth = 280;  // 与CSS的max-width保持一致
-            const tooltipX = Math.min(
-              event.pageX - tooltipWidth/2,
-              window.innerWidth - tooltipWidth - 20
-            );
-            const tooltipY = event.pageY + 15;  // 留出小箭头空间
-          
-            tooltip
-              .html(tooltipContent)
-              .style("left", `${Math.max(10, tooltipX)}px`)
-              .style("top", `${tooltipY}px`);
-          }});
-
-    // 当鼠标进入tooltip时固定位置
-    tooltip.on("mouseenter", function() {
-        isTooltipFixed = true;
-        // 记录当前tooltip位置
-        fixedPosition = {
-            x: parseFloat(tooltip.style("left")),
-            y: parseFloat(tooltip.style("top"))
-        };
-        tooltip.transition().duration(200).style("opacity", 1);
-    });
-
-    // 当鼠标离开tooltip时恢复跟随
-    tooltip.on("mouseleave", function() {
-        isTooltipFixed = false;
-        tooltip.transition()
-            .duration(200)
-            .style("opacity", 0)
-            .on("end", () => tooltip.style("display", "none"));
-    });
-
-    // 更新mousemove事件处理
-    svg.selectAll(".poem-segment")
-      .on("mousemove", function(event) {
-        if (!isTooltipFixed) {
-            // 统一显示在下方
-            const tooltipX = Math.min(
+// 鼠标移动时更新 tooltip 位置
+svg.selectAll(".poem-segment")
+  .on("mousemove", function(event) {
+      if (!isTooltipFixed) {
+          const tooltipX = Math.min(
               event.pageX + 10,
               window.innerWidth - tooltip.node().offsetWidth - 20
-            );
-            const tooltipY = event.pageY + 20;
-            
-            tooltip
-                .style("left", tooltipX + "px")
-                .style("top", tooltipY + "px");
-        } else {
-            // 如果tooltip固定，使用固定位置
-            tooltip
-                .style("left", fixedPosition.x + "px")
-                .style("top", fixedPosition.y + "px");
-        }
-    });
+          );
+          const tooltipY = event.pageY + 20;
+
+          tooltip
+              .style("left", `${tooltipX}px`)
+              .style("top", `${tooltipY}px`);
+      } else {
+          tooltip
+              .style("left", `${fixedPosition.x}px`)
+              .style("top", `${fixedPosition.y}px`);
+      }
   });
+
+// 鼠标进入 tooltip 时固定位置
+tooltip.on("mouseenter", function() {
+  isTooltipFixed = true;
+  fixedPosition = {
+      x: parseFloat(tooltip.style("left")),
+      y: parseFloat(tooltip.style("top"))
+  };
+  tooltip.transition().duration(200).style("opacity", 1);
+});
+
+// 鼠标离开 tooltip 时解除固定
+tooltip.on("mouseleave", function() {
+  isTooltipFixed = false;
+  tooltip.transition()
+      .duration(200)
+      .style("opacity", 0)
+      .on("end", () => tooltip.style("display", "none"));
+});
+
+}); // Close the .then() block

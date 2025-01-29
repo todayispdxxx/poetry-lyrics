@@ -38,10 +38,12 @@
 
 /* 移除原有hr样式 */
 
+/* 添加以下CSS规则 */
 .highlight {
-  color: #e86138;
-  font-weight: 500;
-  background: rgba(232,97,56,0.08);
+  color: #FF6F61;  /* 珊瑚色字体 */
+  font-weight: bold; /* 加粗字体 */
   padding: 2px 4px;
   border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
