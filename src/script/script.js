@@ -23,10 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
             hoverScale: 1,          // 取消悬停缩放
             clickScaleDown: 0.9,    // 点击缩小比例
             animationDuration: 400,  // 点击动画总时长
-            glowColor: 'rgba(255, 255, 0, 0.8)'
+            glowColor: 'rgba(255, 255, 0, 0.8)',
+            redirectDelay: 2000     // 添加跳转延迟时间（2秒）
         },
         moveElement: {
-            rotationAngle: -10,     // 逆时针旋转30度（使用负值）
+            rotationAngle: -10,     // 逆时针旋转10度
             isRotated: false        // 跟踪旋转状态
         }
     };
@@ -72,6 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 await this.animateClick();
                 // 触发 move 元素的旋转
                 this.toggleMoveRotation();
+                
+                // 添加延迟跳转
+                setTimeout(() => {
+                    window.location.href = 'index2.html';
+                }, this.config.redirectDelay);
+                
             } finally {
                 this.isAnimating = false;
             }
