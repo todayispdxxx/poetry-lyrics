@@ -1,30 +1,59 @@
-/* styles.css */
-/* 定义 CSS 变量，方便自由调整图片大小和位置 */
-:root {
-    /* preface 相关样式 */
-    --preface-width: 410px;
-    --preface-height: auto;  /* 保持原比例 */
-    --preface-top: 90px;
-    --text-top: -650px; /* 新增文本垂直位置的变量 */
-}
+/* =======================================
+   样式重置与基本设置
+   ======================================= */
 
-/* 基础样式重置 */
-html, body {
+   html, body {
     margin: 0;
     padding: 0;
     height: 100vh;
     background-color: #e0e0e0;
-    font-family: "宋体", SimSun, serif;  /* 默认字体设为宋体 */
+    font-family: "宋体", SimSun, serif;
 }
 
-/* 主容器样式 */
+/* =======================================
+   CSS 变量定义
+   ======================================= */
+
+:root {
+    /* 图片相关变量 */
+    --preface-width: 390px;
+    --preface-height: auto;
+    --preface-top: 90px;
+    
+    /* ch1图片相关变量 */
+    --ch1-width: 700px;
+    --ch1-height: auto;
+    --ch1-top: -120px;
+    
+    /* 文本相关变量 */
+    --text-top: -650px;
+    --chapter-margin: 20px;
+    --example-width: 300px;
+
+    /* 图表相关变量 */
+    --chart1-max-width: 700px;
+    --chart1-margin-top: 20px;
+    --chart2-max-width: 700px;
+    --chart3-max-width: 700px;
+
+    /* 内容宽度变量 */
+    --title1-content-width: 855px;
+    --title2-content-width: 1133px;
+    --title3-content-width: 855px;
+    --title4-content-width: 1189px;
+}
+
+/* =======================================
+   布局与容器样式
+   ======================================= */
+
 .main-container {
     position: relative;
     width: 100%;
     height: 100vh;
     display: flex;
-    justify-content: center;  /* 水平居中 */
-    align-items: center;      /* 垂直居中 */
+    justify-content: center;
+    align-items: center;
     padding: 20px;
 }
 
@@ -33,28 +62,217 @@ html, body {
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* 防止内容溢出 */
-    text-align: center;  /* 图片与文本居中 */
+    overflow: hidden;
+    text-align: center;
 }
 
-/* preface 图片样式 */
+/* =======================================
+   图片样式
+   ======================================= */
+
 #preface {
     position: absolute;
     width: var(--preface-width);
-    height: var(--preface-height);  /* 改用height变量保持原比例 */
+    height: var(--preface-height);
     top: var(--preface-top);
-    left: 50%;  /* 设置左边距为50% */
-    transform: translateX(-50%);  /* 使用transform进行水平居中 */
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1;
 }
 
+#chapter1 {
+    position: absolute;
+    width: var(--ch1-width);
+    height: var(--ch1-height);
+    top: var(--ch1-top);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+}
 
-/* text-content样式 */
+/* =======================================
+   文本样式
+   ======================================= */
+
 .text-content {
-    font-size: 20px; font-family: Songti SC; text-align: justified; color: rgba(0, 0, 0, 1); 
-    text-align: left;  /* 文本左对齐 */
-    line-height: 1.6;     /* 设置适当的行高 */
-    padding: 20px 20px;  /* 设置左右内边距，使文本不会贴近边缘 */
-    max-width: 832px;  /* 限制文本最大宽度 */
-    margin: var(--text-top) auto 0;  /* 设置文本垂直位置，使用变量控制 */
+    font-size: 18px;
+    font-family: Songti SC;
+    text-align: left;
+    line-height: 1.8;
+    padding: 20px 20px;
+    max-width: 832px;
+    margin: var(--text-top) auto 0;
+    color: #333;
+}
+
+/* =======================================
+   章节样式
+   ======================================= */
+
+.chapter1 {
+    width: 100%;
+    margin-top: var(--chapter-margin);
+    text-align: center;
+}
+
+.ch1-image {
+    position: relative;
+    margin-bottom: var(--chapter-margin);
+}
+
+/* =======================================
+   标题内容样式
+   ======================================= */
+
+.title1-content {
+    font-size: 18px;
+    font-family: Songti SC;
+    line-height: 1.8;
+    color: #333;
+    margin-top: 330px;
+    max-width: var(--title1-content-width);
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+.title2-content {
+    font-size: 18px;
+    font-family: Songti SC;
+    line-height: 1.8;
+    color: #333;
+    max-width: var(--title2-content-width);
+    padding: 10px;
+    margin: 30px auto;
+    text-align: left;
+}
+
+.title3-content {
+    font-size: 18px;
+    font-family: Songti SC;
+    line-height: 1.8;
+    color: #333;
+    max-width: var(--title3-content-width);
+    padding: 10px;
+    margin: 30px auto;
+    text-align: left;
+}
+
+.title4-content {
+    font-size: 18px;
+    font-family: Songti SC;
+    line-height: 1.8;
+    color: #333;
+    max-width: var(--title4-content-width);
+    padding: 10px;
+    margin: 30px auto;
+    text-align: left;
+}
+
+/* =======================================
+   示例图片样式
+   ======================================= */
+
+.example-image {
+    text-align: center;
+    margin-top: 30px;
+}
+
+#example {
+    width: var(--example-width);
+    height: auto;
+    margin: 0 auto;
+}
+
+/* =======================================
+   图表样式
+   ======================================= */
+
+/* 图表1样式 */
+.chart1-container {
+    width: 100%;
+    margin-top: var(--chart1-margin-top);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart1-container p {
+    font-size: 18px;
+    font-family: Songti SC;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#chart1 {
+    width: 100%;
+    max-width: var(--chart1-max-width);
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* 图表2样式 */
+.chart2 {
+    width: 100%;
+    margin-top: var(--chart1-margin-top);
+    text-align: center;
+}
+
+.chart2-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart2-container p {
+    font-size: 18px;
+    font-family: Songti SC;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#chart2 {
+    width: 100%;
+    max-width: var(--chart2-max-width);
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* 图表3样式 */
+.chart3 {
+    width: 100%;
+    margin-top: var(--chart1-margin-top);
+    text-align: center;
+}
+
+.chart3-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart3-container p {
+    font-size: 18px;
+    font-family: Songti SC;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#chart3 {
+    width: 100%;
+    max-width: var(--chart3-max-width);
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
