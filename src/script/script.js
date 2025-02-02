@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clickScaleDown: 0.9,    // 点击缩小比例
             animationDuration: 400,  // 点击动画总时长
             glowColor: 'rgba(255, 255, 0, 0.8)',
-            redirectDelay: 2000     // 添加跳转延迟时间（2秒）
+            redirectDelay: 1000     // 添加跳转延迟时间（2秒）
         },
         moveElement: {
             rotationAngle: -10,     // 逆时针旋转10度
