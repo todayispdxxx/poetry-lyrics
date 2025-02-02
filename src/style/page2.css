@@ -5,7 +5,7 @@
     --preface-width: 410px;
     --preface-height: auto;  /* 保持原比例 */
     --preface-top: 90px;
-    --text-top: -680px; /* 新增文本垂直位置的变量 */
+    --text-top: -650px; /* 新增文本垂直位置的变量 */
 }
 
 /* 基础样式重置 */
@@ -51,7 +51,7 @@ html, body {
 
 /* text-content样式 */
 .text-content {
-    font-size: 22px; font-family: Songti SC; text-align: justified; color: rgba(0, 0, 0, 1); 
+    font-size: 20px; font-family: Songti SC; text-align: justified; color: rgba(0, 0, 0, 1); 
     text-align: left;  /* 文本左对齐 */
     line-height: 1.6;     /* 设置适当的行高 */
     padding: 20px 20px;  /* 设置左右内边距，使文本不会贴近边缘 */
