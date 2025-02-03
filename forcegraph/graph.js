@@ -104,6 +104,39 @@ function processData(rawData) {
     };
 }
 
+// 添加鼠标交互相关函数
+function handleMouseOver(event, d) {
+    // 获取 svg 中的所有连接线和节点
+    const links = d3.selectAll('.link');
+    const nodes = d3.selectAll('.node');
+    
+    // 获取与当前节点相连的节点 id
+    const linkedNodeIds = new Set();
+    links.each(function(linkData) {
+        if (linkData.source.id === d.id) {
+            linkedNodeIds.add(linkData.target.id);
+        } else if (linkData.target.id === d.id) {
+            linkedNodeIds.add(linkData.source.id);
+        }
+    });
+
+    // 调整节点透明度
+    nodes.style('opacity', nodeData => {
+        return nodeData.id === d.id || linkedNodeIds.has(nodeData.id) ? 1 : 0.1;
+    });
+
+    // 调整连接线透明度
+    links.style('opacity', linkData => {
+        return linkData.source.id === d.id || linkData.target.id === d.id ? 1 : 0.1;
+    });
+}
+
+function handleMouseOut() {
+    // 恢复所有元素的透明度
+    d3.selectAll('.link').style('opacity', 1);
+    d3.selectAll('.node').style('opacity', 1);
+}
+
 function createForceGraph(data, config) {
     // 清除已有的图表和提示框
     d3.select("#graph").selectAll("*").remove();
@@ -172,7 +205,9 @@ function createForceGraph(data, config) {
         .attr("r", d => d.radius)
         .attr("fill", d => d.group === 1 ? config.colors.singer : config.colors.poetry)
         .attr("stroke", "#fff")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 2)
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut);
 
     // 添加节点文本
    // node.append("text")
