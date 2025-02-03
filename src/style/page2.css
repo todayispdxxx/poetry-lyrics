@@ -8,12 +8,6 @@
     height: 100vh;
     background-color: #e0e0e0;
 }
-/*定义字体*/
-@font-face {
-    font-family: 'Songti SC';
-    src: url('../font/Songti SC.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
 
 /* =======================================
    CSS 变量定义
@@ -281,3 +275,10 @@
     display: block;
     margin: 0 auto;
 }
+
+/*定义字体*/
+@font-face {
+    font-family: 'Songti SC';
+    src: url('../font/Songti SC.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
