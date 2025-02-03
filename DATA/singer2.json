@@ -1,0 +1,388 @@
+[
+    {
+        "singer": "戴荃",
+        "song_count": 5,
+        "total_matchlyric": 190,
+        "avg_matchlyric": 38.0,
+        "songs": [
+            {
+                "id": "0756",
+                "song": "人嫁",
+                "matchlyric_number": 26
+            },
+            {
+                "id": "0759",
+                "song": "秋风词",
+                "matchlyric_number": 126
+            },
+            {
+                "id": "0356",
+                "song": "嫦娥",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0754",
+                "song": "醉酒癫歌-东南卫视天籁之声第二期",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0755",
+                "song": "晚歌",
+                "matchlyric_number": 28
+            }
+        ]
+    },
+    {
+        "singer": "邓丽君",
+        "song_count": 8,
+        "total_matchlyric": 679,
+        "avg_matchlyric": 84.88,
+        "songs": [
+            {
+                "id": "0005",
+                "song": "但愿人长久",
+                "matchlyric_number": 99
+            },
+            {
+                "id": "0011",
+                "song": "人面桃花",
+                "matchlyric_number": 30
+            },
+            {
+                "id": "0006",
+                "song": "思君",
+                "matchlyric_number": 159
+            },
+            {
+                "id": "0007",
+                "song": "相看泪眼",
+                "matchlyric_number": 151
+            },
+            {
+                "id": "0008",
+                "song": "欲说还休",
+                "matchlyric_number": 88
+            },
+            {
+                "id": "0010",
+                "song": "万叶千声",
+                "matchlyric_number": 55
+            },
+            {
+                "id": "0009",
+                "song": "有谁知我此时情",
+                "matchlyric_number": 82
+            },
+            {
+                "id": "0368",
+                "song": "梦向何处寻",
+                "matchlyric_number": 15
+            }
+        ]
+    },
+    {
+        "singer": "费玉清",
+        "song_count": 5,
+        "total_matchlyric": 43,
+        "avg_matchlyric": 8.6,
+        "songs": [
+            {
+                "id": "0406",
+                "song": "唱一遍一遍",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0411",
+                "song": "天上人间",
+                "matchlyric_number": 10
+            },
+            {
+                "id": "0412",
+                "song": "四季",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0410",
+                "song": "想要和你飞",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0135",
+                "song": "新鸳鸯蝴蝶梦",
+                "matchlyric_number": 18
+            }
+        ]
+    },
+    {
+        "singer": "凤凰传奇",
+        "song_count": 5,
+        "total_matchlyric": 52,
+        "avg_matchlyric": 10.4,
+        "songs": [
+            {
+                "id": "0907",
+                "song": "最炫民族风",
+                "matchlyric_number": 6
+            },
+            {
+                "id": "0226",
+                "song": "飞天",
+                "matchlyric_number": 15
+            },
+            {
+                "id": "0178",
+                "song": "我们的歌谣",
+                "matchlyric_number": 6
+            },
+            {
+                "id": "0172",
+                "song": "心驰神往",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0250",
+                "song": "中国喜事",
+                "matchlyric_number": 20
+            }
+        ]
+    },
+    {
+        "singer": "谷建芬",
+        "song_count": 5,
+        "total_matchlyric": 698,
+        "avg_matchlyric": 139.6,
+        "songs": [
+            {
+                "id": "0870",
+                "song": "春晓",
+                "matchlyric_number": 130
+            },
+            {
+                "id": "0872",
+                "song": "相思",
+                "matchlyric_number": 130
+            },
+            {
+                "id": "0869",
+                "song": "赋得古原草送别",
+                "matchlyric_number": 160
+            },
+            {
+                "id": "0868",
+                "song": "登鹳雀楼",
+                "matchlyric_number": 110
+            },
+            {
+                "id": "0871",
+                "song": "清明",
+                "matchlyric_number": 168
+            }
+        ]
+    },
+    {
+        "singer": "蒋明",
+        "song_count": 7,
+        "total_matchlyric": 112,
+        "avg_matchlyric": 16.0,
+        "songs": [
+            {
+                "id": "0742",
+                "song": "桂花巷",
+                "matchlyric_number": 51
+            },
+            {
+                "id": "0739",
+                "song": "长安",
+                "matchlyric_number": 6
+            },
+            {
+                "id": "0741",
+                "song": "游子谣 吉他童声版",
+                "matchlyric_number": 20
+            },
+            {
+                "id": "0740",
+                "song": "空山",
+                "matchlyric_number": 6
+            },
+            {
+                "id": "0743",
+                "song": "少年游",
+                "matchlyric_number": 14
+            },
+            {
+                "id": "0738",
+                "song": "本事",
+                "matchlyric_number": 10
+            },
+            {
+                "id": "0744",
+                "song": "我们",
+                "matchlyric_number": 5
+            }
+        ]
+    },
+    {
+        "singer": "洛劫, 洛天依",
+        "song_count": 1,
+        "total_matchlyric": 5,
+        "avg_matchlyric": 5.0,
+        "songs": [
+            {
+                "id": "0420",
+                "song": "落花劫",
+                "matchlyric_number": 5
+            }
+        ]
+    },
+    {
+        "singer": "洛天依Official",
+        "song_count": 4,
+        "total_matchlyric": 31,
+        "avg_matchlyric": 7.75,
+        "songs": [
+            {
+                "id": "0904",
+                "song": "权御天下",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0421",
+                "song": "权御天下",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0423",
+                "song": "青楼梦",
+                "matchlyric_number": 16
+            },
+            {
+                "id": "0417",
+                "song": "挑灯看剑",
+                "matchlyric_number": 5
+            }
+        ]
+    },
+    {
+        "singer": "洛天依Official, 言和, 乐正绫",
+        "song_count": 1,
+        "total_matchlyric": 7,
+        "avg_matchlyric": 7.0,
+        "songs": [
+            {
+                "id": "0312",
+                "song": "还不是因为你长得不好看",
+                "matchlyric_number": 7
+            }
+        ]
+    },
+    {
+        "singer": "莫文蔚",
+        "song_count": 4,
+        "total_matchlyric": 40,
+        "avg_matchlyric": 10.0,
+        "songs": [
+            {
+                "id": "0479",
+                "song": "天一半 地一半",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0121",
+                "song": "头号粉丝",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0478",
+                "song": "青山在",
+                "matchlyric_number": 10
+            },
+            {
+                "id": "0022",
+                "song": "如果你是李白",
+                "matchlyric_number": 20
+            }
+        ]
+    },
+    {
+        "singer": "清响",
+        "song_count": 7,
+        "total_matchlyric": 79,
+        "avg_matchlyric": 11.29,
+        "songs": [
+            {
+                "id": "0812",
+                "song": "长风万里",
+                "matchlyric_number": 10
+            },
+            {
+                "id": "0814",
+                "song": "看朱成碧",
+                "matchlyric_number": 10
+            },
+            {
+                "id": "0813",
+                "song": "醉卧红尘",
+                "matchlyric_number": 16
+            },
+            {
+                "id": "0815",
+                "song": "思无名",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0816",
+                "song": "我的耽美NO WAY TO SAY",
+                "matchlyric_number": 16
+            },
+            {
+                "id": "0811",
+                "song": "常言笑",
+                "matchlyric_number": 15
+            },
+            {
+                "id": "0810",
+                "song": "天为谁春",
+                "matchlyric_number": 7
+            }
+        ]
+    },
+    {
+        "singer": "王菲",
+        "song_count": 6,
+        "total_matchlyric": 673,
+        "avg_matchlyric": 112.17,
+        "songs": [
+            {
+                "id": "0437",
+                "song": "清风徐来",
+                "matchlyric_number": 40
+            },
+            {
+                "id": "0151",
+                "song": "但愿人长久",
+                "matchlyric_number": 178
+            },
+            {
+                "id": "0258",
+                "song": "清平调",
+                "matchlyric_number": 98
+            },
+            {
+                "id": "0442",
+                "song": "单行道",
+                "matchlyric_number": 20
+            },
+            {
+                "id": "0044",
+                "song": "但愿人长久",
+                "matchlyric_number": 169
+            },
+            {
+                "id": "0439",
+                "song": "但愿人长久 - Album Version",
+                "matchlyric_number": 168
+            }
+        ]
+    }
+]
