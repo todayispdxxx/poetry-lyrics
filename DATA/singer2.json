@@ -223,60 +223,6 @@
         ]
     },
     {
-        "singer": "洛劫, 洛天依",
-        "song_count": 1,
-        "total_matchlyric": 5,
-        "avg_matchlyric": 5.0,
-        "songs": [
-            {
-                "id": "0420",
-                "song": "落花劫",
-                "matchlyric_number": 5
-            }
-        ]
-    },
-    {
-        "singer": "洛天依Official",
-        "song_count": 4,
-        "total_matchlyric": 31,
-        "avg_matchlyric": 7.75,
-        "songs": [
-            {
-                "id": "0904",
-                "song": "权御天下",
-                "matchlyric_number": 5
-            },
-            {
-                "id": "0421",
-                "song": "权御天下",
-                "matchlyric_number": 5
-            },
-            {
-                "id": "0423",
-                "song": "青楼梦",
-                "matchlyric_number": 16
-            },
-            {
-                "id": "0417",
-                "song": "挑灯看剑",
-                "matchlyric_number": 5
-            }
-        ]
-    },
-    {
-        "singer": "洛天依Official, 言和, 乐正绫",
-        "song_count": 1,
-        "total_matchlyric": 7,
-        "avg_matchlyric": 7.0,
-        "songs": [
-            {
-                "id": "0312",
-                "song": "还不是因为你长得不好看",
-                "matchlyric_number": 7
-            }
-        ]
-    },
-    {
         "singer": "莫文蔚",
         "song_count": 4,
         "total_matchlyric": 40,
@@ -384,5 +330,43 @@
                 "matchlyric_number": 168
             }
         ]
+    },
+    {
+        "singer": "洛天依",
+        "song_count": 6,
+        "total_matchlyric": 43,
+        "songs": [
+            {
+                "id": "0420",
+                "song": "落花劫",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0904",
+                "song": "权御天下",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0421",
+                "song": "权御天下",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0423",
+                "song": "青楼梦",
+                "matchlyric_number": 16
+            },
+            {
+                "id": "0417",
+                "song": "挑灯看剑",
+                "matchlyric_number": 5
+            },
+            {
+                "id": "0312",
+                "song": "还不是因为你长得不好看",
+                "matchlyric_number": 7
+            }
+        ],
+        "avg_matchlyric": 7.17
     }
 ]
