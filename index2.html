@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./src/style/page2.css">
     <link rel="stylesheet" href="./process_bar_chart/style.css">
+    <link rel="stylesheet" href="./forcegraph/style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>古诗词与流行歌曲</title>
@@ -76,6 +77,10 @@
         <div class = "title5-content">
             <p>如果说古诗词是文化的载体，那么歌手就是这场文化对话的摆渡人。我们通过数据绘制了一张网络图，将歌手、古诗词和歌曲连接起来，发现了一些有趣的现象。</p>
         </div>
+       
+        <div id="graph"></div>
+        <script src="./forcegraph/config.js"></script>
+        <script src="./forcegraph/graph.js"></script>
 
         <div class = "title6-content">
             <p>我们挑几个比较多的歌手来看，他们唱的歌分别有什么特点。</p>
