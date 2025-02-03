@@ -21,11 +21,11 @@ const chartColors = [
 
 // 定义每个图表的图片路径
 const imageUrls = [
-    "image1.png",  // 第一个图表的图片
-    "image2.png",  // 第二个图表的图片
+    "/src/process_bar_chart/fhcq_barimg.png",  // 第一个图表的图片 中国喜事
+    "/src/process_bar_chart/denglijun_barimg.png",  // 第二个图表的图片 但愿人长久
     "image3.png",  // 第三个图表的图片
     "image4.png",  // 第四个图表的图片
-    "image5.png",  // 第五个图表的图片
+    "/src/process_bar_chart/yl_barimg.png",  // 第五个图表的图片 秋水
     "image6.png",  // 第六个图表的图片
     "image7.png",  // 第七个图表的图片
     "image8.png"   // 第八个图表的图片
