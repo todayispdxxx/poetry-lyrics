@@ -24,10 +24,10 @@
     --ch1-height: auto;
     --ch1-top: -120px;
 
-    /* ch2图片相关变量 */
-    --ch2-width: 650px;
+   /* ch2图片相关变量 */
+    --ch2-width: 600px;
     --ch2-height: auto;
-    --ch2-top: 200px;
+    --ch2-top: -80px;
     
     /* 文本相关变量 */
     --text-top: -650px;
@@ -40,13 +40,14 @@
     --chart2-max-width: 700px;
     --chart3-max-width: 700px;
 
-    /* 内容宽度变量 */
-    --title1-content-width: 855px;
-    --title2-content-width: 1133px;
-    --title3-content-width: 855px;
-    --title4-content-width: 1189px;
-    --title5-content-width: 855px;
-    --title6-content-width: 855px;
+ /* 内容宽度变量 */
+    --title1-content-width: 832px;
+    --title2-content-width: 832px;
+    --title3-content-width: 832px;
+    --title4-content-width: 832px;
+    --title5-content-width: 832px;
+    --title6-content-width: 832px;
+    --title5-margin-top: 250px;  /* 增加顶部间距 */
 }
 
 /* =======================================
@@ -203,8 +204,8 @@
     line-height: 1.8;
     color: #333;
     max-width: var(--title5-content-width);
-    padding: 10px;
-    margin: 30px auto;
+    padding: 50px;  
+    margin: var(--title5-margin-top) auto 100px;  /* 修改顶部间距 */
     text-align: left;
 }
 
