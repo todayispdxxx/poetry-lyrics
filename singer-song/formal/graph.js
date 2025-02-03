@@ -1,282 +1,437 @@
-// 设置画布尺寸和边距
-const margin = {top: 10, right: 30, bottom: 30, left: 40};
-const width = 800 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
-
-// 创建SVG容器
-const svg = d3.select("#my_dataviz")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// 创建tooltip div
-const tooltip = d3.select("body")
-    .append("div")
-    .attr("class", "d3-tooltip")
-    .style("opacity", 0);
-
-// 加载数据
-d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/singer_2.json", function(error, data) {
-    if (error) throw error;
-
-    // 找到邓丽君的数据
-    const teresaData = data.find(d => d.singer === "邓丽君");
-    if (!teresaData) throw new Error('未找到邓丽君的数据');
-
-    // 计算匹配度的范围
-    const maxMatchLyric = Math.max(...teresaData.songs.map(s => s.matchlyric_number || 0));
-    const minMatchLyric = Math.min(...teresaData.songs.map(s => s.matchlyric_number || 0));
-
-    // 优化连线距离比例尺，增加最小和最大距离
-    const linkDistanceScale = d3.scaleLinear()
-        .domain([minMatchLyric, maxMatchLyric])
-        .range([100, 240]);  // 缩短连线的最小和最大距离
-
-    // 使用更淡的灰色作为默认连线颜色
-    const defaultLinkColor = "#8B8386";
-
-    // 调整节点大小
-    const centerNodeSize = 45;
-    const surroundingNodeSize = 21;
-
-    // 构建节点和连接数据
-    const nodes = [
-        { 
-            id: "邓丽君", 
-            group: 1,
-            singer: teresaData.singer,
-            songCount: teresaData.song_count
+// 定义图表配置数组
+const singers = [
+    {
+        id: "singer1", 
+        name: "邓丽君",
+        width: 600,  // 自定义宽度
+        height: 500, // 自定义高度
+        position: {  // 自定义位置
+            x: 0,
+            y: 0
         }
-    ];
+    },
+    {
+        id: "singer2", 
+        name: "谷建芬",
+        width: 600,
+        height: 550,
+        position: {
+            x: 280,
+            y: 250
+        }
+    },
+    {
+        id: "singer3", 
+        name: "费玉清",
+        width: 600,
+        height: 500,
+        position: {
+            x: 850,
+            y: 790
+        }
+    },
+    {
+        id: "singer4", 
+        name: "戴荃",
+        width: 600,
+        height: 500,
+        position: {
+            x: 750,
+            y: 1150
+        }
 
-    const uniqueSongs = Array.from(new Set(teresaData.songs.map(song => song.song)));
-    uniqueSongs.forEach((songName) => {
-        const songData = teresaData.songs.find(s => s.song === songName);
-        nodes.push({ 
-            id: songName,
-            songId: songData.id,
-            group: 2,
-            matchlyric_number: songData.matchlyric_number || 0
-        });
-    });
+    },
+    {
+        id: "singer5",
+        name: "蒋明",
+        width: 600,
+        height: 500,
+        position: {
+            x: 410,
+            y: 940
+        }    
 
-    const links = teresaData.songs.map(song => ({
-        source: "邓丽君",
-        target: song.song,
-        matchlyric_number: song.matchlyric_number || 0
-    }));
+    },
+    {
+        id: "singer6",
+        name: "王菲",
+        width: 600,
+        height: 500,
+        position: {
+            x: 70,
+            y: 1600
+        }
+    },
+    {
+        id: "singer7",
+        name: "莫文蔚",
+        width: 600,
+        height: 500,
+        position: {
+            x: -90,
+            y: 1920
+        }
+    },
+    {
+        id: "singer8",
+        name: "凤凰传奇",
+        width: 600,
+        height: 500,
+        position: {
+            x: 270,
+            y: 1930
+        }
+    },
+    {
+        id: "singer9",
+        name: "洛天依",
+        width: 600,
+        height: 500,
+        position: {
+            x: 870,
+            y: 2430
+        }
+    },
+    {
+        id: "singer10",
+        name: "清响",
+        width: 600,
+        height: 500,
+        position: {
+            x: 480,
+            y: 2690
+        }
+    }
 
-    // 初始化连接线
-    const link = svg
-        .selectAll("line")
-        .data(links)
-        .enter()
-        .append("line")
-        .style("stroke", defaultLinkColor)
-        .style("stroke-width", d => 1 + (d.matchlyric_number / maxMatchLyric) * 2)
-        .style("stroke-opacity", 0.6)
-        .attr("class", "graph-link")
-        .attr("stroke-dasharray", function() {
-            const length = this.getTotalLength();
-            return `${length} ${length}`;
-        })
-        .attr("stroke-dashoffset", function() {
-            return this.getTotalLength();
-        });
+];
 
-    // 添加线条显示动画
-    link.transition()
-        .duration(1000)
-        .ease(d3.easeCubicOut) // 改为更柔和的过渡
-        .attr("stroke-dashoffset", 0);
+// 修改图表生成函数,接收尺寸参数
+function createSingerGraph(singerId, singerName, width = 800, height = 600) {
+    const margin = {top: 10, right: 30, bottom: 30, left: 40};
+    const chartWidth = width - margin.left - margin.right;
+    const chartHeight = height - margin.top - margin.bottom;
 
-    // 创建节点组
-    const nodeGroup = svg.selectAll(".node-group")
-        .data(nodes)
-        .enter()
+    const svg = d3.select(`#${singerId}`)
+        .append("svg")
+        .attr("width", chartWidth + margin.left + margin.right)
+        .attr("height", chartHeight + margin.top + margin.bottom)
         .append("g")
-        .attr("class", "node-group");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // 为每个节点创建一个额外的g元素用于缩放
-    const nodeScaleGroup = nodeGroup
-        .append("g")
-        .attr("class", "node-scale-group");
+    // 创建tooltip div
+    const tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "d3-tooltip")
+        .style("opacity", 0);
 
-    // 初始化节点
-    const node = nodeScaleGroup
-        .append("image")
-        .attr("xlink:href", d => {
-            if (d.group === 1) {
-                return "denglijun.png";
-            } else {
-                const surroundingImages = [
-                    "new-green.png",
-                    "new-red.png",
-                    "new-yellow.png"
-                ];
-                return surroundingImages[nodes.indexOf(d) % 3];
+    // 加载数据
+    d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/singer_2.json", function(error, data) {
+        if (error) throw error;
+
+        // 找到指定歌手的数据
+        const singerData = data.find(d => d.singer === singerName);
+        if (!singerData) throw new Error(`未找到${singerName}的数据`);
+
+        // 计算匹配度的范围
+        const maxMatchLyric = Math.max(...singerData.songs.map(s => s.matchlyric_number || 0));
+        const minMatchLyric = Math.min(...singerData.songs.map(s => s.matchlyric_number || 0));
+
+        // 优化连线距离比例尺，增加最小和最大距离
+        const linkDistanceScale = d3.scaleLinear()
+            .domain([minMatchLyric, maxMatchLyric])
+            .range([100, 240]);  // 缩短连线的最小和最大距离
+
+        // 使用更淡的灰色作为默认连线颜色
+        const defaultLinkColor = "#8B8386";
+
+        // 调整节点大小
+        const centerNodeSize = 45;
+        const surroundingNodeSize = 21;
+
+        // 构建节点和连接数据
+        const nodes = [
+            { 
+                id: singerName, 
+                group: 1,
+                singer: singerData.singer,
+                songCount: singerData.song_count
             }
-        })
-        .attr("width", d => d.group === 1 ? centerNodeSize * 2 : surroundingNodeSize * 2)
-        .attr("height", d => d.group === 1 ? centerNodeSize * 2 : surroundingNodeSize * 2)
-        .attr("x", d => d.group === 1 ? -centerNodeSize : -surroundingNodeSize)
-        .attr("y", d => d.group === 1 ? -centerNodeSize : -surroundingNodeSize)
-        .style("cursor", "pointer")
-        .style("filter", "none")
-        .style("stroke", "#fff")
-        .style("stroke-width", "1.5px")
-        .attr("class", "node-image");
+        ];
 
-    // 创建力导向图模拟器
-    const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink()
-            .id(d => d.id)
-            .links(links)
-            .distance(d => linkDistanceScale(d.matchlyric_number))
-            .strength(0.7))
-        .force("charge", d3.forceManyBody()
-            .strength(d => d.group === 1 ? -1200 : -600)
-            .distanceMax(500)
-            .theta(0.8))
-        .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("collision", d3.forceCollide()
-            .radius(d => (d.group === 1 ? centerNodeSize : surroundingNodeSize) + 15)
-            .strength(0.5)
-            .iterations(4)) // 提高迭代次数
-        .force("radial", d3.forceRadial(
-            d => d.group === 1 ? 0 : 250,
-            width / 2, 
-            height / 2
-        ).strength(0.3))
-        .alphaDecay(0.1)  // 减慢衰减速度
-        .alphaMin(0.01)    // 设置更小的alphaMin
-        .velocityDecay(0.20) // 降低速度衰减
-        .alpha(0.3);
+        const uniqueSongs = Array.from(new Set(singerData.songs.map(song => song.song)));
+        uniqueSongs.forEach((songName) => {
+            const songData = singerData.songs.find(s => s.song === songName);
+            nodes.push({ 
+                id: songName,
+                songId: songData.id,
+                group: 2,
+                matchlyric_number: songData.matchlyric_number || 0
+            });
+        });
 
-    // 拖拽相关函数
-    function dragstarted(d) {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
+        const links = singerData.songs.map(song => ({
+            source: singerName,
+            target: song.song,
+            matchlyric_number: song.matchlyric_number || 0
+        }));
 
-    function dragged(d) {
-        d.fx = d3.event.x;
-        d.fy = d3.event.y;
-    }
+        // 初始化连接线
+        const link = svg
+            .selectAll("line")
+            .data(links)
+            .enter()
+            .append("line")
+            .style("stroke", defaultLinkColor)
+            .style("stroke-width", d => 1 + (d.matchlyric_number / maxMatchLyric) * 2)
+            .style("stroke-opacity", 0.6)
+            .attr("class", "graph-link")
+            .attr("stroke-dasharray", function() {
+                const length = this.getTotalLength();
+                return `${length} ${length}`;
+            })
+            .attr("stroke-dashoffset", function() {
+                return this.getTotalLength();
+            });
 
-    function dragended(d) {
-        if (!d3.event.active) simulation.alphaTarget(0);
-        if (d.group !== 1) {
-            d.fx = null;
-            d.fy = null;
+        // 添加线条显示动画
+        link.transition()
+            .duration(1000)
+            .ease(d3.easeCubicOut) // 改为更柔和的过渡
+            .attr("stroke-dashoffset", 0);
+
+        // 创建节点组
+        const nodeGroup = svg.selectAll(".node-group")
+            .data(nodes)
+            .enter()
+            .append("g")
+            .attr("class", "node-group");
+
+        // 为每个节点创建一个额外的g元素用于缩放
+        const nodeScaleGroup = nodeGroup
+            .append("g")
+            .attr("class", "node-scale-group");
+
+        // 初始化节点
+        const node = nodeScaleGroup
+            .append("image")
+            .attr("xlink:href", d => {
+                if (d.group === 1) {
+                    return "denglijun.png";
+                } else {
+                    const surroundingImages = [
+                        "new-green.png",
+                        "new-red.png",
+                        "new-yellow.png"
+                    ];
+                    return surroundingImages[nodes.indexOf(d) % 3];
+                }
+            })
+            .attr("width", d => d.group === 1 ? centerNodeSize * 2 : surroundingNodeSize * 2)
+            .attr("height", d => d.group === 1 ? centerNodeSize * 2 : surroundingNodeSize * 2)
+            .attr("x", d => d.group === 1 ? -centerNodeSize : -surroundingNodeSize)
+            .attr("y", d => d.group === 1 ? -centerNodeSize : -surroundingNodeSize)
+            .style("cursor", "pointer")
+            .style("filter", "none")
+            .style("stroke", "#fff")
+            .style("stroke-width", "1.5px")
+            .attr("class", "node-image");
+
+        // 创建力导向图模拟器
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink()
+                .id(d => d.id)
+                .links(links)
+                .distance(d => linkDistanceScale(d.matchlyric_number))
+                .strength(0.7))
+            .force("charge", d3.forceManyBody()
+                .strength(d => d.group === 1 ? -1200 : -600)
+                .distanceMax(500)
+                .theta(0.8))
+            .force("center", d3.forceCenter(chartWidth / 2, chartHeight / 2))
+            .force("collision", d3.forceCollide()
+                .radius(d => (d.group === 1 ? centerNodeSize : surroundingNodeSize) + 15)
+                .strength(0.5)
+                .iterations(4)) // 提高迭代次数
+            .force("radial", d3.forceRadial(
+                d => d.group === 1 ? 0 : 250,
+                chartWidth / 2, 
+                chartHeight / 2
+            ).strength(0.3))
+            .alphaDecay(0.1)  // 减慢衰减速度
+            .alphaMin(0.01)    // 设置更小的alphaMin
+            .velocityDecay(0.20) // 降低速度衰减
+            .alpha(0.3);
+
+        // 拖拽相关函数
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
         }
-    }
 
-    // 添加拖拽功能
-    nodeGroup.call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
 
-    function ticked() {
-        nodes.forEach(d => {
+        function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
             if (d.group !== 1) {
-                d.x = Math.max(surroundingNodeSize, Math.min(width - surroundingNodeSize, d.x));
-                d.y = Math.max(surroundingNodeSize, Math.min(height - surroundingNodeSize, d.y));
+                d.fx = null;
+                d.fy = null;
             }
-        });
+        }
 
-        link
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+        // 添加拖拽功能
+        nodeGroup.call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
 
-        nodeGroup.attr("transform", d => `translate(${d.x}, ${d.y})`);
-    }
+        function ticked() {
+            nodes.forEach(d => {
+                if (d.group !== 1) {
+                    d.x = Math.max(surroundingNodeSize, Math.min(chartWidth - surroundingNodeSize, d.x));
+                    d.y = Math.max(surroundingNodeSize, Math.min(chartHeight - surroundingNodeSize, d.y));
+                }
+            });
 
-    simulation.on("tick", ticked);
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
 
-    // 固定中心节点位置
-    nodes[0].fx = width / 2;
-    nodes[0].fy = height / 2;
+            nodeGroup.attr("transform", d => `translate(${d.x}, ${d.y})`);
+        }
 
-    // 节点悬停效果
-    nodeGroup
-        .on("mouseover", function(d) {
-            const t = d3.transition()
-                .duration(100) // 适当增加过渡时间
-                .ease(d3.easeCubicOut);  // 使用更平滑的过渡效果
+        simulation.on("tick", ticked);
 
-            const currentNode = d3.select(this);
+        // 固定中心节点位置
+        nodes[0].fx = chartWidth / 2;
+        nodes[0].fy = chartHeight / 2;
 
-            // 高亮节点和连线的过渡
-            link.transition(t)
-                .style("stroke", l => (l.source.id === d.id || l.target.id === d.id) && d.group !== 1 ? "#FF6A6A" : defaultLinkColor)
-                .style("stroke-opacity", l => (l.source.id === d.id || l.target.id === d.id) && d.group !== 1 ? 1 : 0.1)
-                .style("stroke-width", l => {
-                    if (l.source.id === d.id || l.target.id === d.id) {
-                        return 2 + (l.matchlyric_number / maxMatchLyric) * 3;
-                    }
-                    return 1 + (l.matchlyric_number / maxMatchLyric) * 2;
-                });
+        // 节点悬停效果
+        nodeGroup
+            .on("mouseover", function(d) {
+                const t = d3.transition()
+                    .duration(100) // 适当增加过渡时间
+                    .ease(d3.easeCubicOut);  // 使用更平滑的过渡效果
 
-            // 高亮节点的过渡效果
-            currentNode.select("image")
-                .transition(t)
-                .style("stroke", "#ffd700")
-                .style("stroke-width", "3px")
-                .style("filter", "drop-shadow(0 4px 8px rgba(255,215,0,0.3))");
+                const currentNode = d3.select(this);
 
-            currentNode.select(".node-scale-group")
-                .transition(t)
-                .attr("transform", "scale(1.2)");
+                // 高亮节点和连线的过渡
+                link.transition(t)
+                    .style("stroke", l => (l.source.id === d.id || l.target.id === d.id) && d.group !== 1 ? "#FF6A6A" : defaultLinkColor)
+                    .style("stroke-opacity", l => (l.source.id === d.id || l.target.id === d.id) && d.group !== 1 ? 1 : 0.1)
+                    .style("stroke-width", l => {
+                        if (l.source.id === d.id || l.target.id === d.id) {
+                            return 2 + (l.matchlyric_number / maxMatchLyric) * 3;
+                        }
+                        return 1 + (l.matchlyric_number / maxMatchLyric) * 2;
+                    });
 
-            // 显示tooltip
-            tooltip.html(d.group === 1 
-                ? `<div class="tooltip-title">歌手名称：${d.singer}</div>
-                   <div class="tooltip-content">歌曲数量：${d.songCount}</div>` 
-                : `<div class="tooltip-title">《${d.id}》</div>
-                   <div class="tooltip-content">引用古诗词字数：${d.matchlyric_number}</div>`)
-                .style("left", (d3.event.pageX + 10) + "px")
-                .style("top", (d3.event.pageY - 10) + "px")
-                .transition(t)
-                .style("opacity", 1);
-        })
-        .on("mouseout", function(d) {
-            const t = d3.transition()
-                .duration(100)
-                .ease(d3.easeCubicOut);
+                // 高亮节点的过渡效果
+                currentNode.select("image")
+                    .transition(t)
+                    .style("stroke", "#ffd700")
+                    .style("stroke-width", "3px")
+                    .style("filter", "drop-shadow(0 4px 8px rgba(255,215,0,0.3))");
 
-            const currentNode = d3.select(this);
+                currentNode.select(".node-scale-group")
+                    .transition(t)
+                    .attr("transform", "scale(1.2)");
 
-            // 恢复连线的过渡效果
-            link.transition(t)
-                .style("stroke", defaultLinkColor)
-                .style("stroke-opacity", 0.6)
-                .style("stroke-width", d => 1 + (d.matchlyric_number / maxMatchLyric) * 1.4);
+                // 显示tooltip
+                tooltip.html(d.group === 1 
+                    ? `<div class="tooltip-title">歌手名称：${d.singer}</div>
+                       <div class="tooltip-content">歌曲数量：${d.songCount}</div>` 
+                    : `<div class="tooltip-title">《${d.id}》</div>
+                       <div class="tooltip-content">引用古诗词字数：${d.matchlyric_number}</div>`)
+                    .style("left", (d3.event.pageX + 10) + "px")
+                    .style("top", (d3.event.pageY - 10) + "px")
+                    .transition(t)
+                    .style("opacity", 1);
+            })
+            .on("mouseout", function(d) {
+                const t = d3.transition()
+                    .duration(100)
+                    .ease(d3.easeCubicOut);
 
-            // 恢复节点的过渡效果
-            currentNode.select("image")
-                .transition(t)
-                .style("stroke", "#fff")
-                .style("stroke-width", "1.5px")
-                .style("filter", "none");
+                const currentNode = d3.select(this);
 
-            currentNode.select(".node-scale-group")
-                .transition(t)
-                .attr("transform", "scale(1)");
+                // 恢复连线的过渡效果
+                link.transition(t)
+                    .style("stroke", defaultLinkColor)
+                    .style("stroke-opacity", 0.6)
+                    .style("stroke-width", d => 1 + (d.matchlyric_number / maxMatchLyric) * 1.4);
 
-            // 隐藏tooltip
-            tooltip.transition(t)
-                .style("opacity", 0);
-        })
-        .on("mousemove", function(d) {
-            tooltip
-                .style("left", (d3.event.pageX + 10) + "px")
-                .style("top", (d3.event.pageY - 10) + "px");
-        });
+                // 恢复节点的过渡效果
+                currentNode.select("image")
+                    .transition(t)
+                    .style("stroke", "#fff")
+                    .style("stroke-width", "1.5px")
+                    .style("filter", "none");
+
+                currentNode.select(".node-scale-group")
+                    .transition(t)
+                    .attr("transform", "scale(1)");
+
+                // 隐藏tooltip
+                tooltip.transition(t)
+                    .style("opacity", 0);
+            })
+            .on("mousemove", function(d) {
+                tooltip
+                    .style("left", (d3.event.pageX + 10) + "px")
+                    .style("top", (d3.event.pageY - 10) + "px");
+            });
+    });
+}
+
+// 添加布局样式
+const layoutStyles = `
+.graph-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#my_dataviz {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+}
+
+.singer-graph {
+    position: absolute;
+    padding: 15px;
+    overflow: hidden;
+}
+`;
+
+// 添加样式到页面
+const styleSheet = document.createElement("style");
+styleSheet.textContent = layoutStyles;
+document.head.appendChild(styleSheet);
+
+// 创建容器
+document.getElementById("my_dataviz").className = "graph-container";
+document.getElementById("my_dataviz").innerHTML = singers.map(singer => `
+   <div id="${singer.id}" class="singer-graph" style="
+        width: ${singer.width}px;
+        height: ${singer.height}px;
+        left: ${singer.position.x}px;
+        top: ${singer.position.y}px;
+    ">
+    </div>
+`).join('');
+
+// 创建图表
+singers.forEach(singer => {
+    createSingerGraph(singer.id, singer.name, singer.width, singer.height);
 });
