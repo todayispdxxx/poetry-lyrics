@@ -7,7 +7,7 @@ const decorationRadius = 3.5;
 const decorationPadding = 10;   
 
 // 创建SVG容器
-const svg = d3.select("#chart")
+const svg = d3.select("#chart0")
   .append("svg")
     .attr("width", width)
     .attr("height", height)
