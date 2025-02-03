@@ -23,6 +23,11 @@
     --ch1-width: 700px;
     --ch1-height: auto;
     --ch1-top: -120px;
+
+    /* ch2图片相关变量 */
+    --ch2-width: 700px;
+    --ch2-height: auto;
+    --ch2-top: 200px;
     
     /* 文本相关变量 */
     --text-top: -650px;
@@ -40,6 +45,8 @@
     --title2-content-width: 1133px;
     --title3-content-width: 855px;
     --title4-content-width: 1189px;
+    --title5-content-width: 855px;
+    --title6-content-width: 855px;
 }
 
 /* =======================================
@@ -89,6 +96,16 @@
     z-index: 4;
 }
 
+#chapter2 {
+    position: absolute;
+    width: var(--ch2-width);
+    height: var(--ch2-height);
+    top: var(--ch2-top);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+}
+
 /* =======================================
    文本样式
    ======================================= */
@@ -115,6 +132,17 @@
 }
 
 .ch1-image {
+    position: relative;
+    margin-bottom: var(--chapter-margin);
+}
+
+.chapter2{
+    width: 100%;
+    margin-top: var(--chapter-margin);
+    text-align: center;
+}
+
+.ch2-image {
     position: relative;
     margin-bottom: var(--chapter-margin);
 }
@@ -164,6 +192,28 @@
     line-height: 1.8;
     color: #333;
     max-width: var(--title4-content-width);
+    padding: 10px;
+    margin: 30px auto;
+    text-align: left;
+}
+
+.title5-content {
+    font-size: 18px;
+    font-family: Songti-SC;
+    line-height: 1.8;
+    color: #333;
+    max-width: var(--title5-content-width);
+    padding: 10px;
+    margin: 30px auto;
+    text-align: left;
+}
+
+.title6-content {
+    font-size: 18px;
+    font-family: Songti-SC;
+    line-height: 1.8;
+    color: #333;
+    max-width: var(--title6-content-width);
     padding: 10px;
     margin: 30px auto;
     text-align: left;
