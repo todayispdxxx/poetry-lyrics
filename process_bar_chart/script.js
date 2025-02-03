@@ -126,7 +126,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       .attr("y", height/2 - margin.top - 35)
       .attr("width", 70)
       .attr("height", 70)
-      .attr("xlink:href", "/src/image/denglijun_barimg.png")
+      .attr("xlink:href", "src/image/denglijun_barimg.png")
       .style("border", "2px solid black")
       .style("border-radius", "50%");
 
