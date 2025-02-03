@@ -147,8 +147,10 @@ function createForceGraph(data, config) {
         .attr("width", config.width)
         .attr("height", config.height)
         .style("position", "fixed")  // 固定位置
-        .style("top", 0)
-        .style("left", 0);
+        .style("top",120)
+        .style("left", 300);
+
+
 
     // 创建提示框
     const tooltip = d3.select("body")
@@ -168,8 +170,8 @@ function createForceGraph(data, config) {
 
     svg.call(zoom)
        .call(zoom.transform, d3.zoomIdentity
-            .translate(config.width / 2, config.height / 2)
-            .scale(0.5));
+            .translate(350, 270)
+            .scale(0.15));
 
     // 创建力导向模拟
     const simulation = d3.forceSimulation(data.nodes)
