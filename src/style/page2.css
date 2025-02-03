@@ -125,7 +125,7 @@
 
 .title1-content {
     font-size: 18px;
-    font-family: Songti SC;
+    font-family: Songti-SC;
     line-height: 1.8;
     color: #333;
     margin-top: 330px;
@@ -138,7 +138,7 @@
 
 .title2-content {
     font-size: 18px;
-    font-family: Songti SC;
+    font-family: Songti-SC;
     line-height: 1.8;
     color: #333;
     max-width: var(--title2-content-width);
@@ -149,7 +149,7 @@
 
 .title3-content {
     font-size: 18px;
-    font-family: Songti SC;
+    font-family: Songti-SC;
     line-height: 1.8;
     color: #333;
     max-width: var(--title3-content-width);
@@ -160,7 +160,7 @@
 
 .title4-content {
     font-size: 18px;
-    font-family: Songti SC;
+    font-family: Songti-SC;
     line-height: 1.8;
     color: #333;
     max-width: var(--title4-content-width);
@@ -261,7 +261,7 @@
 
 .chart3-container p {
     font-size: 18px;
-    font-family: Songti SC;
+    font-family: Songti-SC;
     line-height: 1.8;
     color: #333;
     margin-bottom: 10px;
@@ -278,7 +278,7 @@
 
 /*定义字体*/
 @font-face {
-    font-family: 'Songti SC';
+    font-family: 'Songti-SC';
     src: url('../font/方正清刻本悦宋简体.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
