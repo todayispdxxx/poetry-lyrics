@@ -363,7 +363,7 @@ function createForceGraph(data, config) {
 // 加载数据并初始化图表
 async function initializeGraph() {
     try {
-        const response = await d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/new_output_with_ids.json");
+        const response = await d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/merged-new-data.json");
         const graphData = processData(response);
         createForceGraph(graphData, CONFIG);
     } catch (error) {
