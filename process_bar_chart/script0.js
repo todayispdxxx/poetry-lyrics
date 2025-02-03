@@ -225,7 +225,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       .attr("height", 10)
       .attr("rx", 4)
       .attr("ry", 4)
-      .attr("fill", "#1CCEAC")
+      .attr("fill", "#FFD363")
       .style("stroke", "#666666")
       .style("stroke-width", "1px")
       .style("opacity", 0.7)
