@@ -279,6 +279,8 @@
 /*定义字体*/
 @font-face {
     font-family: 'Songti SC';
-    src: url('../font/Songti SC.ttf') format('truetype');
+    src: url('../font/方正清刻本悦宋简体.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+}
+
