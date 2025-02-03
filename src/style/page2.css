@@ -50,6 +50,10 @@
     --title5-margin-top: 250px;  /* 增加顶部间距 */
 }
 
+ --box-shadow-color: rgba(0, 0, 0, 0.1);
+    --border-radius: 10px;
+    --container-padding: 10px;
+
 /* =======================================
    布局与容器样式
    ======================================= */
@@ -325,6 +329,20 @@
     height: auto;
     display: block;
     margin: 0 auto;
+}
+
+.chart4-container {
+    width: 60%;
+    height: var(--chart4-container-height);
+    max-width: var(--chart4-max-width);
+    margin: var(--chart4-margin-top) auto 30px;
+    padding: var(--container-padding);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px var(--box-shadow-color);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /*定义字体*/
