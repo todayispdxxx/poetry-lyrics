@@ -30,7 +30,7 @@ function processContent(content) {
 }
 
 // 从GitHub加载数据
-d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/newdata_with_poem_content.json")
+d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/matches.json")
   .then(data => {
     console.log("数据加载成功:", data);
 
@@ -169,10 +169,35 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       .style("border", "1px solid #ddd")
       .style("border-radius", "4px")
       .style("padding", "8px")
-      .style("pointer-events", "auto"); // 允许鼠标事件
+      .style("font-size", "12px")
+      .style("pointer-events", "auto")  // 允许鼠标事件
+      .style("max-width", "400px")  // 限制最大宽度
+      .style("word-wrap", "break-word")  // 文本自动换行
+      .style("overflow-y", "auto")  // 添加垂直滚动
+      .style("max-height", "300px");  // 限制最大高度
 
     // 添加tooltip显示延迟
     let tooltipTimeout;
+
+    // 添加tooltip显示状态变量
+    let isTooltipFixed = false;
+    let fixedPosition = { x: 0, y: 0 };
+
+    // 添加tooltip鼠标事件
+    tooltip
+      .on("mouseenter", function() {
+          isTooltipFixed = true;
+          fixedPosition = {
+              x: parseFloat(tooltip.style("left")),
+              y: parseFloat(tooltip.style("top"))
+          };
+      })
+      .on("mouseleave", function() {
+          isTooltipFixed = false;
+          tooltip.transition()
+              .duration(200)
+              .style("opacity", 0);
+      });
 
     // 创建古诗词位置的圆角矩形
     let prevEnd = -Infinity;
@@ -323,9 +348,6 @@ tooltip
               .on("end", () => tooltip.style("display", "none"));
       }, 100);
   });
-
-let isTooltipFixed = false;
-let fixedPosition = {x: 0, y: 0};
 
 // 鼠标移动时更新 tooltip 位置
 svg.selectAll(".poem-segment")
