@@ -19,6 +19,18 @@ const chartColors = [
     "#FFD363"   // 第八个图表的颜色
 ];
 
+// 定义每个图表的图片路径
+const imageUrls = [
+    "image1.png",  // 第一个图表的图片
+    "image2.png",  // 第二个图表的图片
+    "image3.png",  // 第三个图表的图片
+    "image4.png",  // 第四个图表的图片
+    "image5.png",  // 第五个图表的图片
+    "image6.png",  // 第六个图表的图片
+    "image7.png",  // 第七个图表的图片
+    "image8.png"   // 第八个图表的图片
+];
+
 // 创建主SVG容器
 const mainSvg = d3.select("#chart")
     .append("svg")
@@ -193,7 +205,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .attr("y", height/2 - margin.top - 35)
           .attr("width", 70)
           .attr("height", 70)
-          .attr("xlink:href", "image.png")
+          .attr("xlink:href", imageUrls[index])  // 使用对应索引的图片
           .style("border", "2px solid black")
           .style("border-radius", "50%");
 
