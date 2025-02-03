@@ -9,11 +9,11 @@
     background-color: #e0e0e0;
 }
 /*定义字体*/
-@font-face
-{
-    font-family: 'Songti SC';  /* 这里设置你想要的字体名称 */
-    src: url("./src/font/Songti SC.ttf") format('truetype');  /* 这里填写字体文件的相对路径 */
-}
+@font-face {
+    font-family: 'Songti SC';
+    src: url('../font/Songti SC.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 
 /* =======================================
    CSS 变量定义
