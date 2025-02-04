@@ -352,6 +352,11 @@
     width: 100vw;
     height: 100vh;
 }
+#graph {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
 
 /*定义字体*/
 @font-face {
