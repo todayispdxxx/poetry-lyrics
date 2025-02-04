@@ -39,8 +39,6 @@
     --chart1-margin-top: 20px;
     --chart2-max-width: 700px;
     --chart3-max-width: 700px;
-    --chart4-container-height: 600px;
-    --chart4-margin-top: -100px;
 
  /* 内容宽度变量 */
     --title1-content-width: 832px;
@@ -50,11 +48,13 @@
     --title5-content-width: 832px;
     --title6-content-width: 832px;
     --title5-margin-top: 250px;  /* 增加顶部间距 */
-}
 
- --box-shadow-color: rgba(0, 0, 0, 0.1);
+    --box-shadow-color: rgba(0, 0, 0, 0.1);
     --border-radius: 10px;
     --container-padding: 10px;
+}
+
+
 
 /* =======================================
    布局与容器样式
@@ -154,6 +154,28 @@
     margin-bottom: var(--chapter-margin);
 }
 
+.chapter3 {
+    width: 100%;
+    padding: var(--container-padding);
+    margin: 120px 0 20px;  /* 增加顶部边距 */
+}
+
+/* 第三章标题图片容器 */
+.ch3-image {
+    width: 100%;
+    margin-bottom: 50px;  /* 增加底部边距 */
+    text-align: center;
+}
+
+.ch3-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+}
+
+
+/* 图表区域 */
+
 /* =======================================
    标题内容样式
    ======================================= */
@@ -222,8 +244,56 @@
     color: #333;
     max-width: var(--title6-content-width);
     padding: 10px;
-    margin: 30px auto;
+    margin: -150px auto 0;
+    text-align: middle;
+}
+
+/* title7 相关样式 */
+.title7-content {
+    font-size: 18px;
+    font-family: Songti-SC;
     text-align: left;
+    line-height: 1.8;
+    padding: 20px 20px;
+    max-width: 832px;
+    margin: 50px auto 40px;  /* 增加顶部间距 */
+    color: #333;
+}
+
+.title7-content p {
+    margin: 0;
+}
+
+/* title8 相关样式 */
+.title8-content {
+    font-size: 18px;
+    font-family: Songti-SC;
+    text-align: left;
+    line-height: 1.8;
+    padding: 20px 20px;
+    max-width: 832px;
+    margin: 100px auto 40px;  /* 增加顶部间距 */
+    color: #333;
+}
+
+.title8-content p {
+    margin: 0;
+}
+
+/* title9 相关样式 */
+.title9-content {
+    font-size: 18px;
+    font-family: Songti-SC;
+    text-align: left;
+    line-height: 1.8;
+    padding: 20px 20px;
+    max-width: 832px;
+    margin: 100px auto 0;  /* 增加顶部间距 */
+    color: #333;
+}
+
+.title9-content p {
+    margin: 0;
 }
 
 /* =======================================
@@ -333,19 +403,6 @@
     margin: 0 auto;
 }
 
-.chart4-container {
-    width: 60%;
-    height: var(--chart4-container-height);
-    max-width: var(--chart4-max-width);
-    margin: var(--chart4-margin-top) auto 30px;
-    padding: var(--container-padding);
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 8px var(--box-shadow-color);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 
 #my_dataviz {
     position: relative;
@@ -356,6 +413,7 @@
     position: relative;
     width: 100vw;
     height: 100vh;
+    margin-top: -100px; /* 添加负边距使其向上移动 */
 }
 
 /*定义字体*/
@@ -365,4 +423,3 @@
     font-weight: bold;
     font-style: normal;
 }
-
