@@ -347,6 +347,12 @@
     align-items: center;
 }
 
+#my_dataviz {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
 /*定义字体*/
 @font-face {
     font-family: 'Songti-SC';
