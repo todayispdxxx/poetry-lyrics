@@ -6,7 +6,7 @@ const singers = [
         width: 500,  // 自定义宽度
         height: 500, // 自定义高度
         position: {  // 自定义位置
-            x: 50,
+            x: 100,
             y: 0
         }
     },
@@ -16,7 +16,7 @@ const singers = [
         width: 500,
         height: 500,
         position: {
-            x: 240,
+            x: 290,
             y: 380
         }
     },
@@ -26,7 +26,7 @@ const singers = [
         width: 500,
         height: 500,
         position: {
-            x: 850,
+            x: 880,
             y: 800
         }
     },
@@ -36,7 +36,7 @@ const singers = [
         width: 500,
         height: 500,
         position: {
-            x: 800,
+            x: 830,
             y: 1200
         }
 
@@ -47,7 +47,7 @@ const singers = [
         width: 500,
         height: 500,
         position: {
-            x: 450,
+            x: 480,
             y: 940
         }
 
@@ -58,7 +58,7 @@ const singers = [
         width: 500,
         height: 500,
         position: {
-            x: 40,
+            x: 60,
             y: 1620
         }
     },
@@ -68,7 +68,7 @@ const singers = [
         width: 500,
         height: 500,
         position: {
-            x: -50,
+            x: 20,
             y: 1970
         }
     },
@@ -78,27 +78,27 @@ const singers = [
         width: 500,
         height: 500,
         position: {
-            x: 350,
-            y: 2000
+            x: 420,
+            y: 1800
         }
     },
     {
         id: "singer9",
         name: "洛天依",
-        width: 600,
+        width: 500,
         height: 500,
         position: {
-            x: 870,
+            x: 820,
             y: 2430
         }
     },
     {
         id: "singer10",
         name: "清响",
-        width: 600,
+        width: 500,
         height: 500,
         position: {
-            x: 480,
+            x: 430,
             y: 2690
         }
     }
