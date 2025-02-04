@@ -137,7 +137,19 @@ function handleMouseOut() {
     d3.selectAll('.node').style('opacity', 1);
 }
 
+
+// 修改createForceGraph函数中的容器创建部分
 function createForceGraph(data, config) {
+    const container = d3.select('#graph-container')
+        .style('position', 'absolute')
+        .style('left', `${config.container.position.left}px`)
+        .style('top', `${config.container.position.top}px`)
+        .style('width', `${config.container.width}px`)
+        .style('height', `${config.container.height}px`)
+        .style('background', 'rgba(255, 255, 255, 0.9)')
+        .style('border-radius', '8px')
+        .style('box-shadow', '0 2px 10px rgba(0,0,0,0.1)');
+
     // 清除已有的图表和提示框
     d3.select("#graph").selectAll("*").remove();
 
@@ -146,11 +158,11 @@ function createForceGraph(data, config) {
         .append("svg")
         .attr("width", config.width)
         .attr("height", config.height)
-        .style("position", "fixed")  // 固定位置
-        .style("top",120)
-        .style("left", 300);
-
-
+        .style("position", "absolute")  // 改为absolute定位
+        .style("top", `${config.svg.position.top}px`)  // 使用配置的位置
+        .style("left", `${config.svg.position.left}px`)
+        .style("background-color", "#e3e3e3")  // 设置灰色背景
+        .style("border-radius", "8px");  // 添加圆角
 
     // 创建提示框
     const tooltip = d3.select("body")

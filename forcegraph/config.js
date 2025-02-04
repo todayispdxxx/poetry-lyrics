@@ -3,6 +3,26 @@ const CONFIG = {
     width: 800,
     height: 600,
     
+    container: {
+        width: 1500,      // 容器宽度
+        height: 3500,     // 容器高度
+        position: {       // 添加缺失的position配置
+            left: 50,
+            top: 50
+        },
+        padding: 20
+    },
+    
+    // 添加容器配置
+    svg: {
+        width: 1500,      // 主容器宽度
+        height: 3500,     // 主容器高度
+        position: {
+            left: 300,     // 主容器左边距
+            top: 2000       // 主容器上边距
+        },
+    },
+    
     colors: {
         singer: '#ff6b6b',
         poetry: '#4ecdc4',
