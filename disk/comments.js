@@ -1,6 +1,6 @@
 // 修改基础配置
 const baseConfig = {
-    imageSize: 450,
+    imageSize: 500,
     center: { 
         x: 400,  // 中心点位置调整为新宽度一半
         y: 300,  // 中心点位置调整
@@ -13,8 +13,8 @@ const baseConfig = {
     },
     text: {
         baseFontSize: 12,
-        layerSpacing: 20,
-        minRadius: 220,
+        layerSpacing: 18,
+        minRadius: 230,
         arcAngle: 300,
         charSpacing: 14,
         globalRotation: 0,
@@ -28,37 +28,37 @@ const baseConfig = {
 const visualizations = [
     {
         id: 'viz1',
-        image: 'disk-dlj.png',
+        image: 'src/image/disk-dlj.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment1.json',
-        position: { x: -150, y: 100 }
+        position: { x: -150, y: 200 }
     },
     {
         id: 'viz2',
-        image: 'disk-dlj.png',
+        image: 'src/image/disk-dlj.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment2.json',
-        position: { x: 450, y: 300 },
+        position: { x: 450, y: 400 },
         textDirection: 'counter-clockwise',
         startAngle: -Math.PI/2 + 0.4  // 修改起始角度
     },
     {
         id: 'viz3',
-        image: 'disk-dlj.png',
+        image: 'src/image/disk-dlj.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment3.json',
-        position: { x: -150, y: 650 }
+        position: { x: -150, y: 750 }
     },
     {
         id: 'viz4',
-        image: 'disk-dlj.png',
+        image: 'src/image/disk-dlj.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment4.json',
-        position: { x: 450, y: 850 },
+        position: { x: 450, y: 950 },
         textDirection: 'counter-clockwise',
         startAngle: -Math.PI/2 + 0.4  // 修改起始角度
     },
     {
         id: 'viz5',
-        image: 'disk-dlj.png',
+        image: 'src/image/disk-dlj.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment5.json',
-        position: { x: -150, y: 1200 }
+        position: { x: -150, y: 1300 }
     }
 ];
 
@@ -66,11 +66,12 @@ const visualizations = [
 const container = d3.select("#visualization")
     .style("position", "relative")
     .style("width", "100vw")  // 使用视口宽度
-    .style("height", "3200px")     // 增加容器高度
+    .style("height", "3500px")     // 增加容器高度
     .style("overflow-x", "hidden")  // 禁用水平滚动
-    .style("overflow-y", "auto");  // 启用垂直滚动
+    .style("overflow-y", "auto")  // 启用垂直滚动
+    .style("margin",0);
 
-// 创建单个可视化的类
+// 创建单个可视化的类9
 class CircularTextVisualization {
     constructor(container, config, vizConfig) {
         this.container = container;
@@ -80,7 +81,7 @@ class CircularTextVisualization {
     }
 
     init() {
-        // 创建带有定位的容器div，添加顶部padding
+        // 创建带有定位的容器div
         this.vizContainer = this.container.append("div")
             .attr("id", this.vizConfig.id)
             .style("position", "absolute")
@@ -88,7 +89,6 @@ class CircularTextVisualization {
             .style("top", `${this.vizConfig.position.y}px`)
             .style("width", `${this.config.width}px`)
             .style("height", `${this.config.height}px`)
-            .style("padding-top", "50px")  // 添加顶部内边距
             .style("overflow", "visible");
 
         // 创建SVG，调整viewBox确保完整显示
