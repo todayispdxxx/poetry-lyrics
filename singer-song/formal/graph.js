@@ -3,9 +3,10 @@ const singers = [
     {
         id: "singer1",
         name: "邓丽君",
-        width: 500,  // 自定义宽度
-        height: 500, // 自定义高度
-        position: {  // 自定义位置
+        width: 450,
+        height: 450,
+        image: "./src/image/denglijun.png",
+        position: {
             x: 100,
             y: 0
         }
@@ -13,8 +14,9 @@ const singers = [
     {
         id: "singer2",
         name: "谷建芬",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/gujianfen.png",
         position: {
             x: 290,
             y: 380
@@ -23,8 +25,9 @@ const singers = [
     {
         id: "singer3",
         name: "费玉清",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/feiyuqing.png",
         position: {
             x: 880,
             y: 800
@@ -33,30 +36,31 @@ const singers = [
     {
         id: "singer4",
         name: "戴荃",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/daiquan.png",
         position: {
             x: 830,
             y: 1200
         }
-
     },
     {
         id: "singer5",
         name: "蒋明",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/jiangming.png",
         position: {
             x: 480,
             y: 940
         }
-
     },
     {
         id: "singer6",
         name: "王菲",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/wangfei.png",
         position: {
             x: 60,
             y: 1620
@@ -65,8 +69,9 @@ const singers = [
     {
         id: "singer7",
         name: "莫文蔚",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/mowenwei.png",
         position: {
             x: 20,
             y: 1970
@@ -75,8 +80,9 @@ const singers = [
     {
         id: "singer8",
         name: "凤凰传奇",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/fenghuangchuanqi.png",
         position: {
             x: 420,
             y: 1800
@@ -85,8 +91,9 @@ const singers = [
     {
         id: "singer9",
         name: "洛天依",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/luotianyi.png",
         position: {
             x: 820,
             y: 2430
@@ -95,19 +102,19 @@ const singers = [
     {
         id: "singer10",
         name: "清响",
-        width: 500,
-        height: 500,
+        width: 450,
+        height: 450,
+        image: "./src/image/qingxiang.png",
         position: {
             x: 430,
             y: 2690
         }
     }
-
 ];
 
 
 // 修改图表生成函数,接收尺寸参数
-function createSingerGraph(singerId, singerName, width = 800, height = 600, position) {
+function createSingerGraph(singerId, singerName, width = 800, height = 600, position, centerImage) {
     const margin = { top: 10, right: 30, bottom: 30, left: 40 };
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
@@ -159,8 +166,8 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
                 .range([60, 150]);
 
             const defaultLinkColor = "#8B8386";
-            const centerNodeSize = 35;
-            const surroundingNodeSize = 20;
+            const centerNodeSize = 38;
+            const surroundingNodeSize = 22;
 
             const nodes = [
                 {
@@ -211,7 +218,7 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
                 .append("image")
                 .attr("xlink:href", d => {
                     if (d.group === 1) {
-                        return "./src/image/denglijun.png";
+                        return centerImage;  // 使用传入的中心节点图片
                     } else {
                         const surroundingImages = [
                             "./src/image/new-green.png",
@@ -377,23 +384,22 @@ const styleSheet = document.createElement("style");
 styleSheet.textContent = layoutStyles;
 document.head.appendChild(styleSheet);
 
-// 修改图表初始化代码
+// 初始化所有图表
 window.onload = function() {
-    // 确保my_dataviz容器存在
     const container = d3.select("#my_dataviz")
         .style("width", "100vw")
         .style("height", "3500px")
         .style("position", "relative");
 
-    // 初始化所有歌手图表
-    singers.forEach(config => {
+    // 使用singers配置初始化图表
+    singers.forEach(singer => {
         createSingerGraph(
-            config.id,
-            config.name,
-            config.width || 800,
-            config.height || 600,
-            config.position
+            singer.id,
+            singer.name,
+            singer.width,
+            singer.height,
+            singer.position,
+            singer.image  // 传入图片路径
         );
     });
 };
-
