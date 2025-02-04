@@ -130,7 +130,20 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
     const tooltip = d3.select("body")
         .append("div")
         .attr("class", "d3-tooltip")
-        .style("opacity", 0);
+        .style("opacity", 0)
+        .style("position", "absolute")
+        .style("text-align", "center")
+        .style("padding", "12px 15px")  // 增加内边距
+        .style("font-family", "Arial")
+        .style("font-size", "14px")     // 增加基础字体
+        .style("background", "rgba(255, 255, 255, 0.95)")
+        .style("border", "1px solid #ddd")
+        .style("border-radius", "6px")
+        .style("pointer-events", "none")
+        .style("box-shadow", "0 3px 8px rgba(0,0,0,0.12)")
+        .style("max-width", "280px")    // 增加最大宽度
+        .style("color", "#333")
+        .style("line-height", "1.5");
 
     fetch("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/singer2.json")
         .then(response => response.json())
@@ -269,34 +282,93 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
 
             nodeGroup
                 .on("mouseover", (event, d) => {
-                    link
-                        .style("stroke", l => (l.source.id === d.id || l.target.id === d.id) ? "#FF6A6A" : defaultLinkColor)
-                        .style("stroke-opacity", l => (l.source.id === d.id || l.target.id === d.id) ? 1 : 0.1);
-
-                    tooltip.html(d.group === 1
-                        ? `<div class="tooltip-title">歌手名称：${d.singer}</div><div class="tooltip-content">歌曲数量：${d.songCount}</div>`
-                        : `<div class="tooltip-title">《${d.id}》</div><div class="tooltip-content">引用古诗词字数：${d.matchlyric_number}</div>`)
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY - 10) + "px")
+                    if (d.group === 1) {
+                        // 中心节点交互
+                        d3.select(event.currentTarget)
+                            .select("image")
+                            .transition()
+                            .duration(300)
+                            .attr("transform", "scale(1.1)")
+                            .style("filter", "drop-shadow(0 0 8px rgba(255, 217, 102, 0.8))");  // 添加发光效果
+                            
+                        tooltip.html(`
+                            <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 8px; text-align: left;">
+                                ${d.singer}
+                            </div>
+                            <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
+                            <div style="font-size: 13px; color: #666; text-align: left;">
+                                歌曲数量: ${d.songCount}
+                            </div>
+                        `)
+                        .style("left", (event.pageX + 15) + "px")
+                        .style("top", (event.pageY - 35) + "px")
+                        .transition()
+                        .duration(200)
                         .style("opacity", 1);
+                    } else {
+                        // 周边节点交互
+                        link
+                            .style("stroke", l => 
+                                (l.source === d || l.target === d) ? "#FF0000" : defaultLinkColor)
+                            .style("stroke-opacity", l => 
+                                (l.source === d || l.target === d) ? 1 : 0.6);
+                                
+                        d3.select(event.currentTarget)
+                            .select("image")
+                            .transition()
+                            .duration(300)
+                            .attr("transform", "scale(1.1)")
+                            .style("filter", "drop-shadow(0 0 8px rgba(255, 217, 102, 0.8))");
+                            
+                        tooltip.html(`
+                            <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 8px">
+                                ${d.id}
+                            </div>
+                            <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
+                            <div style="font-size: 13px; color: #666">
+                                古诗词引用: ${d.matchlyric_number}
+                            </div>
+                        `)
+                        .style("left", (event.pageX + 15) + "px")
+                        .style("top", (event.pageY - 35) + "px")
+                        .transition()
+                        .duration(200)
+                        .style("opacity", 1);
+                    }
                 })
-                .on("mouseout", () => {
+                .on("mouseout", (event, d) => {
+                    d3.select(event.currentTarget)
+                        .select("image")
+                        .transition()
+                        .duration(300)
+                        .attr("transform", "scale(1)")
+                        .style("filter", "none");  // 移除发光效果
+                        
                     link
                         .style("stroke", defaultLinkColor)
                         .style("stroke-opacity", 0.6);
-
-                    tooltip.style("opacity", 0);
+                        
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
         });
 }
 
-// 添加布局样式
+// 修改hover事件和样式
 const layoutStyles = `
-
 .singer-graph {
     position: absolute;
     padding: 15px;
     overflow: hidden;
+}
+
+.node-image {
+    transition: transform 0.3s ease;
+}
+
+.node-image:hover {
+    transform: scale(1.1);
 }
 `;
 
@@ -324,3 +396,4 @@ window.onload = function() {
         );
     });
 };
+
