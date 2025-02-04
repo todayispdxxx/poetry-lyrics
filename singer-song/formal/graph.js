@@ -26,7 +26,7 @@ const singers = [
         width: 600,
         height: 500,
         position: {
-            x: 850,
+            x: 800,
             y: 790
         }
     },
@@ -36,8 +36,8 @@ const singers = [
         width: 600,
         height: 500,
         position: {
-            x: 750,
-            y: 1150
+            x: 700,
+            y: 1200
         }
 
     },
@@ -58,8 +58,8 @@ const singers = [
         width: 600,
         height: 500,
         position: {
-            x: 70,
-            y: 1600
+            x: 40,
+            y: 1650
         }
     },
     {
@@ -69,7 +69,7 @@ const singers = [
         height: 500,
         position: {
             x: -90,
-            y: 1920
+            y: 1970
         }
     },
     {
@@ -105,18 +105,57 @@ const singers = [
 
 ];
 
+// 配置容器参数
+const containerConfig = {
+    left: 50,    // 容器左边距
+    top: 50,     // 容器上边距
+    padding: 20  // 容器内边距
+};
+
+// 配置主容器参数
+const mainContainerConfig = {
+    width: 1500,      // 主容器宽度
+    height: 3500,     // 主容器高度
+    left: 50,         // 主容器左边距
+    top: 5000,          // 主容器上边距
+    padding: 20       // 主容器内边距
+};
+
+// 创建主容器函数
+function createMainContainer() {
+    return d3.select("body")
+        .append("div")
+        .attr("class", "main-container")
+        .style("position", "absolute")
+        .style("left", `${mainContainerConfig.left}px`)
+        .style("top", `${mainContainerConfig.top}px`)
+        .style("width", `${mainContainerConfig.width}px`)
+        .style("height", `${mainContainerConfig.height}px`)
+        .style("padding", `${mainContainerConfig.padding}px`)
+        .style("background", "rgba(255, 255, 255, 0.9)")
+        .style("border-radius", "8px")
+        .style("box-shadow", "0 2px 10px rgba(0,0,0,0.1)");
+}
+
 // 修改图表生成函数,接收尺寸参数
-function createSingerGraph(singerId, singerName, width = 800, height = 600) {
+function createSingerGraph(container, singerId, singerName, width = 800, height = 600, position) {
     const margin = {top: 10, right: 30, bottom: 30, left: 40};
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
-    const svg = d3.select(`#${singerId}`)
-        .append("svg")
+    // 在主容器内创建图表容器
+    const graphContainer = container.append("div")
+        .attr("id", singerId)
+        .style("position", "absolute")
+        .style("left", `${position.x}px`)
+        .style("top", `${position.y}px`);
+
+    // 创建SVG
+    const svg = graphContainer.append("svg")
         .attr("width", chartWidth + margin.left + margin.right)
         .attr("height", chartHeight + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // 创建tooltip div
     const tooltip = d3.select("body")
@@ -125,7 +164,7 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600) {
         .style("opacity", 0);
 
     // 加载数据
-    d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/singer_2.json", function(error, data) {
+    d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/singer2.json", function(error, data) {
         if (error) throw error;
 
         // 找到指定歌手的数据
@@ -419,19 +458,22 @@ const styleSheet = document.createElement("style");
 styleSheet.textContent = layoutStyles;
 document.head.appendChild(styleSheet);
 
-// 创建容器
-document.getElementById("my_dataviz").className = "graph-container";
-document.getElementById("my_dataviz").innerHTML = singers.map(singer => `
-   <div id="${singer.id}" class="singer-graph" style="
-        width: ${singer.width}px;
-        height: ${singer.height}px;
-        left: ${singer.position.x}px;
-        top: ${singer.position.y}px;
-    ">
-    </div>
-`).join('');
+// 初始化函数
+function initializeGraphs() {
+    const mainContainer = createMainContainer();
+    
+    // 遍历singers数组创建所有图表
+    singers.forEach(singer => {
+        createSingerGraph(
+            mainContainer,
+            singer.id,
+            singer.name,
+            singer.width,
+            singer.height,
+            singer.position
+        );
+    });
+}
 
 // 创建图表
-singers.forEach(singer => {
-    createSingerGraph(singer.id, singer.name, singer.width, singer.height);
-});
+initializeGraphs();
