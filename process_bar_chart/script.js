@@ -22,13 +22,13 @@ const chartColors = [
 // 定义每个图表的图片路径
 const imageUrls = [
     "src/image/fhcq_barimg.png",  // 第一个图表的图片 中国喜事
-    "src/image/denglijun_barimg.png",  // 第二个图表的图片 但愿人长久
-    "src/image/fhcq_barimg.png",  // 第三个图表的图片
-    "src/image/denglijun_barimg.png",  // 第四个图表的图片
+    "src/image/dlj_barimg.png",  // 第二个图表的图片 但愿人长久
+    "src/image/myf_barimg.png",  // 第三个图表的图片 相思
+    "src/image/ppx_barimg.png",  // 第四个图表的图片 琵琶行
     "src/image/yl_barimg.png",  // 第五个图表的图片 秋水
-    "src/image/denglijun_barimg.png",  // 第六个图表的图片
-    "src/image/denglijun_barimg.png",  // 第七个图表的图片
-    "src/image/denglijun_barimg.png"  // 第八个图表的图片
+    "src/image/mam_barimg.png",  // 第六个图表的图片 床前明月光
+    "src/image/zyj_barimg.png",  // 第七个图表的图片 煎饼侠
+    "src/image/wf_barimg.png"  // 第八个图表的图片 致青春
 ];
 
 // 创建主SVG容器
