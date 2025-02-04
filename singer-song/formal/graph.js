@@ -123,7 +123,7 @@ const mainContainerConfig = {
 
 // 创建主容器函数
 function createMainContainer() {
-    return d3.select("body")
+   return d3.select("#my_dataviz")  // 改为挂载到指定容器
         .append("div")
         .attr("class", "main-container")
         .style("position", "absolute")
