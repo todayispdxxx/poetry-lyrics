@@ -14,7 +14,7 @@ const baseConfig = {
     text: {
         baseFontSize: 12,
         layerSpacing: 18,
-        minRadius: 230,
+        minRadius: 250,
         arcAngle: 300,
         charSpacing: 14,
         globalRotation: 0,
@@ -34,7 +34,7 @@ const visualizations = [
     },
     {
         id: 'viz2',
-        image: 'src/image/disk-dlj.png',
+        image: 'src/image/disk-ppx.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment2.json',
         position: { x: 450, y: 400 },
         textDirection: 'counter-clockwise',
@@ -42,13 +42,13 @@ const visualizations = [
     },
     {
         id: 'viz3',
-        image: 'src/image/disk-dlj.png',
+        image: 'src/image/disk-fhcq.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment3.json',
         position: { x: -150, y: 750 }
     },
     {
         id: 'viz4',
-        image: 'src/image/disk-dlj.png',
+        image: 'src/image/disk-zqc.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment4.json',
         position: { x: 450, y: 950 },
         textDirection: 'counter-clockwise',
@@ -56,7 +56,7 @@ const visualizations = [
     },
     {
         id: 'viz5',
-        image: 'src/image/disk-dlj.png',
+        image: 'src/image/disk-xs.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment5.json',
         position: { x: -150, y: 1300 }
     }
