@@ -134,8 +134,10 @@
 
 .chapter1 {
     width: 100%;
+    height: 50%;
     margin-top: var(--chapter-margin);
     text-align: center;
+    position: relative;
 }
 
 .ch1-image {
@@ -147,6 +149,7 @@
     width: 100%;
     margin-top: var(--chapter-margin);
     text-align: center;
+    position: relative;
 }
 
 .ch2-image {
@@ -157,7 +160,9 @@
 .chapter3 {
     width: 100%;
     padding: var(--container-padding);
-    margin: 120px 0 20px;  /* 增加顶部边距 */
+    margin: 30px 0 20px;  /* 减少顶部边距 */
+    text-align: center; 
+    position: relative;
 }
 
 /* 第三章标题图片容器 */
@@ -168,7 +173,7 @@
 }
 
 .ch3-image img {
-    max-width: 100%;
+    max-width: 90%;
     height: auto;
     border-radius: var(--border-radius);
 }
@@ -256,7 +261,7 @@
     line-height: 1.8;
     padding: 20px 20px;
     max-width: 832px;
-    margin: 50px auto 40px;  /* 增加顶部间距 */
+    margin: 50px auto 40px;  /* 减少顶部边距 */
     color: #333;
 }
 
@@ -270,9 +275,9 @@
     font-family: Songti-SC;
     text-align: left;
     line-height: 1.8;
-    padding: 20px 20px;
-    max-width: 832px;
-    margin: 100px auto 40px;  /* 增加顶部间距 */
+    padding: 200px 20px;
+    max-width: 500px;
+    margin: 50px 0 40px 800px;  /* 减少顶部边距 */
     color: #333;
 }
 
@@ -288,7 +293,7 @@
     line-height: 1.8;
     padding: 20px 20px;
     max-width: 832px;
-    margin: 100px auto 0;  /* 增加顶部间距 */
+    margin: 50px auto 0;  /* 减少顶部边距 */
     color: #333;
 }
 
@@ -408,7 +413,9 @@
     position: relative;
     width: 100vw;
     height: 100vh;
+    margin-top: 100px;
 }
+
 #graph {
     position: relative;
     width: 100vw;
@@ -423,3 +430,83 @@
     font-weight: bold;
     font-style: normal;
 }
+
+/* singer容器基础样式 */
+.singer1, .singer2, .singer3, .singer4 {
+    position: absolute;
+    width: auto;
+    height: auto;
+}
+
+/* 装饰元素基础样式 */
+.decoration1, .decoration2, .decoration3, .decoration4 {
+    position: absolute;
+    width: 100px;
+    height: auto;
+    left: 50px;
+}
+
+/* 内容块基础样式 */
+.singer-content1, .singer-content2, .singer-content3, .singer-content4 {
+    position: absolute;
+    font-size: 18px;
+    font-family: Songti-SC;
+    line-height: 1.8;
+    color: #333;
+    left: 50px;  /* 与装饰对齐 */
+    text-align: left;
+    margin-top: 20px;  /* 与decoration的间距 */
+    width: 300px;
+}
+
+/* 垂直位置控制 */
+.decoration1 { top: 100px; }
+.singer-content1 { top: 120px; }  /* decoration1下方30px */
+
+.decoration2 { top: 250px; }
+.singer-content2 { top: 270px; }
+
+.decoration3 { top: 400px; }
+.singer-content3 { top: 420px; }
+
+.decoration4 { top: 550px; }
+.singer-content4 { top: 570px; }
+
+/* 个性化位置控制 */
+.singer1 {
+    left: 900px;
+    top: 1200px;
+}
+
+.singer2 {
+    left: 100px;
+    top: 1800px;
+}
+
+.singer3 {
+    left:900px;
+    top: 2500px;
+}
+
+.singer4 {
+    left: 100px;
+    top: 3150px;
+}
+
+/* 段落样式 */
+.singer-content1 p,
+.singer-content2 p,
+.singer-content3 p,
+.singer-content4 p {
+    margin: 5px 0;
+}
+
+#wordcloud {
+    position: absolute;  /* 使用绝对定位实现自由位置调整 */
+    width: 500px;       /* 设置默认容器宽度 */
+    height: auto;
+    left: 500px;         /* 水平居中 */
+    transform: translateX(-50%);
+    top: 400px;        /* 可调整垂直位置 */
+}
+
