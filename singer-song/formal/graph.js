@@ -141,7 +141,7 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
         .style("position", "absolute")
         .style("text-align", "center")
         .style("padding", "12px 15px")  // 增加内边距
-        .style("font-family", "Arial")
+        .style("font-family", "S7")
         .style("font-size", "14px")     // 增加基础字体
         .style("background", "rgba(255, 255, 255, 0.95)")
         .style("border", "1px solid #ddd")
@@ -150,6 +150,7 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
         .style("box-shadow", "0 3px 8px rgba(0,0,0,0.12)")
         .style("max-width", "280px")    // 增加最大宽度
         .style("color", "#333")
+        .style("text-align", "left")
         .style("line-height", "1.5");
 
     fetch("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/singer2.json")
@@ -299,11 +300,11 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
                             .style("filter", "drop-shadow(0 0 8px rgba(255, 217, 102, 0.8))");  // 添加发光效果
                             
                         tooltip.html(`
-                            <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 8px; text-align: left;">
+                            <div style="font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; text-align: left;">
                                 ${d.singer}
                             </div>
                             <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
-                            <div style="font-size: 13px; color: #666; text-align: left;">
+                            <div style="font-size: 14px; color: #666; text-align: left;">
                                 歌曲数量: ${d.songCount}
                             </div>
                         `)
@@ -328,11 +329,11 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
                             .style("filter", "drop-shadow(0 0 8px rgba(255, 217, 102, 0.8))");
                             
                         tooltip.html(`
-                            <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 8px">
-                                ${d.id}
+                            <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 8px; text-align: left">
+                                《${d.id}》
                             </div>
                             <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
-                            <div style="font-size: 13px; color: #666">
+                            <div style="font-size: 14px; color: #666"; text-align: left;">
                                 古诗词引用: ${d.matchlyric_number}
                             </div>
                         `)
