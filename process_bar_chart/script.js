@@ -216,26 +216,26 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
         const title = titleGroup.append("text")
           .attr("y", -5)
           .attr("x", 0)
-          .style("font-family", "DFPSongW12-GB")
-          .style("font-size", "14px")
-          .style("font-weight", "bold")
+          .style("font-family", "S12")
+          .style("font-size", "16px")
+          .style("font-weight", "normal")
           .text(`《${songData.actual_song}》`);
 
         titleGroup.append("text")
           .attr("y", -5)
           .attr("x", () => title.node().getComputedTextLength() + 10)
-          .style("font-family", "楷体")
-          .style("font-size", "14px")
+          .style("font-family", "S7")
+          .style("font-size", "13px")
           .text(songData.actual_singer);
 
         // 添加日期信息
         currentChart.append("text")
           .attr("x", 15)
           .attr("y", height/2 - margin.top + 30)
-          .style("font-family", "DFPSongW12-GB")
+          .style("font-family", "S12")
           .style("fill", "#E86138")
-          .style("font-weight", "bold")
-          .style("font-size", "14px")
+          .style("font-weight", "normal")
+          .style("font-size", "15px")
           .text(songData.date);
 
         // 创建tooltip
