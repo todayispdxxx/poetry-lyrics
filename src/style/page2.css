@@ -16,17 +16,17 @@
 
 :root {
     /* 图片相关变量 */
-    --preface-width: 390px;
+    --preface-width: 400px;
     --preface-height: auto;
-    --preface-top: 90px;
+    --preface-top: 110px;
     
     /* ch1图片相关变量 */
-    --ch1-width: 700px;
+    --ch1-width: 710px;
     --ch1-height: auto;
-    --ch1-top: -120px;
+    --ch1-top: -130px;
 
    /* ch2图片相关变量 */
-    --ch2-width: 600px;
+    --ch2-width: 630px;
     --ch2-height: auto;
     --ch2-top: -80px;
     
@@ -119,14 +119,14 @@
    ======================================= */
 
 .text-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.8;
+    line-height: 1.6;
     padding: 20px 20px;
     max-width: 832px;
     margin: var(--text-top) auto 0;
-    color: #333;
+    color: #000000;
 }
 
 /* =======================================
@@ -187,23 +187,23 @@
    ======================================= */
 
 .title1-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
-    margin-top: 330px;
+    line-height: 1.6;
+    color: #000000;
+    margin-top: 230px;
     max-width: var(--title1-content-width);
-    padding: 10px;
+    padding: 0px;
     margin-left: auto;
     margin-right: auto;
     text-align: left;
 }
 
 .title2-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
+    line-height: 1.6;
+    color: #000000;
     max-width: var(--title2-content-width);
     padding: 10px;
     margin: 30px auto;
@@ -211,10 +211,10 @@
 }
 
 .title3-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
+    line-height: 1.6;
+    color: #000000;
     max-width: var(--title3-content-width);
     padding: 10px;
     margin: 30px auto;
@@ -222,10 +222,10 @@
 }
 
 .title4-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
+    line-height: 1.6;
+    color: #000000;
     max-width: var(--title4-content-width);
     padding: 10px;
     margin: 30px auto;
@@ -233,10 +233,10 @@
 }
 
 .title5-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
+    line-height: 1.6;
+    color: #000000;
     max-width: var(--title5-content-width);
     padding: 50px;  
     margin: var(--title5-margin-top) auto 100px;  /* 修改顶部间距 */
@@ -244,10 +244,10 @@
 }
 
 .title6-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
+    line-height: 1.6;
+    color: #000000;
     max-width: var(--title6-content-width);
     padding: 10px;
     margin: -150px auto 0;
@@ -256,14 +256,14 @@
 
 /* title7 相关样式 */
 .title7-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.8;
+    line-height: 1.6;
     padding: 20px 20px;
     max-width: 832px;
     margin: 50px auto 40px;  /* 减少顶部边距 */
-    color: #333;
+    color: #000000;
 }
 
 .title7-content p {
@@ -272,14 +272,14 @@
 
 /* title8 相关样式 */
 .title8-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.8;
+    line-height: 1.6;
     padding: 200px 20px;
     max-width: 500px;
     margin: 50px 0 40px 800px;  /* 减少顶部边距 */
-    color: #333;
+    color: #000000;
 }
 
 .title8-content p {
@@ -288,14 +288,14 @@
 
 /* title9 相关样式 */
 .title9-content {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.8;
+    line-height: 1.6;
     padding: 20px 20px;
     max-width: 832px;
     margin: 50px auto 0;  /* 减少顶部边距 */
-    color: #333;
+    color: #000000;
 }
 
 .title9-content p {
@@ -393,10 +393,10 @@
 }
 
 .chart3-container p {
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
+    line-height: 1.6;
+    color: #000000;
     margin-bottom: 10px;
     text-align: center;
 }
@@ -466,10 +466,10 @@
 /* 内容块基础样式 */
 .singer-content1, .singer-content2, .singer-content3, .singer-content4 {
     position: absolute;
-    font-size: 18px;
+    font-size: 22px;
     font-family: Songti-SC;
-    line-height: 1.8;
-    color: #333;
+    line-height: 1.6;
+    color: #000000;
     left: 50px;  /* 与装饰对齐 */
     text-align: left;
     margin-top: 20px;  /* 与decoration的间距 */
@@ -526,4 +526,3 @@
     transform: translateX(-50%);
     top: 400px;        /* 可调整垂直位置 */
 }
-
