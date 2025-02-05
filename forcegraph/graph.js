@@ -1,37 +1,33 @@
+// Define the processData function
 function processData(rawData) {
     if (!Array.isArray(rawData)) {
         console.error('输入数据格式错误:', rawData);
         return { nodes: [], links: [] };
     }
 
-    // 用于存储节点和连接信息
     const nodes = new Map();
     const links = [];
     
-    // 第一次遍历：收集所有节点和它们的连接信息
     rawData.forEach(item => {
         if (!item?.singer || !item?.poem_matches) return;
         
         const singer = item.singer;
         
-        // 初始化或更新歌手节点
         if (!nodes.has(singer)) {
             nodes.set(singer, {
                 id: singer,
                 group: 1,
                 type: 'singer',
-                connectedPoems: new Set(), // 存储连接的诗词
+                connectedPoems: new Set(),
                 connections: 0
             });
         }
         
-        // 处理诗词节点
         Object.entries(item.poem_matches).forEach(([_, poem]) => {
             if (!poem?.title || !poem?.writer) return;
             
             const poemId = `${poem.title}·${poem.writer}`;
             
-            // 初始化或更新诗词节点
             if (!nodes.has(poemId)) {
                 nodes.set(poemId, {
                     id: poemId,
@@ -39,19 +35,17 @@ function processData(rawData) {
                     type: 'poetry',
                     writer: poem.writer,
                     title: poem.title,
-                    connectedSingers: new Set(), // 存储连接的歌手
+                    connectedSingers: new Set(),
                     connections: 0
                 });
             }
             
-            // 更新连接计数
             const singerNode = nodes.get(singer);
             const poemNode = nodes.get(poemId);
             
             singerNode.connectedPoems.add(poemId);
             poemNode.connectedSingers.add(singer);
             
-            // 添加连接
             links.push({
                 source: singer,
                 target: poemId,
@@ -61,7 +55,6 @@ function processData(rawData) {
         });
     });
 
-    // 创建节点大小的比例尺
     let singerSizes = Array.from(nodes.values())
         .filter(n => n.group === 1)
         .map(n => n.connectedPoems.size);
@@ -77,20 +70,22 @@ function processData(rawData) {
         .domain([Math.min(...poetrySizes), Math.max(...poetrySizes)])
         .range([CONFIG.radius.poetry.min, CONFIG.radius.poetry.max]);
 
-    // 转换为最终的节点数组
     const finalNodes = Array.from(nodes.values()).map(node => {
+        const baseNode = {
+            ...node,
+            connections: node.group === 1 ? node.connectedPoems.size : node.connectedSingers.size
+        };
+
         if (node.group === 1) {
-            // 歌手节点
             return {
-                ...node,
+                ...baseNode,
                 radius: singerScale(node.connectedPoems.size),
                 poemCount: node.connectedPoems.size,
                 displaySize: singerScale(node.connectedPoems.size).toFixed(1)
             };
         } else {
-            // 诗词节点
             return {
-                ...node,
+                ...baseNode,
                 radius: poetryScale(node.connectedSingers.size),
                 singerCount: node.connectedSingers.size,
                 displaySize: poetryScale(node.connectedSingers.size).toFixed(1)
@@ -104,78 +99,98 @@ function processData(rawData) {
     };
 }
 
-// 添加鼠标交互相关函数
-function handleMouseOver(event, d) {
-    // 获取 svg 中的所有连接线和节点
-    const links = d3.selectAll('.link');
-    const nodes = d3.selectAll('.node');
-    
-    // 获取与当前节点相连的节点 id
-    const linkedNodeIds = new Set();
-    links.each(function(linkData) {
-        if (linkData.source.id === d.id) {
-            linkedNodeIds.add(linkData.target.id);
-        } else if (linkData.target.id === d.id) {
-            linkedNodeIds.add(linkData.source.id);
-        }
-    });
-
-    // 调整节点透明度
-    nodes.style('opacity', nodeData => {
-        return nodeData.id === d.id || linkedNodeIds.has(nodeData.id) ? 1 : 0.1;
-    });
-
-    // 调整连接线透明度
-    links.style('opacity', linkData => {
-        return linkData.source.id === d.id || linkData.target.id === d.id ? 1 : 0.1;
-    });
-}
-
-function handleMouseOut() {
-    // 恢复所有元素的透明度
-    d3.selectAll('.link').style('opacity', 1);
-    d3.selectAll('.node').style('opacity', 1);
-}
-
-
-// 修改createForceGraph函数中的容器创建部分
+// Define the createForceGraph function
 function createForceGraph(data, config) {
-    // 清除已有的图表和提示框
     d3.select("#graph").selectAll("*").remove();
 
-    // 创建 SVG，设置为全屏
+    const style = document.createElement('style');
+    style.textContent = `
+        .node circle {
+            transition: none; /* Remove transitions for immediate highlight */
+        }
+        .link {
+            transition: none; /* Remove transitions for immediate highlight */
+        }
+        .node.dimmed circle {
+            opacity: 0.15;
+        }
+        .link.dimmed {
+            opacity: 0.15;
+        }
+        .node.highlighted circle {
+            stroke: #666;
+            stroke-width: 3px;
+        }
+        .link.highlighted {
+            stroke: #666;
+            stroke-width: 2px;
+        }
+        .tooltip {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            pointer-events: none;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: absolute;
+            opacity: 0;
+            z-index: 100;
+        }
+    `;
+    document.head.appendChild(style);
+
     const svg = d3.select("#graph")
         .append("svg")
         .attr("width", config.width)
         .attr("height", config.height)
-        .style("position", "absolute")  // 改为absolute定位
-        .style("top", `${config.svg.position.top}px`)  // 使用配置的位置
+        .style("position", "absolute")
+        .style("top", `${config.svg.position.top}px`)
         .style("left", `${config.svg.position.left}px`)
-        .style("background-color", "#ffffff")  // 添加背景色
-        .style("border-radius", "8px");  // 添加圆角
+        .style("background-color", "#ffffff")
+        .style("border-radius", "8px");
 
-    // 创建提示框
     const tooltip = d3.select("body")
         .append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0)
-        .style("position", "absolute")
-        .style("z-index", 1000);
+        .attr("class", "tooltip");
 
-    // 设置缩放行为
     const g = svg.append("g");
+    
     const zoom = d3.zoom()
         .scaleExtent([config.zoom.min, config.zoom.max])
-        .on("zoom", (event) => {
-            g.attr("transform", event.transform);
-        });
+        .on("zoom", (event) => g.attr("transform", event.transform));
 
     svg.call(zoom)
        .call(zoom.transform, d3.zoomIdentity
             .translate(350, 270)
             .scale(0.15));
 
-    // 创建力导向模拟
+    const nodeLinks = new Map();
+    const connectedNodes = new Map();
+    
+    data.links.forEach(link => {
+        const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+        const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+        
+        if (!connectedNodes.has(sourceId)) {
+            connectedNodes.set(sourceId, new Set());
+        }
+        if (!connectedNodes.has(targetId)) {
+            connectedNodes.set(targetId, new Set());
+        }
+        connectedNodes.get(sourceId).add(targetId);
+        connectedNodes.get(targetId).add(sourceId);
+        
+        if (!nodeLinks.has(sourceId)) {
+            nodeLinks.set(sourceId, new Set());
+        }
+        if (!nodeLinks.has(targetId)) {
+            nodeLinks.set(targetId, new Set());
+        }
+        nodeLinks.get(sourceId).add(link);
+        nodeLinks.get(targetId).add(link);
+    });
+
     const simulation = d3.forceSimulation(data.nodes)
         .force("link", d3.forceLink(data.links)
             .id(d => d.id)
@@ -187,7 +202,6 @@ function createForceGraph(data, config) {
         .force("collision", d3.forceCollide().radius(d => d.radius * 1.2))
         .velocityDecay(0.6);
 
-    // 绘制连接线
     const link = g.append("g")
         .selectAll("line")
         .data(data.links)
@@ -196,7 +210,6 @@ function createForceGraph(data, config) {
         .attr("stroke", "#999")
         .attr("stroke-width", 0.5);
 
-    // 创建节点组
     const node = g.append("g")
         .selectAll("g")
         .data(data.nodes)
@@ -204,139 +217,99 @@ function createForceGraph(data, config) {
         .attr("class", "node")
         .call(drag(simulation));
 
-    // 添加节点圆圈
     node.append("circle")
         .attr("r", d => d.radius)
         .attr("fill", d => d.group === 1 ? config.colors.singer : config.colors.poetry)
         .attr("stroke", "#fff")
-        .attr("stroke-width", 2)
-        .on("mouseover", handleMouseOver)
-        .on("mouseout", handleMouseOut);
+        .attr("stroke-width", 2);
 
-    // 添加节点文本
-   // node.append("text")
-        //.attr("dy", d => d.radius + 15)
-        //.text(d => d.id.length > 12 ? d.id.slice(0, 12) + '...' : d.id)
-        //.attr("text-anchor", "middle")
-       // .style("font-size", "14px")
-       // .style("fill", "#2d3436");
-
-    // 预计算节点连接关系
-    const nodeConnections = new Map();
-    data.links.forEach(l => {
-        if (!nodeConnections.has(l.source.id)) {
-            nodeConnections.set(l.source.id, new Set());
-        }
-        if (!nodeConnections.has(l.target.id)) {
-            nodeConnections.set(l.target.id, new Set());
-        }
-        nodeConnections.get(l.source.id).add(l.target.id);
-        nodeConnections.get(l.target.id).add(l.source.id);
-    });
-
-    // 优化高亮性能
-    function highlightGraph(d) {
-        const connectedNodes = nodeConnections.get(d.id) || new Set();
+    function getConnectedElements(nodeId) {
+        const connected = new Set();
+        const links = new Set();
         
-        // 添加高亮类
-        node.classed('highlighted', n => n.id === d.id || connectedNodes.has(n.id));
-        link.classed('highlighted', l => l.source.id === d.id || l.target.id === d.id);
+        connectedNodes.get(nodeId)?.forEach(id => {
+            connected.add(id);
+        });
+        
+        nodeLinks.get(nodeId)?.forEach(link => {
+            links.add(link);
+        });
+        
+        return { nodes: connected, links: links };
     }
 
-    function resetHighlight() {
-        // 清除所有高亮状态
-        node.classed('highlighted', false);
-        link.classed('highlighted', false);
+    function highlightConnections(nodeId, isHighlighted = true) {
+        const { nodes: connectedNodes, links: connectedLinks } = getConnectedElements(nodeId);
         
-        // 恢复默认样式
-        node.selectAll("circle")
-            .style("opacity", 1)
-            .attr("stroke", "#fff")
-            .attr("stroke-width", 2);
-
-        link
-            .style("opacity", 1)
-            .style("stroke", "#999")
-            .style("stroke-width", 1);
-    }
-
-    // 优化交互事件
-    node.on("mouseover", function(event, d) {
-        // 使用requestAnimationFrame优化性能
         requestAnimationFrame(() => {
-            highlightGraph(d);
-            
-            // 更新提示框
-            let tooltipContent = `
-                <div class="tooltip-content">
-                    <h4 style="color: ${d.group === 1 ? '#FFB6C1' : '#87CEEB'}">${d.id}</h4>
-                    <p>类型: ${d.group === 1 ? '歌手' : '诗词'}</p>
-            `;
+            node.each(function(d) {
+                const element = d3.select(this);
+                const isConnected = connectedNodes.has(d.id) || d.id === nodeId;
+                
+                element
+                    .classed("dimmed", isHighlighted && !isConnected)
+                    .classed("highlighted", isHighlighted && isConnected);
+            });
 
-            if (d.group === 1) {
-                tooltipContent += `
-                    <p>演唱古诗词数: ${d.poemCount}</p>
-                `;
-            } else {
-                tooltipContent += `
-                    <p>作者: ${d.writer}</p>
-                    <p>被演唱次数: ${d.singerCount}</p>
-                `;
+            link.each(function(d) {
+                const element = d3.select(this);
+                const isConnected = connectedLinks.has(d);
+                
+                element
+                    .classed("dimmed", isHighlighted && !isConnected)
+                    .classed("highlighted", isHighlighted && isConnected);
+            });
+        });
+    }
+
+    function getTooltipContent(d) {
+        const content = document.createElement('div');
+        content.className = 'tooltip-content';
+        content.innerHTML = ` 
+            <h4 style="margin:0 0 8px;color:${d.group === 1 ? '#FFB6C1' : '#87CEEB'}">${d.id}</h4>
+            <p style="margin:4px 0">类型: ${d.group === 1 ? '歌手' : '诗词'}</p>
+            ${d.group === 1 
+                ? `<p style="margin:4px 0">演唱古诗词数: ${d.poemCount}</p>`
+                : `<p style="margin:4px 0">作者: ${d.writer}</p>
+                   <p style="margin:4px 0">被演唱次数: ${d.singerCount}</p>`
             }
+        `;
+        return content.outerHTML;
+    }
 
-            tooltipContent += `</div>`;
+    let currentHighlight = null;
 
-            // 计算提示框位置
-            const offsetX = 20;
-            const offsetY = 20;
-            const tooltipWidth = 300;
-            const tooltipHeight = 150;
-            
-            let left = event.pageX + offsetX;
-            let top = event.pageY + offsetY;
-            
-            // 防止提示框超出窗口
-            if (left + tooltipWidth > window.innerWidth) {
-                left = event.pageX - tooltipWidth - offsetX;
-            }
-            if (top + tooltipHeight > window.innerHeight) {
-                top = event.pageY - tooltipHeight - offsetY;
+    node
+        .on("mouseover", function(event, d) {
+            if (currentHighlight !== d.id) {
+                currentHighlight = d.id;
+                highlightConnections(d.id, true);
             }
 
             tooltip
-                .html(tooltipContent)
-                .style("left", left + "px")
-                .style("top", top + "px")
-                .transition()
-                .duration(200)
+                .html(getTooltipContent(d))
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 15) + "px")
                 .style("opacity", 1);
+        })
+        .on("mouseout", function() {
+            currentHighlight = null;
+            highlightConnections(null, false);
+            tooltip.style("opacity", 0);
         });
-    })
-.on("mousemove", function(event) {
-    // 提示框跟随鼠标移动
-    tooltip
-        .style("left", (event.pageX + 10) + "px")
-        .style("top", (event.pageY - 10) + "px");
-})
-.on("mouseout", function() {
-    requestAnimationFrame(() => {
-        resetHighlight();
-        tooltip.style("opacity", 0);
-    });
-});
 
-    // 更新力导向图位置
     simulation.on("tick", () => {
-        link
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+        requestAnimationFrame(() => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
 
-        node.attr("transform", d => `translate(${d.x},${d.y})`);
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
     });
 
-    // 拖拽函数
     function drag(simulation) {
         function dragstarted(event) {
             if (!event.active) simulation.alphaTarget(0.1).restart();
@@ -362,8 +335,8 @@ function createForceGraph(data, config) {
     }
 }
 
-// 加载数据并初始化图表
-async function initializeGraph() {
+// Once the DOM is ready, load the data and create the force graph
+document.addEventListener('DOMContentLoaded', async function() {
     try {
         const response = await d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/merged-new-data.json");
         const graphData = processData(response);
@@ -371,7 +344,4 @@ async function initializeGraph() {
     } catch (error) {
         console.error('加载或处理数据时出错:', error);
     }
-}
-
-// 启动应用
-document.addEventListener('DOMContentLoaded', initializeGraph);
+});
