@@ -29,19 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Animation configuration
     const config = {
         diskRotation: {
-            speed: 1
+            speed: 0.6
         },
         exploreButton: {
             clickScale: 0.9,
-            animationDuration: 400,
-            scrollDuration: 800,
+            animationDuration: 250,
+            scrollDuration: 1000,
             hoverGlowColor: 'rgba(255, 255, 0, 0.8)',
-            glowDuration: 300,
+            glowDuration: 200,
             // New scroll configuration
             scrollConfig: {
                 baseMultiplier: 1.1,    // Base multiplier for viewport height
-                extraPixels: 0        // Additional pixels to add
+                extraPixels: 10        // Additional pixels to add
             }
+        },
+        moveElement: {
+            rotationAngle: -10,     // 逆时针旋转10度
+            isRotated: false        // 跟踪旋转状态
         }
     };
 
@@ -94,6 +98,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return currentScroll + totalScrollDistance;
     }
 
+    // Function to toggle move element rotation
+    function toggleMoveRotation() {
+        config.moveElement.isRotated = !config.moveElement.isRotated;
+        
+        // Apply rotation to moveElement
+        moveElement.style.transition = 'transform 0.6s ease'; // Apply a smooth transition for the rotation
+        moveElement.style.transform = config.moveElement.isRotated
+            ? `translateX(var(--move-translateX)) rotate(${config.moveElement.rotationAngle}deg)`
+            : 'translateX(var(--move-translateX))';
+    }
+
     exploreBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         
@@ -101,12 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('scroll-lock');
 
         try {
-            // Button click animation
+            // Button click animation (first)
             exploreBtn.style.transform = `scale(${config.exploreButton.clickScale})`;
+
+            await new Promise(resolve => setTimeout(resolve, 300));
             
-            // Wait for animation
-            await new Promise(resolve => setTimeout(resolve, config.exploreButton.animationDuration));
-            exploreBtn.style.transform = '';
+            // Wait for button scale animation to complete before rotating the move element
+            exploreBtn.style.transform = ''; // Reset button scale
+
+            // Trigger move element rotation after button scale animation
+            toggleMoveRotation();
+
+            // Wait for rotation animation to complete before starting scroll
+            await new Promise(resolve => setTimeout(resolve, 800)); // Wait for 600ms (same as move rotation duration)
 
             // Calculate and perform scroll
             const targetScroll = calculateNextScrollPosition();
