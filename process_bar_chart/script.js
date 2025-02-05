@@ -88,7 +88,7 @@ const tooltip = d3.select("body")  // 改为选择body
     .style("padding", "8px")
     .style("font-size", "12px")
     .style("pointer-events", "auto")
-    .style("max-width", "280px")
+    .style("max-width", "350px")
     .style("word-wrap", "break-word")
     .style("overflow-y", "auto")
     .style("max-height", "200px");
@@ -250,10 +250,10 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .style("padding", "8px")
           .style("font-size", "12px")
           .style("pointer-events", "auto")  // 允许鼠标事件
-          .style("max-width", "400px")  // 限制最大宽度
+          .style("max-width", "600px")  // 限制最大宽度
           .style("word-wrap", "break-word")  // 文本自动换行
           .style("overflow-y", "auto")  // 添加垂直滚动
-          .style("max-height", "300px");  // 限制最大高度
+          .style("max-height", "250px");  // 限制最大高度
 
         // 添加tooltip显示延迟
         let tooltipTimeout;

@@ -4,18 +4,22 @@
   font-size: 13px; /* 略微缩小字体 */
   line-height: 1.35; /* 更紧凑的行高 */
   padding: 8px 10px; /* 调整内边距 */
+  border-radius: 3px; /* 圆角边框 */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+  overflow-x: hidden;
 }
 
 /* 优化内容间距 */
 .tooltip .lyric {
   margin: 0 0 2px; /* 下边距缩小 */
-  color: #333;
-  font-weight: 500;
+  color: #636364;
+  font-size: 13px; /* 放大歌词字体 */
+  font-weight: 800;
 }
 
 .tooltip .source {
   margin: 0 0 3px; /* 调整间距 */
-  font-size: 11px; /* 缩小出处字体 */
+  font-size: 12px; /* 缩小出处字体 */
   color: #888;
   font-style: normal; /* 取消斜体 */
   letter-spacing: 0.3px;
