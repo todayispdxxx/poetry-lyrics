@@ -427,8 +427,8 @@
 /*定义字体*/
 @font-face {
     font-family: 'Songti-SC';
-    src: url('../font/SongTi.TTF') format('truetype');
-    font-weight: bold;
+    src: url('../font/思源宋体SC-Regular.otf') format('truetype');
+    font-weight: normal;
     font-style: normal;
 }
 
