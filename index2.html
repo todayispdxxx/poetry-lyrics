@@ -7,12 +7,28 @@
     <link rel="stylesheet" href="./process_bar_chart/style.css">
     <link rel="stylesheet" href="./forcegraph/style.css">
     <link rel="stylesheet" href="./singer-song/formal/style2.css">
+    <link rel="stylesheet" href="./disk/comments.css">
+    <link rel="stylesheet" href="./src/style/page1.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="./src/script/script.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>古诗词与流行歌曲</title>
 </head>
 
 <body>
+     <!-- 头部区域 - 封面部分 -->
+        <div class="main-container">
+            <div class="image-container">
+                <div class="disk-wrapper">
+                    <img id="disk1" src="./src/image/disk1.png" alt="唱片背景">
+                </div>
+                <img id="rec" src="./src/image/rec.png" alt="录音机">
+                <img id="word" src="./src/image/word.png" alt="标题文字">
+                <img id="move" src="./src/image/move.png" alt="动态元素">
+                <img id="explore" src="./src/image/explore.png" alt="探索按钮">
+            </div>
+        </div>
+
     <div class="preface-container">
         <img id="preface" src="./src/image/preface.png" alt="前言">
     </div>
@@ -165,6 +181,9 @@
             <div class="title9-content">
                 <p>我们还选择了一些有特色的歌曲进行评论的展示。</p>
             </div>
+
+            <div id="visualization"></div>
+            <script src="./disk/comments.js"></script>
 
         </div>
 
