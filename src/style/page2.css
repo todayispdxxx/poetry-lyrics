@@ -5,8 +5,9 @@
    html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
     height: 100vh;
-    background-color: #e0e0e0;
+    background-color: #e3e3e3;
 }
 
 /* =======================================
@@ -430,6 +431,22 @@
     font-weight: bold;
     font-style: normal;
 }
+
+/*定义字体*/
+@font-face {
+    font-family: 'S12';
+    src: url('../font/DFPGB_S12.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'S7';
+    src: url('../font/DFPSongW7-GB.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
 
 /* singer容器基础样式 */
 .singer1, .singer2, .singer3, .singer4 {
