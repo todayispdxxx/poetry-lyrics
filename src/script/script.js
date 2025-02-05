@@ -1,137 +1,122 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 获取元素并进行检查
+    // Create and insert CSS styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #explore {
+            transition: filter 0.3s ease, transform 0.3s ease;
+            will-change: transform, filter;
+        }
+        #explore:hover {
+            filter: brightness(1.2) drop-shadow(0 0 15px rgba(255, 255, 0, 0.8));
+        }
+        .scroll-lock {
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Get elements and perform checks
     const disk1 = document.getElementById('disk1');
     const exploreBtn = document.getElementById('explore');
     const moveElement = document.getElementById('move');
-    
+
     if (!disk1 || !exploreBtn || !moveElement) {
-        console.error('Required elements not found:', { 
-            disk1: !!disk1, 
-            exploreBtn: !!exploreBtn,
-            moveElement: !!moveElement 
-        });
+        console.error('Required elements not found');
         return;
     }
 
-    // 动画相关配置
+    // Animation configuration
     const config = {
         diskRotation: {
-            speed: 1,
-            current: 0
+            speed: 1
         },
         exploreButton: {
-            hoverScale: 1,          // 取消悬停缩放
-            clickScaleDown: 0.9,    // 点击缩小比例
-            animationDuration: 400,  // 点击动画总时长
-            glowColor: 'rgba(255, 255, 0, 0.8)',
-            redirectDelay: 1000     // 添加跳转延迟时间（2秒）
-        },
-        moveElement: {
-            rotationAngle: -10,     // 逆时针旋转10度
-            isRotated: false        // 跟踪旋转状态
+            clickScale: 0.9,
+            animationDuration: 400,
+            scrollDuration: 800,
+            hoverGlowColor: 'rgba(255, 255, 0, 0.8)',
+            glowDuration: 300,
+            // New scroll configuration
+            scrollConfig: {
+                baseMultiplier: 1.1,    // Base multiplier for viewport height
+                extraPixels: 0        // Additional pixels to add
+            }
         }
     };
 
-    // 磁盘旋转动画
+    // Disk rotation animation
     function animateDisk() {
-        config.diskRotation.current += config.diskRotation.speed;
-        disk1.style.transform = `rotate(${config.diskRotation.current % 360}deg)`;
+        disk1.style.transform = `rotate(${(Date.now() * config.diskRotation.speed / 30) % 360}deg)`;
         requestAnimationFrame(animateDisk);
     }
 
-    class ExploreButtonAnimator {
-        constructor(element, config) {
-            this.element = element;
-            this.config = config;
-            this.isAnimating = false;
-            this.originalTransform = '';
-            this.setupEventListeners();
-        }
+    // Enhanced smooth scroll function
+    function smoothScrollTo(target) {
+        return new Promise((resolve) => {
+            const start = window.pageYOffset;
+            const distance = target - start;
+            const startTime = Date.now();
 
-        setupEventListeners() {
-            this.element.style.transformOrigin = 'center center';
-            this.element.style.transition = 'all 0.3s ease';
-            
-            this.element.addEventListener('mouseover', () => this.handleHover(true));
-            this.element.addEventListener('mouseout', () => this.handleHover(false));
-            this.element.addEventListener('click', () => this.handleClick());
-        }
+            function scrollStep() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / config.exploreButton.scrollDuration, 1);
+                const ease = easeInOutCubic(progress);
+                window.scrollTo(0, start + distance * ease);
 
-        handleHover(isHover) {
-            if (this.isAnimating) return;
-            
-            this.element.style.filter = isHover 
-                ? `brightness(1.2) drop-shadow(0 0 10px ${this.config.glowColor})`
-                : 'brightness(1) drop-shadow(0 0 0 transparent)';
-        }
-
-        async handleClick() {
-            if (this.isAnimating) return;
-            this.isAnimating = true;
-            
-            try {
-                await this.animateClick();
-                // 触发 move 元素的旋转
-                this.toggleMoveRotation();
-                
-                // 添加延迟跳转
-                setTimeout(() => {
-                    window.location.href = 'index2.html';
-                }, this.config.redirectDelay);
-                
-            } finally {
-                this.isAnimating = false;
+                if (progress < 1) {
+                    requestAnimationFrame(scrollStep);
+                } else {
+                    resolve();
+                }
             }
-        }
-
-        toggleMoveRotation() {
-            // 切换旋转状态
-            config.moveElement.isRotated = !config.moveElement.isRotated;
-            
-            // 应用旋转
-            moveElement.style.transform = config.moveElement.isRotated
-                ? `translateX(var(--move-translateX)) rotate(${config.moveElement.rotationAngle}deg)`
-                : 'translateX(var(--move-translateX))';
-        }
-
-        animateClick() {
-            return new Promise(resolve => {
-                const duration = this.config.animationDuration;
-                const targetScale = this.config.clickScaleDown;
-                
-                // 保存当前的 transform 值
-                this.originalTransform = window.getComputedStyle(this.element).transform;
-                const currentMatrix = new DOMMatrix(this.originalTransform);
-                
-                // 设置精确的过渡时间
-                this.element.style.transition = `transform ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-                
-                // 第一阶段：在保持当前位置的基础上应用缩放
-                const scaleMatrix = new DOMMatrix().scale(targetScale, targetScale);
-                const combinedMatrix = currentMatrix.multiply(scaleMatrix);
-                this.element.style.transform = combinedMatrix.toString();
-                
-                // 监听过渡结束事件
-                const completeHandler = () => {
-                    this.element.removeEventListener('transitionend', completeHandler);
-                    
-                    // 第二阶段：恢复原始变换
-                    const originalMatrix = new DOMMatrix(this.originalTransform);
-                    this.element.style.transform = originalMatrix.toString();
-                    
-                    // 恢复原始过渡设置并解析 Promise
-                    setTimeout(() => {
-                        this.element.style.transition = 'all 0.3s ease';
-                        resolve();
-                    }, duration);
-                };
-                
-                this.element.addEventListener('transitionend', completeHandler);
-            });
-        }
+            requestAnimationFrame(scrollStep);
+        });
     }
 
-    // 启动动画
+    // Cubic easing function for smoother scrolling
+    function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    }
+
+    // Calculate next scroll position with enhanced control
+    function calculateNextScrollPosition() {
+        const viewportHeight = window.innerHeight;
+        const currentScroll = window.pageYOffset;
+        const { baseMultiplier, extraPixels } = config.exploreButton.scrollConfig;
+        
+        // Calculate base scroll distance using viewport height and multiplier
+        const baseScrollDistance = viewportHeight * baseMultiplier;
+        
+        // Add extra pixels for fine-tuning
+        const totalScrollDistance = baseScrollDistance + extraPixels;
+        
+        return currentScroll + totalScrollDistance;
+    }
+
+    exploreBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        // Disable scrolling
+        document.body.classList.add('scroll-lock');
+
+        try {
+            // Button click animation
+            exploreBtn.style.transform = `scale(${config.exploreButton.clickScale})`;
+            
+            // Wait for animation
+            await new Promise(resolve => setTimeout(resolve, config.exploreButton.animationDuration));
+            exploreBtn.style.transform = '';
+
+            // Calculate and perform scroll
+            const targetScroll = calculateNextScrollPosition();
+            await smoothScrollTo(targetScroll);
+        } finally {
+            // Re-enable scrolling
+            document.body.classList.remove('scroll-lock');
+        }
+    });
+
+    // Start disk animation
     animateDisk();
-    new ExploreButtonAnimator(exploreBtn, config.exploreButton);
 });
