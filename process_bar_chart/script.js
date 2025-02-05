@@ -1,8 +1,8 @@
 // 配置
-const width = 800;
+const width = 1000;
 const height = 100;  // 减小单个图表高度
-const totalHeight = height * 8 + 50 * 7;  // 总高度加上间距
-const margin = {top: 30, right: 50, bottom: 20, left: 70}; 
+const totalHeight = height * 8 + 30 * 7;  // 总高度加上间距
+const margin = {top: 20, right: 70, bottom: 20, left: 70}; 
 const dotRadius = 1.5;  
 const decorationRadius = 3.5;   
 const decorationPadding = 10;   
@@ -201,10 +201,10 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
 
         // 在进度条前添加图片装饰
         currentChart.append("image")
-          .attr("x", -70)
-          .attr("y", height/2 - margin.top - 35)
-          .attr("width", 70)
-          .attr("height", 70)
+          .attr("x", -90)
+          .attr("y", height/2 - margin.top - 50)
+          .attr("width", 90)
+          .attr("height", 90)
           .attr("xlink:href", imageUrls[index])  // 使用对应索引的图片
           .style("border", "2px solid black")
           .style("border-radius", "50%");
@@ -214,28 +214,28 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .attr("transform", `translate(${decorationPadding}, 0)`);
 
         const title = titleGroup.append("text")
-          .attr("y", -5)
+          .attr("y", 5)
           .attr("x", 0)
           .style("font-family", "S12")
-          .style("font-size", "16px")
+          .style("font-size", "19px")
           .style("font-weight", "normal")
           .text(`《${songData.actual_song}》`);
 
         titleGroup.append("text")
-          .attr("y", -5)
+          .attr("y", 5)
           .attr("x", () => title.node().getComputedTextLength() + 5)
           .style("font-family", "S7")
-          .style("font-size", "13px")
+          .style("font-size", "15px")
           .text(songData.actual_singer);
 
         // 添加日期信息
         currentChart.append("text")
-          .attr("x", 15)
-          .attr("y", height/2 - margin.top + 35)
+          .attr("x", 20)
+          .attr("y", height/2 - margin.top + 40)
           .style("font-family", "S12")
           .style("fill", "#E86138")
           .style("font-weight", "normal")
-          .style("font-size", "16px")
+          .style("font-size", "20px")
           .text(songData.date);
 
         // 创建tooltip
@@ -301,7 +301,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             const maxWidth = effectiveWidth - (xScale(d.start) - (decorationPadding + decorationRadius * 4));
             return Math.max(minWidth, Math.min(charCount * charWidth * 1, maxWidth));
           })
-          .attr("height", 10)
+          .attr("height", 12)
           .attr("rx", 4)
           .attr("ry", 4)
           .attr("fill", chartColors[index])  // 使用对应索引的颜色
