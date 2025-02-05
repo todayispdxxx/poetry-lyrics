@@ -17,15 +17,15 @@
     --word-left: 200px;     /* 580px -> 480px */
     --word-translateX: -50%;
 
-    --move-width: 480px;
+    --move-width: 470px;
     --move-height: auto;
-    --move-top: -250px;     /* -120px -> -220px */
-    --move-left: 510px;     /* 900px -> 800px */
+    --move-top: -220px;     /* -120px -> -220px */
+    --move-left: 500px;     /* 900px -> 800px */
     --move-translateX: -50%;
 
     --explore-width: 625px;
     --explore-height: auto;
-    --explore-top: 260px;    /* 380px -> 280px */
+    --explore-top: 240px;    /* 380px -> 280px */
     --explore-left: 0px;   /* 780px -> 680px */
 }
 
