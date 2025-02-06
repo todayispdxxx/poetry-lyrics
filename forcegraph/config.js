@@ -21,19 +21,19 @@ const CONFIG = {
     },
     radius: {
         singer: {
-            min: 10,             
-            max: 35              
+            min: 8,             
+            max: 60              
         },
         poetry: {
             min: 10,
-            max: 40
+            max: 70
         }
     },
     force: {
         nodeStrength: -300,
         linkStrength: 0.3,
-        distance: 180,
-        charge: -100
+        distance: 200,
+        charge: -80
     },
     zoom: {
         min: 0.1,
@@ -43,7 +43,7 @@ const CONFIG = {
     initialTransform: {
         x: window.innerWidth * 0.1,  // 左边留10%空间
         y: window.innerHeight * 0.1,  // 上边留10%空间
-        scale: 0.8                    // 初始缩放比例
+        scale: 0.9                    // 初始缩放比例
     }
 }
 
