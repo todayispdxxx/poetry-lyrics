@@ -18,8 +18,8 @@ const singers = [
         height: 450,
         image: "./src/image/gujianfen.png",
         position: {
-            x: 290,
-            y: 380
+            x: 480,
+            y: 350
         }
     },
     {
@@ -29,7 +29,7 @@ const singers = [
         height: 450,
         image: "./src/image/feiyuqing.png",
         position: {
-            x: 880,
+            x: 920,
             y: 800
         }
     },
@@ -37,44 +37,44 @@ const singers = [
         id: "singer4",
         name: "戴荃",
         width: 450,
-        height: 450,
+        height: 500,
         image: "./src/image/daiquan.png",
         position: {
-            x: 830,
-            y: 1200
+            x: 760,
+            y: 1150
         }
     },
     {
         id: "singer5",
         name: "蒋明",
         width: 450,
-        height: 450,
+        height: 420,
         image: "./src/image/jiangming.png",
         position: {
-            x: 480,
-            y: 940
+            x: 450,
+            y: 920
         }
     },
     {
         id: "singer6",
         name: "王菲",
         width: 450,
-        height: 450,
+        height: 480,
         image: "./src/image/wangfei.png",
         position: {
-            x: 60,
-            y: 1620
+            x: 150,
+            y: 1600
         }
     },
     {
         id: "singer7",
         name: "莫文蔚",
         width: 450,
-        height: 450,
+        height: 400,
         image: "./src/image/mowenwei.png",
         position: {
-            x: 20,
-            y: 1970
+            x: 100,
+            y: 1990
         }
     },
     {
@@ -84,8 +84,8 @@ const singers = [
         height: 450,
         image: "./src/image/fenghuangchuanqi.png",
         position: {
-            x: 420,
-            y: 1800
+            x: 490,
+            y: 1850
         }
     },
     {
@@ -134,7 +134,7 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const tooltip = d3.select("body")
+    const tooltip = d3.select("body") 
         .append("div")
         .attr("class", "d3-tooltip")
         .style("opacity", 0)
@@ -164,11 +164,11 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
 
             const linkDistanceScale = d3.scaleLinear()
                 .domain([minMatchLyric, maxMatchLyric])
-                .range([60, 150]);
+                .range([100, 200]);
 
             const defaultLinkColor = "#8B8386";
-            const centerNodeSize = 38;
-            const surroundingNodeSize = 22;
+            const centerNodeSize = 42;
+            const surroundingNodeSize = 25;
 
             const nodes = [
                 {
@@ -333,7 +333,7 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
                                 《${d.id}》
                             </div>
                             <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
-                            <div style="font-size: 14px; color: #666"; text-align: left;">
+                            <div style="font-size: 14px; color: #666"; text-align: left;>
                                 古诗词引用: ${d.matchlyric_number}
                             </div>
                         `)
