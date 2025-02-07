@@ -63,7 +63,7 @@ const singers = [
         image: "./src/image/wangfei.png",
         position: {
             x: 150,
-            y: 1600
+            y: 1620
         }
     },
     {
@@ -74,7 +74,7 @@ const singers = [
         image: "./src/image/mowenwei.png",
         position: {
             x: 100,
-            y: 1990
+            y: 2050
         }
     },
     {
