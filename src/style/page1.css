@@ -8,7 +8,7 @@
 
     --rec-width: 340px;
     --rec-height: auto;
-    --rec-top: -445px;      /* -270px -> -370px */
+    --rec-top: -440px;      /* -270px -> -370px */
     --rec-left: -750px;     /* -300px -> -400px */
 
     --word-width: 830px;
@@ -19,7 +19,7 @@
 
     --move-width: 470px;
     --move-height: auto;
-    --move-top: -250px;     /* -120px -> -220px */
+    --move-top: -230px;     /* -120px -> -220px */
     --move-left: 500px;     /* 900px -> 800px */
     --move-translateX: -50%;
 
