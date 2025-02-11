@@ -14,7 +14,7 @@ const baseConfig = {
     text: {
         baseFontSize: 12,
         layerSpacing: 18,
-        minRadius: 250,
+        minRadius: 243,
         arcAngle: 300,
         charSpacing: 14,
         globalRotation: 0,
@@ -38,7 +38,14 @@ const visualizations = [
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment2.json',
         position: { x: 450, y: 400 },
         textDirection: 'counter-clockwise',
-        startAngle: -Math.PI/2 + 0.4  // 修改起始角度
+        startAngle: -Math.PI/2 + 0.26,  // 修改起始角度
+        flipText: true,  // 添加文字翻转参数
+        // 添加独立的文字配置
+        textConfig: {
+            minRadius: 255,  // 增加起始半径
+            layerSpacing: 18,  // 调整层间距
+            charSpacing: 14    // 调整字符间距
+        }
     },
     {
         id: 'viz3',
@@ -52,7 +59,14 @@ const visualizations = [
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment4.json',
         position: { x: 450, y: 950 },
         textDirection: 'counter-clockwise',
-        startAngle: -Math.PI/2 + 0.4  // 修改起始角度
+        startAngle: -Math.PI/2+0.27,  // 修改起始角度
+        flipText: true,  // 添加文字翻转参数
+        // 添加独立的文字配置
+        textConfig: {
+            minRadius: 245,
+            layerSpacing: 18,
+            charSpacing: 14
+        }
     },
     {
         id: 'viz5',
@@ -160,11 +174,16 @@ class CircularTextVisualization {
 
     createTextArc(comment, group) {
         const characters = comment.content.trim().split('');
-        const radius = this.config.text.minRadius + comment.layer * this.config.text.layerSpacing;
+        // 合并文字配置
+        const textConfig = {
+            ...this.config.text,
+            ...(this.vizConfig.textConfig || {})
+        };
         
-        const direction = this.vizConfig.textDirection || this.config.text.direction;
+        const radius = textConfig.minRadius + comment.layer * textConfig.layerSpacing;
+        const direction = this.vizConfig.textDirection || textConfig.direction;
         
-        let angleStep = this.config.text.charSpacing / radius;
+        let angleStep = textConfig.charSpacing / radius;
         if (direction === 'counter-clockwise') {
             angleStep = -angleStep;
             characters.reverse();
@@ -177,11 +196,11 @@ class CircularTextVisualization {
             .classed("char", true)
             .text(d => d)
             .style("fill", this.config.colors[comment.sentiment])
-            .style("font-size", this.config.text.baseFontSize + "px")
+            .style("font-size", textConfig.baseFontSize + "px")
             .attr("transform", (d, i) => {
                 const charIndex = direction === 'counter-clockwise' ? characters.length - 1 - i : i;
                 // 在createTextArc方法中使用配置的startAngle
-                const baseAngle = this.vizConfig.startAngle || this.config.text.startAngle;
+                const baseAngle = this.vizConfig.startAngle || textConfig.startAngle;
                 const adjustedAngle = baseAngle + angleStep * charIndex;
                 
                 const x = this.config.center.x + this.config.center.textOffsetX + 
@@ -190,6 +209,11 @@ class CircularTextVisualization {
                 
                 let charRotation = adjustedAngle * 180/Math.PI + 90;
                 if (direction === 'counter-clockwise') {
+                    charRotation += 180;
+                }
+                
+                // 添加文字翻转
+                if (this.vizConfig.flipText) {
                     charRotation += 180;
                 }
                 
