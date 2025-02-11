@@ -199,9 +199,17 @@ class CircularTextVisualization {
             .style("font-size", textConfig.baseFontSize + "px")
             .attr("transform", (d, i) => {
                 const charIndex = direction === 'counter-clockwise' ? characters.length - 1 - i : i;
-                // 在createTextArc方法中使用配置的startAngle
+                const specialChars = ['《', '》', '（', '）', '(', ')'];
+                
+                // 为特殊字符添加位置偏移
+                let adjustedCharIndex = charIndex;
+                if (specialChars.includes(d)) {
+                    adjustedCharIndex = direction === 'counter-clockwise' ? 
+                        charIndex - 1 : charIndex + 1;  // 逆时针方向移动一个位置
+                }
+                
                 const baseAngle = this.vizConfig.startAngle || textConfig.startAngle;
-                const adjustedAngle = baseAngle + angleStep * charIndex;
+                const adjustedAngle = baseAngle + angleStep * adjustedCharIndex;
                 
                 const x = this.config.center.x + this.config.center.textOffsetX + 
                          radius * Math.cos(adjustedAngle);
@@ -212,8 +220,8 @@ class CircularTextVisualization {
                     charRotation += 180;
                 }
                 
-                // 添加文字翻转
-                if (this.vizConfig.flipText) {
+                // 只翻转非特殊字符
+                if (this.vizConfig.flipText && !specialChars.includes(d)) {
                     charRotation += 180;
                 }
                 
