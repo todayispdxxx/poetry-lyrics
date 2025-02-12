@@ -154,8 +154,18 @@ function drawChart(data) {
         clusterGroup.append("text")
             .attr("class", "cluster-label")
             .attr("x", 0)
-            .attr("y", 180)
-            .text(`《${cluster.values[0].poemtitle}》- ${cluster.values[0].poemwriter}`);
+            .attr("y", 160)  // 调整起始位置
+            .style("text-anchor", "middle")  // 文本居中对齐
+            .selectAll("tspan")
+            .data([
+                { text: `《${cluster.values[0].poemtitle}》`, type: 'title' },
+                { text: cluster.values[0].poemwriter, type: 'author' }
+            ])
+            .join("tspan")
+            .attr("x", 0)  // 每行都从x=0开始
+            .attr("dy", (d, i) => i === 0 ? 0 : "1.5em")  // 第二行增加行距
+            .attr("class", d => d.type)  // 添加类名以区分样式
+            .text(d => d.text);
     });
 
     addKeyboardControl();

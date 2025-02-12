@@ -46,8 +46,14 @@ body {
     font-size: 12px;
     color: orange;
 }
-.cluster-label {
+.cluster-label .title {
     font-size: 22px;
-    font-family: 'S12', sans-serif;
-    text-anchor: middle;
+    fill: #333;
+    font-family: "S12", serif;  /* 宋体 */
+}
+
+.cluster-label .author {
+    font-size: 20px;
+    fill: #666;
+    font-family: "S7", serif;  /* 楷体 */
 }
