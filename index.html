@@ -9,8 +9,11 @@
     <link rel="stylesheet" href="./singer-song/formal/style2.css">
     <link rel="stylesheet" href="./disk/comments.css">
     <link rel="stylesheet" href="./src/style/page1.css">
+    <link rel="stylesheet" href="./bee-swarm/bee-style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="./src/script/script.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>古诗词与流行歌曲</title>
 </head>
@@ -68,8 +71,10 @@
 
         <div class="chart2">
             <div class="chart2-container">
-                <p>第二张图表</p>
-                <img id="chart2" src="./src/image/demo2.png" alt="图表2">
+                <div class="chart">
+                    <svg width="1000" height="400"></svg>
+                    <script src=./bee-swarm/bee-script.js></script>
+                </div>
             </div>
         </div>
 
