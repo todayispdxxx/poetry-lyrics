@@ -34,8 +34,8 @@ body {
 }
 .tooltip .singer-song {
     font-size: 18px;
-    font-weight: bold;
     color: black;
+    font-family: "S12", serif;  /* 宋体 */
 }
 .tooltip .song {
     font-size: 14px;
