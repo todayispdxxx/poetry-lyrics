@@ -3,118 +3,118 @@ const singers = [
     {
         id: "singer1",
         name: "邓丽君",
-        width: 450,
-        height: 450,
+        width: 380,
+        height: 380,
         image: "./src/image/denglijun.png",
         position: {
-            x: 100,
+            x: 200,
             y: 0
         }
     },
     {
         id: "singer2",
         name: "谷建芬",
-        width: 450,
-        height: 450,
+        width: 380,
+        height: 380,
         image: "./src/image/gujianfen.png",
         position: {
-            x: 480,
-            y: 350
+            x: 550,
+            y: 50
         }
     },
     {
         id: "singer3",
         name: "费玉清",
-        width: 450,
-        height: 450,
+        width: 380,
+        height: 380,
         image: "./src/image/feiyuqing.png",
         position: {
-            x: 920,
-            y: 800
+            x: 1000,
+            y: 520
         }
     },
     {
         id: "singer4",
         name: "戴荃",
-        width: 450,
-        height: 500,
+        width: 300,
+        height: 400,
         image: "./src/image/daiquan.png",
         position: {
-            x: 760,
-            y: 1150
+            x: 750,
+            y: 650
         }
     },
     {
         id: "singer5",
         name: "蒋明",
-        width: 450,
-        height: 420,
+        width: 350,
+        height: 320,
         image: "./src/image/jiangming.png",
         position: {
             x: 450,
-            y: 920
+            y: 500
         }
     },
     {
         id: "singer6",
         name: "王菲",
-        width: 450,
-        height: 480,
+        width: 360,
+        height: 380,
         image: "./src/image/wangfei.png",
         position: {
-            x: 150,
-            y: 1620
+            x: 50,
+            y: 950
         }
     },
     {
         id: "singer7",
         name: "莫文蔚",
-        width: 450,
-        height: 400,
+        width: 350,
+        height: 350,
         image: "./src/image/mowenwei.png",
         position: {
-            x: 100,
-            y: 2050
+            x: 620,
+            y: 1060
         }
     },
     {
         id: "singer8",
         name: "凤凰传奇",
-        width: 450,
-        height: 450,
+        width: 360,
+        height: 380,
         image: "./src/image/fenghuangchuanqi.png",
         position: {
-            x: 490,
-            y: 1850
+            x: 330,
+            y: 1200
         }
     },
     {
         id: "singer9",
         name: "洛天依",
-        width: 450,
-        height: 450,
+        width: 380,
+        height: 380,
         image: "./src/image/luotianyi.png",
         position: {
-            x: 820,
-            y: 2430
+            x: 850,
+            y: 1600
         }
     },
     {
         id: "singer10",
         name: "清响",
-        width: 450,
-        height: 450,
+        width: 380,
+        height: 380,
         image: "./src/image/qingxiang.png",
         position: {
-            x: 430,
-            y: 2690
+            x: 460,
+            y: 1600
         }
     }
 ];
 
 
 // 修改图表生成函数,接收尺寸参数
-function createSingerGraph(singerId, singerName, width = 800, height = 600, position, centerImage) {
+function createSingerGraph(singerId, singerName, width = 800, height = 100, position, centerImage) {
     const margin = { top: 10, right: 30, bottom: 30, left: 40 };
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
@@ -164,11 +164,11 @@ function createSingerGraph(singerId, singerName, width = 800, height = 600, posi
 
             const linkDistanceScale = d3.scaleLinear()
                 .domain([minMatchLyric, maxMatchLyric])
-                .range([100, 200]);
+                .range([65, 140]);
 
             const defaultLinkColor = "#8B8386";
-            const centerNodeSize = 42;
-            const surroundingNodeSize = 25;
+            const centerNodeSize = 36;
+            const surroundingNodeSize = 20;
 
             const nodes = [
                 {
@@ -389,7 +389,7 @@ document.head.appendChild(styleSheet);
 window.onload = function() {
     const container = d3.select("#my_dataviz")
         .style("width", "100vw")
-        .style("height", "3500px")
+        .style("height", "2300px")
         .style("position", "relative");
 
     // 使用singers配置初始化图表
