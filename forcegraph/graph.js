@@ -147,8 +147,6 @@ function createForceGraph(data, config) {
         .style("position", "absolute")
         .style("top", `${config.svg.position.top}px`)
         .style("left", `${config.svg.position.left}px`)
-        .style("background-color", "#ffffff")
-        .style("border-radius", "8px");
 
     const tooltip = d3.select("body")
         .append("div")
@@ -163,7 +161,7 @@ function createForceGraph(data, config) {
     svg.call(zoom)
        .call(zoom.transform, d3.zoomIdentity
             .translate(330, 245)
-            .scale(0.20));
+            .scale(0.35));
 
     const nodeLinks = new Map();
     const connectedNodes = new Map();

@@ -1,7 +1,7 @@
 const CONFIG = { 
     // 使用窗口尺寸的80%，并保持最小和最大限制
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 1500,
     
     
     // 添加容器配置
@@ -9,8 +9,8 @@ const CONFIG = {
         width: 1500,      // 主容器宽度
         height: 3500,     // 主容器高度
         position: {
-            left: 300,     // 主容器左边距
-            top: 0       // 主容器上边距
+            left: 215,     // 主容器左边距
+            top: -20       // 主容器上边距
         },
     },
     
