@@ -14,7 +14,7 @@ const baseConfig = {
     text: {
         baseFontSize: 12,
         layerSpacing: 18,
-        minRadius: 243,
+        minRadius: 245,
         arcAngle: 300,
         charSpacing: 14,
         globalRotation: 0,
@@ -140,23 +140,21 @@ class CircularTextVisualization {
     }
 
     processData(data) {
-        if (!data || !Array.isArray(data.positive) || !Array.isArray(data.negative)) {
+        if (!data || !Array.isArray(data)) {
             throw new Error("数据格式不符合要求");
         }
-
-        const allComments = [
-            ...data.positive.map((text, i) => ({ 
-                sentiment: 'positive', 
-                content: text,
-                layer: i * 2
-            })),
-            ...data.negative.map((text, i) => ({ 
-                sentiment: 'negative', 
-                content: text,
-                layer: i * 2 + 1
-            }))
-        ].sort((a, b) => a.layer - b.layer);
-
+    
+        // 将评论按顺序映射到层级，但反转层级数值
+        const allComments = data.map((comment, i) => ({
+            sentiment: comment.sentiment,
+            content: comment.comment,
+            // 反转层级，使得索引小的在外层
+            layer: data.length - 1 - i
+        }));
+    
+        // 按照新的层级排序
+        allComments.sort((a, b) => b.layer - a.layer);
+    
         this.renderComments(allComments);
     }
 
