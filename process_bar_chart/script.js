@@ -1,11 +1,17 @@
 // 配置
 const width = 1000;
 const height = 100;  // 减小单个图表高度
-const totalHeight = height * 8 + 30 * 7;  // 总高度加上间距
-const margin = {top: 20, right: 70, bottom: 20, left: 70}; 
+const totalHeight = height * 9 + 30 * 8;  // 总高度加上间距
+const margin = {top: 20, right: 70, bottom: 20, left: 120}; 
 const dotRadius = 1.5;  
 const decorationRadius = 3.5;   
 const decorationPadding = 10;   
+
+// 在全局配置部分添加新的参数
+const baseWidth = 500;  // 基础宽度
+const charWidthFactor = 3;  // 每个字符增加的宽度（像素）
+const minChartWidth = 500;  // 最小图表宽度
+const maxChartWidth = 1200; // 最大图表宽度
 
 // 定义每个图表的颜色配置
 const chartColors = [
@@ -34,7 +40,7 @@ const imageUrls = [
 // 创建主SVG容器
 const mainSvg = d3.select("#chart")
     .append("svg")
-    .attr("width", width)
+    .attr("width", maxChartWidth)  // 使用最大宽度
     .attr("height", totalHeight);
 
 // 创建8个子图表
@@ -62,6 +68,122 @@ function processContent(content) {
       originalIndices.push(match.index);
   }
   return { cleanedChars, originalIndices, original: noBrackets };
+}
+
+// 修复processLyricAndMatches函数中的高亮逻辑问题
+function processLyricAndMatches(lyric, matchingFragments) {
+    // 如果没有匹配片段，直接返回原始歌词
+    if (!matchingFragments || !lyric) {
+        return lyric;
+    }
+    
+    // 清理歌词和匹配片段的标点及空格
+    const cleanText = text => text.replace(/[\s\p{P}]/gu, '');
+    const cleanedLyric = cleanText(lyric);
+    const cleanedMatching = cleanText(matchingFragments);
+    
+    // 创建两个方向的映射：清理后索引到原始索引，以及原始索引到清理后索引
+    const cleanToOriginalMap = [];
+    const originalToCleanMap = new Map();
+    let cleanIndex = 0;
+    
+    for (let i = 0; i < lyric.length; i++) {
+        if (!lyric[i].match(/[\s\p{P}]/gu)) {
+            cleanToOriginalMap[cleanIndex] = i;
+            originalToCleanMap.set(i, cleanIndex);
+            cleanIndex++;
+        }
+    }
+    
+    // 查找连续三个及以上字符相同的部分
+    const highlightRanges = [];
+    const minMatchLength = 3;
+    
+    // 在整个匹配片段中查找匹配
+    for (let i = 0; i < cleanedLyric.length - minMatchLength + 1; i++) {
+        // 跳过已处理的字符
+        let alreadyHighlighted = false;
+        for (const range of highlightRanges) {
+            const cleanStart = originalToCleanMap.get(range.start) || 0;
+            const cleanEnd = originalToCleanMap.get(range.end - 1) || 0;
+            if (i >= cleanStart && i < cleanEnd) {
+                alreadyHighlighted = true;
+                break;
+            }
+        }
+        if (alreadyHighlighted) continue;
+        
+        // 在匹配片段中查找当前子串
+        for (let matchStart = 0; matchStart <= cleanedMatching.length - minMatchLength; matchStart++) {
+            let matchLength = 0;
+            
+            // 计算当前位置开始的最大匹配长度
+            while (
+                i + matchLength < cleanedLyric.length && 
+                matchStart + matchLength < cleanedMatching.length && 
+                cleanedLyric[i + matchLength] === cleanedMatching[matchStart + matchLength]
+            ) {
+                matchLength++;
+            }
+            
+            // 如果找到足够长的匹配
+            if (matchLength >= minMatchLength) {
+                // 确保获取到正确的原始索引
+                const startOriginalIndex = cleanToOriginalMap[i];
+                const endOriginalIndex = cleanToOriginalMap[i + matchLength - 1] + 1; // +1 包含最后一个字符
+                
+                // 确保索引有效
+                if (startOriginalIndex !== undefined && endOriginalIndex !== undefined) {
+                    highlightRanges.push({
+                        start: startOriginalIndex,
+                        end: endOriginalIndex,
+                        text: lyric.slice(startOriginalIndex, endOriginalIndex),
+                        // 添加调试信息
+                        cleanStart: i,
+                        cleanEnd: i + matchLength,
+                        matchedText: cleanedLyric.slice(i, i + matchLength)
+                    });
+                }
+                
+                // 跳过已匹配的字符
+                i += matchLength - 1;
+                break; // 找到一个匹配就跳出当前匹配片段的循环
+            }
+        }
+    }
+    
+    // 对区间进行排序
+    highlightRanges.sort((a, b) => a.start - b.start);
+    
+    // 合并重叠的区间
+    const mergedRanges = [];
+    if (highlightRanges.length > 0) {
+        let current = highlightRanges[0];
+        for (let i = 1; i < highlightRanges.length; i++) {
+            // 如果当前区间与前一个区间有重叠或相邻
+            if (highlightRanges[i].start <= current.end) {
+                current.end = Math.max(current.end, highlightRanges[i].end);
+                current.text = lyric.slice(current.start, current.end);
+            } else {
+                mergedRanges.push(current);
+                current = highlightRanges[i];
+            }
+        }
+        mergedRanges.push(current);
+    }
+    
+    // 生成带有高亮标记的文本
+    let result = '';
+    let lastIndex = 0;
+    
+    mergedRanges.forEach(range => {
+        result += lyric.slice(lastIndex, range.start);
+        result += `<span class="highlight">${range.text}</span>`;
+        lastIndex = range.end;
+    });
+    
+    result += lyric.slice(lastIndex);
+    return result;
 }
 
 // 定义要显示的8首歌曲信息
@@ -99,7 +221,7 @@ let isTooltipFixed = false;
 let fixedPosition = { x: 0, y: 0 };
 
 // 从GitHub加载数据
-d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/matches.json")
+d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/new_matches.json")
   .then(data => {
     console.log("数据加载成功:", data);
 
@@ -107,15 +229,20 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
       throw new Error("加载的数据格式不正确");
     }
 
-    // 为每首歌创建图表
+    // 修改数据查找逻辑，同时支持song/singer和actual_song/actual_singer格式
     songsToDisplay.forEach((songInfo, index) => {
+      // 支持两种格式的歌曲信息
+      const songName = songInfo.song || songInfo.actual_song;
+      const singerName = songInfo.singer || songInfo.actual_singer;
+
       const songData = data.find(d => 
-          d.actual_song === songInfo.song && 
-          d.actual_singer === songInfo.singer
+          (d.actual_song === songName && d.actual_singer === singerName)
       );
 
+      console.log(`查找歌曲: ${songName} - ${singerName}`, songData ? "找到数据" : "未找到数据");
+
       if (!songData) {
-          console.warn(`未找到歌曲《${songInfo.song}》的数据`);
+          console.warn(`未找到歌曲《${songName}》- ${singerName} 的数据`);
           return;
       }
 
@@ -168,20 +295,29 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           });
         }
 
+        // 根据歌词长度计算实际宽度
+        const calculatedWidth = Math.min(
+            Math.max(
+                baseWidth + (songData.lyric_number * charWidthFactor),
+                minChartWidth
+            ),
+            maxChartWidth
+        );
+
         // 创建比例尺（排除装饰点区域）
         const xScale = d3.scaleLinear()
           .domain([0, totalLyrics])
-          .range([decorationPadding + decorationRadius * 4, width - margin.left - margin.right - decorationPadding - decorationRadius * 4])
+          .range([decorationPadding + decorationRadius * 4, calculatedWidth - margin.left - margin.right - decorationPadding - decorationRadius * 4])
           .clamp(true); // 防止超出范围
 
         // 计算有效宽度（不包括装饰点区域）
-        const effectiveWidth = width - margin.left - margin.right - decorationPadding * 2 - decorationRadius * 8;
+        const effectiveWidth = calculatedWidth - margin.left - margin.right - decorationPadding * 2 - decorationRadius * 8;
 
         // 创建虚线背景
         currentChart.append("line")
           .attr("x1", decorationPadding + decorationRadius * 2 + 5)  // 起点向右移动
           .attr("y1", height/2 - margin.top)
-          .attr("x2", width - margin.left - margin.right - decorationPadding - decorationRadius * 2 - 5)  // 终点向左移动
+          .attr("x2", calculatedWidth - margin.left - margin.right - decorationPadding - decorationRadius * 2 - 5)  // 终点向左移动
           .attr("y2", height/2 - margin.top)
           .attr("stroke", "#cccccc")
           .attr("stroke-width", 1.0)
@@ -192,7 +328,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .data([0, totalLyrics])
           .join("circle")
           .attr("class", "endpoint")
-          .attr("cx", (d, i) => i === 0 ? decorationPadding + decorationRadius * 2 : width - margin.left - margin.right - decorationPadding - decorationRadius * 2)
+          .attr("cx", (d, i) => i === 0 ? decorationPadding + decorationRadius * 2 : calculatedWidth - margin.left - margin.right - decorationPadding - decorationRadius * 2)
           .attr("cy", height/2 - margin.top)
           .attr("r", decorationRadius)
           .attr("fill", "#666666")
@@ -319,11 +455,22 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
 
                 const normalizedLyric = chars.replace(/[\s\p{P}]/gu, '');
 
+                // 修改tooltip内容结构
+                let tooltipContent = `
+                    <div class="tooltip-content">
+                        <div class="song-lyric">
+                            <div class="lyric-text">${
+                                songData.lyric ? 
+                                processLyricAndMatches(songData.lyric, songData.matching_fragments) : 
+                                '暂无歌词'
+                            }</div>
+                        </div>
+                        <div class="divider"></div>`;
+
+                // 添加古诗词匹配部分
                 const matches = Object.values(poemMatches).filter(m => 
                     m.positions.some(pos => pos >= d.start && pos <= d.end)
                 );
-
-                let tooltipContent = `<div class="lyric">${chars}</div><div class="divider"></div>`;
 
                 matches.forEach((match, index) => {
                     const { cleanedChars, originalIndices, original } = processContent(match.content);
