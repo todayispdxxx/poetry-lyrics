@@ -422,7 +422,7 @@
 #graph {
     position: relative;
     width: 100vw;
-    height: 150vh;
+    height: 100vh;
     margin-top: 0px; /* 添加负边距使其向上移动 */
 }
 
