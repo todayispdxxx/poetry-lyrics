@@ -1,0 +1,845 @@
+[
+  {
+    "singer": "戴荃",
+    "song_count": 5,
+    "total_matchlyric": 190,
+    "avg_matchlyric": 38.0,
+    "songs": [
+      {
+        "id": "0756",
+        "song": "人嫁",
+        "matchlyric_number": 26,
+        "matching_fragments": "夜来幽梦忽还乡小轩窗正梳妆, 纵使相逢应不识尘满面鬓如霜",
+        "poem_matches": [
+          {
+            "title": "江城子·乙卯正月二十日夜记梦",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0759",
+        "song": "秋风词",
+        "matchlyric_number": 126,
+        "matching_fragments": "秋风清秋月明落叶聚还散寒鸦栖复惊相, 相见知何日此时此夜难为情入我相思门知我相思苦长相思兮长相忆短相思兮无穷极早知如此绊人心何如当初莫相识, 何如当初莫相识",
+        "poem_matches": [
+          {
+            "title": "三五七言 / 秋风词",
+            "writer": "李白"
+          }
+        ]
+      },
+      {
+        "id": "0356",
+        "song": "嫦娥",
+        "matchlyric_number": 5,
+        "matching_fragments": "举头望明月",
+        "poem_matches": [
+          {
+            "title": "静夜思",
+            "writer": "李白"
+          }
+        ]
+      },
+      {
+        "id": "0754",
+        "song": "醉酒癫歌-东南卫视天籁之声第二期",
+        "matchlyric_number": 5
+      },
+      {
+        "id": "0755",
+        "song": "晚歌",
+        "matchlyric_number": 28,
+        "matching_fragments": "在天愿作比翼鸟在地愿为连理枝天长地久有时尽此恨绵绵无绝期",
+        "poem_matches": [
+          {
+            "title": "长恨歌",
+            "writer": "白居易"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "邓丽君",
+    "song_count": 8,
+    "total_matchlyric": 679,
+    "avg_matchlyric": 84.88,
+    "songs": [
+      {
+        "id": "0005",
+        "song": "但愿人长久",
+        "matchlyric_number": 99,
+        "matching_fragments": "明月几时有把酒问青天不知天上宫阙今夕是何年我欲乘风归去又恐琼楼玉宇高处不胜寒起舞弄清影何似在人间, 转朱阁低绮户照无眠不应有恨何事长向别时圆人有悲欢离合月有阴晴圆缺此事古难全, 我欲乘风归去又恐琼楼玉宇高处不胜寒起舞弄清影何似在人间, 转朱阁低绮户照无眠不应有恨何事长向别时圆人有悲欢离合月有阴晴圆缺此事古难全",
+        "poem_matches": [
+          {
+            "title": "水调歌头·明月几时有",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0011",
+        "song": "人面桃花",
+        "matchlyric_number": 30,
+        "matching_fragments": "去年今日此门中人面, 桃花依旧笑春风",
+        "poem_matches": [
+          {
+            "title": "题都城南庄",
+            "writer": "崔护"
+          }
+        ]
+      },
+      {
+        "id": "0006",
+        "song": "思君",
+        "matchlyric_number": 159,
+        "matching_fragments": "我住长江头君住长江尾, 共饮长江水此水几时休, 此恨何时已只愿君心似我心定不负相思意",
+        "poem_matches": [
+          {
+            "title": "卜算子·我住长江头",
+            "writer": "李之仪"
+          }
+        ]
+      },
+      {
+        "id": "0007",
+        "song": "相看泪眼",
+        "matchlyric_number": 151,
+        "matching_fragments": "寒蝉凄切对长亭晚骤雨初歇都门, 饮无绪留恋处兰舟催发, 竟无语凝噎念去去千里烟波暮霭, 楚天阔多情自古伤离别更那堪冷落清秋节, 今宵酒醒何处杨柳岸晓风残月此去经年应是良辰好景虚设便纵有千种风情更与何人说",
+        "poem_matches": [
+          {
+            "title": "雨霖铃·孜孜矻矻",
+            "writer": "王安石"
+          },
+          {
+            "title": "雨霖铃·寒蝉凄切",
+            "writer": "柳永"
+          }
+        ]
+      },
+      {
+        "id": "0008",
+        "song": "欲说还休",
+        "matchlyric_number": 88,
+        "matching_fragments": "少年不识愁滋味爱上层楼爱上层楼为赋新词强说愁而今识尽愁滋味, 却道天凉好个秋",
+        "poem_matches": [
+          {
+            "title": "丑奴儿·书博山道中壁",
+            "writer": "辛弃疾"
+          }
+        ]
+      },
+      {
+        "id": "0010",
+        "song": "万叶千声",
+        "matchlyric_number": 55,
+        "matching_fragments": "别后不知君远近触目凄凉多少闷渐行渐远渐无书水阔鱼沉何处问夜深风竹敲, 故欹单枕梦中寻梦又不成灯又烬",
+        "poem_matches": [
+          {
+            "title": "玉楼春·别后不知君远近",
+            "writer": "欧阳修"
+          }
+        ]
+      },
+      {
+        "id": "0009",
+        "song": "有谁知我此时情",
+        "matchlyric_number": 82,
+        "matching_fragments": "玉惨花愁出凤城莲花楼下柳青青尊前一唱阳关曲别个人人第五程寻好梦梦难成, 枕前泪共阶前雨",
+        "poem_matches": [
+          {
+            "title": "杂诗",
+            "writer": "佚名"
+          },
+          {
+            "title": "鹧鸪天·别情",
+            "writer": "聂胜琼"
+          }
+        ]
+      },
+      {
+        "id": "0368",
+        "song": "梦向何处寻",
+        "matchlyric_number": 15,
+        "matching_fragments": "处处闻啼鸟, 处处闻啼鸟, 处处闻啼鸟",
+        "poem_matches": [
+          {
+            "title": "春晓",
+            "writer": "孟浩然"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "费玉清",
+    "song_count": 5,
+    "total_matchlyric": 43,
+    "avg_matchlyric": 8.6,
+    "songs": [
+      {
+        "id": "0406",
+        "song": "唱一遍一遍",
+        "matchlyric_number": 5,
+        "matching_fragments": "鸳鸯不羡仙",
+        "poem_matches": [
+          {
+            "title": "长安古意",
+            "writer": "卢照邻"
+          }
+        ]
+      },
+      {
+        "id": "0411",
+        "song": "天上人间",
+        "matchlyric_number": 10,
+        "matching_fragments": "面万紫千红, 面万紫千红",
+        "poem_matches": [
+          {
+            "title": "春日",
+            "writer": "朱熹"
+          }
+        ]
+      },
+      {
+        "id": "0412",
+        "song": "四季",
+        "matchlyric_number": 5,
+        "matching_fragments": "白了少年头",
+        "poem_matches": [
+          {
+            "title": "满江红·写怀",
+            "writer": "岳飞"
+          }
+        ]
+      },
+      {
+        "id": "0410",
+        "song": "想要和你飞",
+        "matchlyric_number": 5
+      },
+      {
+        "id": "0135",
+        "song": "新鸳鸯蝴蝶梦",
+        "matchlyric_number": 18,
+        "matching_fragments": "抽刀断水水更流举杯, 抽刀断水水更流举杯",
+        "poem_matches": [
+          {
+            "title": "宣州谢脁楼饯别校书叔云",
+            "writer": "李白"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "凤凰传奇",
+    "song_count": 5,
+    "total_matchlyric": 52,
+    "avg_matchlyric": 10.4,
+    "songs": [
+      {
+        "id": "0907",
+        "song": "最炫民族风",
+        "matchlyric_number": 6,
+        "matching_fragments": "忽如一夜春风",
+        "poem_matches": [
+          {
+            "title": "白雪歌送武判官归京",
+            "writer": "岑参"
+          }
+        ]
+      },
+      {
+        "id": "0226",
+        "song": "飞天",
+        "matchlyric_number": 15,
+        "matching_fragments": "天涯沦落人, 相望不相闻, 相望不相闻",
+        "poem_matches": [
+          {
+            "title": "琵琶行 / 琵琶引",
+            "writer": "白居易"
+          },
+          {
+            "title": "春江花月夜",
+            "writer": "张若虚"
+          }
+        ]
+      },
+      {
+        "id": "0178",
+        "song": "我们的歌谣",
+        "matchlyric_number": 6,
+        "matching_fragments": "一寸相思一寸, 一寸相思一寸, 一寸相思一寸",
+        "poem_matches": [
+          {
+            "title": "无题·飒飒东风细雨来",
+            "writer": "李商隐"
+          },
+          {
+            "title": "无题四首",
+            "writer": "李商隐"
+          }
+        ]
+      },
+      {
+        "id": "0172",
+        "song": "心驰神往",
+        "matchlyric_number": 5,
+        "matching_fragments": "卷起千堆雪",
+        "poem_matches": [
+          {
+            "title": "念奴娇·赤壁怀古",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0250",
+        "song": "中国喜事",
+        "matchlyric_number": 20,
+        "matching_fragments": "春风得意马, 春风得意马, 春风得意马, 春风得意马",
+        "poem_matches": [
+          {
+            "title": "登科后",
+            "writer": "孟郊"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "谷建芬",
+    "song_count": 5,
+    "total_matchlyric": 698,
+    "avg_matchlyric": 139.6,
+    "songs": [
+      {
+        "id": "0870",
+        "song": "春晓",
+        "matchlyric_number": 130,
+        "matching_fragments": "春眠不觉晓处处闻啼鸟夜来风雨声花落知多少",
+        "poem_matches": [
+          {
+            "title": "春晓",
+            "writer": "孟浩然"
+          }
+        ]
+      },
+      {
+        "id": "0872",
+        "song": "相思",
+        "matchlyric_number": 130,
+        "matching_fragments": "红豆生南国, 红豆生南国春来发几枝愿君多采撷",
+        "poem_matches": [
+          {
+            "title": "相思",
+            "writer": "王维"
+          }
+        ]
+      },
+      {
+        "id": "0869",
+        "song": "赋得古原草送别",
+        "matchlyric_number": 160,
+        "matching_fragments": "离离原上草一岁一枯荣野火烧不尽春风吹又, 远芳侵古道晴翠接荒城又送王孙去萋萋满别情",
+        "poem_matches": [
+          {
+            "title": "草 / 赋得古原草送别",
+            "writer": "白居易"
+          }
+        ]
+      },
+      {
+        "id": "0868",
+        "song": "登鹳雀楼",
+        "matchlyric_number": 110,
+        "matching_fragments": "白日依山尽黄河入海流欲穷千里目更上一层楼, 白日依山尽黄河入海流欲穷千里目更上一层楼, 白日依山尽黄河入海流欲穷千里目更上一层楼, 白日依山尽黄河入海流欲穷千里目更上一层楼, 白日依山尽黄河入海流欲穷千里目更上一层楼, 欲穷千里目更上一层楼",
+        "poem_matches": [
+          {
+            "title": "金刚随机无尽颂·法会因由分第一",
+            "writer": "释印肃"
+          },
+          {
+            "title": "登鹳雀楼",
+            "writer": "王之涣"
+          }
+        ]
+      },
+      {
+        "id": "0871",
+        "song": "清明",
+        "matchlyric_number": 168,
+        "matching_fragments": "清明时节雨纷纷路上行人欲断魂借问酒家何处有牧童遥指杏花村, 清明时节雨纷纷路上行人欲断魂借问酒家何处有牧童遥指杏花村, 清明时节雨纷纷路上行人欲断魂借问酒家何处有牧童遥指杏花村, 清明时节雨纷纷路上行人欲断魂借问酒家何处有牧童遥指杏花村, 清明时节雨纷纷路上行人欲断魂借问酒家何处有牧童遥指杏花村, 清明时节雨纷纷路上行人欲断魂借问酒家何处有牧童遥指杏花村",
+        "poem_matches": [
+          {
+            "title": "清明",
+            "writer": "杜牧"
+          },
+          {
+            "title": "一剪梅·唱到阳关第四声",
+            "writer": "刘仙伦"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "蒋明",
+    "song_count": 7,
+    "total_matchlyric": 112,
+    "avg_matchlyric": 16.0,
+    "songs": [
+      {
+        "id": "0742",
+        "song": "桂花巷",
+        "matchlyric_number": 51,
+        "matching_fragments": "风雨西楼夜, 寻寻觅觅冷冷清清, 只有香如故, 三分春色二分尘土一分, 寻寻觅觅冷冷清清, 只有香如故, 三分春色二分尘土一分",
+        "poem_matches": [
+          {
+            "title": "水龙吟·次韵章质夫杨花词",
+            "writer": "苏轼"
+          },
+          {
+            "title": "贺圣朝·留别",
+            "writer": "叶清臣"
+          },
+          {
+            "title": "卜算子·咏梅",
+            "writer": "陆游"
+          },
+          {
+            "title": "声声慢·寻寻觅觅",
+            "writer": "李清照"
+          },
+          {
+            "title": "鹧鸪天·一点残红欲尽时",
+            "writer": "周紫芝"
+          }
+        ]
+      },
+      {
+        "id": "0739",
+        "song": "长安",
+        "matchlyric_number": 6,
+        "matching_fragments": "听取蛙声一片",
+        "poem_matches": [
+          {
+            "title": "西江月·夜行黄沙道中",
+            "writer": "辛弃疾"
+          }
+        ]
+      },
+      {
+        "id": "0741",
+        "song": "游子谣 吉他童声版",
+        "matchlyric_number": 20,
+        "matching_fragments": "慈母手中线游子身上衣临行密密缝意恐迟迟归",
+        "poem_matches": [
+          {
+            "title": "游子吟",
+            "writer": "孟郊"
+          }
+        ]
+      },
+      {
+        "id": "0740",
+        "song": "空山",
+        "matchlyric_number": 6,
+        "matching_fragments": "穷处坐看云起",
+        "poem_matches": [
+          {
+            "title": "终南别业",
+            "writer": "王维"
+          }
+        ]
+      },
+      {
+        "id": "0743",
+        "song": "少年游",
+        "matchlyric_number": 14,
+        "matching_fragments": "夕阳西下几, 归去也无风雨也无晴",
+        "poem_matches": [
+          {
+            "title": "浣溪沙·一曲新词酒一杯",
+            "writer": "晏殊"
+          },
+          {
+            "title": "定风波·莫听穿林打叶声",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0738",
+        "song": "本事",
+        "matchlyric_number": 10,
+        "matching_fragments": "花落知多少, 花落知多少",
+        "poem_matches": [
+          {
+            "title": "春晓",
+            "writer": "孟浩然"
+          }
+        ]
+      },
+      {
+        "id": "0744",
+        "song": "我们",
+        "matchlyric_number": 5,
+        "matching_fragments": "疑是地上霜",
+        "poem_matches": [
+          {
+            "title": "静夜思",
+            "writer": "李白"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "莫文蔚",
+    "song_count": 4,
+    "total_matchlyric": 40,
+    "avg_matchlyric": 10.0,
+    "songs": [
+      {
+        "id": "0479",
+        "song": "天一半 地一半",
+        "matchlyric_number": 5,
+        "matching_fragments": "高处不胜寒",
+        "poem_matches": [
+          {
+            "title": "水调歌头·明月几时有",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0121",
+        "song": "头号粉丝",
+        "matchlyric_number": 5,
+        "matching_fragments": "野火烧不尽",
+        "poem_matches": [
+          {
+            "title": "草 / 赋得古原草送别",
+            "writer": "白居易"
+          }
+        ]
+      },
+      {
+        "id": "0478",
+        "song": "青山在",
+        "matchlyric_number": 10,
+        "matching_fragments": "何处惹尘埃, 何处惹尘埃",
+        "poem_matches": [
+          {
+            "title": "菩提偈",
+            "writer": "惠能"
+          }
+        ]
+      },
+      {
+        "id": "0022",
+        "song": "如果你是李白",
+        "matchlyric_number": 20,
+        "matching_fragments": "床前明月光疑是地上霜",
+        "poem_matches": [
+          {
+            "title": "静夜思",
+            "writer": "李白"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "清响",
+    "song_count": 7,
+    "total_matchlyric": 79,
+    "avg_matchlyric": 11.29,
+    "songs": [
+      {
+        "id": "0812",
+        "song": "长风万里",
+        "matchlyric_number": 10,
+        "matching_fragments": "长风几万里, 不记来时路",
+        "poem_matches": [
+          {
+            "title": "关山月",
+            "writer": "李白"
+          },
+          {
+            "title": "点绛唇·醉漾轻舟",
+            "writer": "秦观"
+          },
+          {
+            "title": "点绛唇·桃源",
+            "writer": "秦观"
+          }
+        ]
+      },
+      {
+        "id": "0814",
+        "song": "看朱成碧",
+        "matchlyric_number": 10,
+        "matching_fragments": "更著风和雨, 更著风和雨",
+        "poem_matches": [
+          {
+            "title": "卜算子·咏梅",
+            "writer": "陆游"
+          }
+        ]
+      },
+      {
+        "id": "0813",
+        "song": "醉卧红尘",
+        "matchlyric_number": 16,
+        "matching_fragments": "高处不胜寒, 春风又绿江南, 寂寞无人见",
+        "poem_matches": [
+          {
+            "title": "水调歌头·明月几时有",
+            "writer": "苏轼"
+          },
+          {
+            "title": "泊船瓜洲",
+            "writer": "王安石"
+          },
+          {
+            "title": "永遇乐·彭城夜宿燕子楼",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0815",
+        "song": "思无名",
+        "matchlyric_number": 5,
+        "matching_fragments": "对影成三人",
+        "poem_matches": [
+          {
+            "title": "月下独酌四首",
+            "writer": "李白"
+          },
+          {
+            "title": "月下独酌四首·其一",
+            "writer": "李白"
+          }
+        ]
+      },
+      {
+        "id": "0816",
+        "song": "我的耽美NO WAY TO SAY",
+        "matchlyric_number": 16,
+        "matching_fragments": "何所似天地一沙鸥, 何所似天地一沙鸥",
+        "poem_matches": [
+          {
+            "title": "旅夜书怀",
+            "writer": "杜甫"
+          }
+        ]
+      },
+      {
+        "id": "0811",
+        "song": "常言笑",
+        "matchlyric_number": 15,
+        "matching_fragments": "孤烟直长河, 孤烟直长河, 孤烟直长河",
+        "poem_matches": [
+          {
+            "title": "使至塞上",
+            "writer": "王维"
+          }
+        ]
+      },
+      {
+        "id": "0810",
+        "song": "天为谁春",
+        "matchlyric_number": 7,
+        "matching_fragments": "也无风雨也无晴",
+        "poem_matches": [
+          {
+            "title": "定风波·莫听穿林打叶声",
+            "writer": "苏轼"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "singer": "王菲",
+    "song_count": 6,
+    "total_matchlyric": 673,
+    "avg_matchlyric": 112.17,
+    "songs": [
+      {
+        "id": "0437",
+        "song": "清风徐来",
+        "matchlyric_number": 40,
+        "matching_fragments": "清风徐来水波不兴, 清风徐来水波不兴, 清风徐来水波不兴, 清风徐来水波不兴, 清风徐来水波不兴",
+        "poem_matches": [
+          {
+            "title": "前赤壁赋",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0151",
+        "song": "但愿人长久",
+        "matchlyric_number": 178,
+        "matching_fragments": "明月几时有把酒问青天不知天上宫阙今夕是何年我欲乘风归去又恐琼楼玉宇高处不胜寒起舞弄清影何似在人间, 转朱阁低绮户照无眠不应有恨何事长向别时圆人有悲欢离合月有阴晴圆缺此事古难全, 我欲乘风归去又恐琼楼玉宇高处不胜寒起舞弄清影何似在人间, 转朱阁低绮户照无眠不应有恨何事长向别时圆人有悲欢离合月有阴晴圆缺此事古难全",
+        "poem_matches": [
+          {
+            "title": "水调歌头·明月几时有",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0258",
+        "song": "清平调",
+        "matchlyric_number": 98,
+        "matching_fragments": "云想衣裳花想容春风拂槛露华浓若非群玉山头见会向瑶台月下逢, 一枝红艳露凝香云雨巫山枉断肠借问汉宫谁得似可怜飞燕倚新妆, 名花倾国两相欢长得君王带笑看解释春风无限恨沉香亭北倚阑干, 解释春风无限恨沉香亭北倚阑干",
+        "poem_matches": [
+          {
+            "title": "清平调·其一",
+            "writer": "李白"
+          },
+          {
+            "title": "清平调·名花倾国两相欢",
+            "writer": "李白"
+          },
+          {
+            "title": "清平调·其二",
+            "writer": "李白"
+          },
+          {
+            "title": "清平调·其三",
+            "writer": "李白"
+          }
+        ]
+      },
+      {
+        "id": "0442",
+        "song": "单行道",
+        "matchlyric_number": 20,
+        "matching_fragments": "春眠不觉晓, 花落知多少, 春眠不觉晓, 花落知多少",
+        "poem_matches": [
+          {
+            "title": "春晓",
+            "writer": "孟浩然"
+          }
+        ]
+      },
+      {
+        "id": "0044",
+        "song": "但愿人长久",
+        "matchlyric_number": 169,
+        "matching_fragments": "明月几时有把酒问青天不知天上宫阙今夕是何年我欲乘风归去又恐琼楼玉宇高处不胜寒起舞弄清影何似在人间, 转朱阁低绮户照无眠不应有恨何事长向别时圆人有悲欢离合月有阴晴圆缺此事古难全, 我欲乘风归去又恐琼楼玉宇高处不胜寒起舞弄清影何似在人间, 转朱阁低绮户照无眠不应有恨何事长向别时圆人有悲欢离合月有阴晴圆缺此事古难全",
+        "poem_matches": [
+          {
+            "title": "水调歌头·明月几时有",
+            "writer": "苏轼"
+          }
+        ]
+      },
+      {
+        "id": "0439",
+        "song": "但愿人长久 - Album Version",
+        "matchlyric_number": 168
+      }
+    ]
+  },
+  {
+    "singer": "洛天依",
+    "song_count": 6,
+    "total_matchlyric": 43,
+    "songs": [
+      {
+        "id": "0420",
+        "song": "落花劫",
+        "matchlyric_number": 5,
+        "matching_fragments": "任宝奁尘满",
+        "poem_matches": [
+          {
+            "title": "凤凰台上忆吹箫·香冷金猊",
+            "writer": "李清照"
+          }
+        ]
+      },
+      {
+        "id": "0904",
+        "song": "权御天下",
+        "matchlyric_number": 5,
+        "matching_fragments": "当如孙仲谋",
+        "poem_matches": [
+          {
+            "title": "南乡子·登京口北固亭有怀",
+            "writer": "辛弃疾"
+          }
+        ]
+      },
+      {
+        "id": "0421",
+        "song": "权御天下",
+        "matchlyric_number": 5,
+        "matching_fragments": "当如孙仲谋",
+        "poem_matches": [
+          {
+            "title": "南乡子·登京口北固亭有怀",
+            "writer": "辛弃疾"
+          }
+        ]
+      },
+      {
+        "id": "0423",
+        "song": "青楼梦",
+        "matchlyric_number": 16,
+        "matching_fragments": "沉舟侧畔千帆, 过尽千帆皆, 共剪西窗烛",
+        "poem_matches": [
+          {
+            "title": "望江南·梳洗罢",
+            "writer": "温庭筠"
+          },
+          {
+            "title": "酬乐天扬州初逢席上见赠",
+            "writer": "刘禹锡"
+          },
+          {
+            "title": "望江南·梳洗罢",
+            "writer": "温庭筠"
+          },
+          {
+            "title": "夜雨寄北",
+            "writer": "李商隐"
+          }
+        ]
+      },
+      {
+        "id": "0417",
+        "song": "挑灯看剑",
+        "matchlyric_number": 5,
+        "matching_fragments": "醉里挑灯看",
+        "poem_matches": [
+          {
+            "title": "破阵子·为陈同甫赋壮词以寄之",
+            "writer": "辛弃疾"
+          }
+        ]
+      },
+      {
+        "id": "0312",
+        "song": "还不是因为你长得不好看",
+        "matchlyric_number": 7,
+        "matching_fragments": "回眸一笑百媚生",
+        "poem_matches": [
+          {
+            "title": "长恨歌",
+            "writer": "白居易"
+          }
+        ]
+      }
+    ],
+    "avg_matchlyric": 7.17
+  }
+]
