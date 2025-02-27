@@ -69,7 +69,7 @@ const singers = [
     {
         id: "singer8",
         name: "凤凰传奇",
-        width: 360,
+        width: 365,
         height: 380,
         image: "./src/image/fenghuangchuanqi.png",
         position: {
@@ -431,159 +431,278 @@ function createSingerGraph(singerId, singerName, width = 800, height = 100, posi
             nodes[0].fx = chartWidth / 2;
             nodes[0].fy = chartHeight / 2;
 
-            // 修改nodeGroup的事件处理部分，进一步优化性能和流畅度
+            // 优化nodeGroup的事件处理部分
             nodeGroup
                 .on("mouseover", function(event, d) { 
+                    // 确保事件不会连续触发
+                    if (this.__isHovered) return;
+                    this.__isHovered = true;
+                    
+                    // 阻止事件冒泡
+                    event.preventDefault();
                     event.stopPropagation();
+                    
                     activeNode = d;
                     
-                    // 获取当前节点和图像
+                    // 选择节点元素
                     const currentNode = d3.select(this);
                     const nodeImage = currentNode.select("image");
                     
-                    // 简化滤镜ID生成
-                    const uniqueId = `filter-${singerId}-${d.id.replace(/\s+/g, '-')}`;
+                    // 使用更稳定的唯一ID
+                    const uniqueId = `glow-${singerId}-${d.id.replace(/[^a-zA-Z0-9]/g, '-')}`;
                     
-                    // 优化滤镜处理
-                    if (!svg.select(`#${uniqueId}`).empty()) {
-                        // 如果滤镜已存在，直接使用
-                        nodeImage.style("filter", `url(#${uniqueId})`);
-                    } else {
-                        // 如果滤镜不存在，才创建新滤镜
+                    // 检查滤镜是否已经存在
+                    let filter;
+                    if (svg.select("#" + uniqueId).empty()) {
+                        // 只有在滤镜不存在时才创建新滤镜
                         const defs = svg.append("defs");
-                        const filter = defs.append("filter")
+                        filter = defs.append("filter")
                             .attr("id", uniqueId)
-                            .attr("x", "-40%")
-                            .attr("y", "-40%")
-                            .attr("width", "180%")
-                            .attr("height", "180%");
+                            .attr("x", "-60%")
+                            .attr("y", "-60%")
+                            .attr("width", "220%")
+                            .attr("height", "220%")
+                            .attr("filterUnits", "objectBoundingBox");
                         
-                        // 简化滤镜效果，使用更高性能的配置
-                        filter.append("feDropShadow")
-                            .attr("dx", "0")
-                            .attr("dy", "0")
-                            .attr("stdDeviation", "4") // 减小模糊半径，提高性能
-                            .attr("flood-color", d.group === 1 ? "#FFD700" : "#FFEE58")
-                            .attr("flood-opacity", "0.75"); // 略微降低不透明度
+                        // 构建滤镜效果
+                        filter.append("feGaussianBlur")
+                            .attr("in", "SourceAlpha")
+                            .attr("stdDeviation", "5")
+                            .attr("result", "blur");
                             
-                        nodeImage.style("filter", `url(#${uniqueId})`);
+                        filter.append("feFlood")
+                            .attr("flood-color", d.group === 1 ? "#FFDE70" : "#FFF5B8")
+                            .attr("flood-opacity", "0.7")
+                            .attr("result", "color");
+                            
+                        filter.append("feComposite")
+                            .attr("in", "color")
+                            .attr("in2", "blur")
+                            .attr("operator", "in")
+                            .attr("result", "shadowBlur");
+                        
+                        filter.append("feGaussianBlur")
+                            .attr("in", "shadowBlur")
+                            .attr("stdDeviation", "2.5")
+                            .attr("result", "glow");
+                            
+                        filter.append("feComponentTransfer")
+                            .append("feFuncA")
+                            .attr("type", "linear")
+                            .attr("slope", "1.2");
+                            
+                        const feMerge = filter.append("feMerge");
+                        feMerge.append("feMergeNode").attr("in", "shadowBlur");
+                        feMerge.append("feMergeNode").attr("in", "glow");
+                        feMerge.append("feMergeNode").attr("in", "SourceGraphic");
                     }
                     
-                    // 适当推迟变换应用，确保GPU可以正确处理
-                    requestAnimationFrame(() => {
-                        nodeImage
-                            .transition()
-                            .duration(100) // 进一步缩短时间，减少感知延迟
-                            .ease(d3.easeCubicOut)
-                            .attr("transform", d.group === 1 ? "scale(1.08)" : "scale(1.16)");
-                    });
+                    // 使用will-change属性提前通知浏览器即将进行变换
+                    nodeImage.style("will-change", "transform, filter");
                     
-                    // 节点特定的交互
-                    if (d.group !== 1) {
-                        // 高亮连接线，改为纯红色 (#FF0000)
-                        link
-                            .style("stroke", l => 
-                                (l.source === d || l.target === d) ? "#FF0000" : defaultLinkColor) // 改为纯红色
-                            .style("stroke-opacity", l => 
-                                (l.source === d || l.target === d) ? 0.85 : 0.5)
-                            .style("stroke-width", l => 
-                                (l.source === d || l.target === d) ? 
-                                (1 + (l.matchlyric_number / maxMatchLyric) * 2.5) : 
-                                (1 + (l.matchlyric_number / maxMatchLyric) * 2));
-                        
-                        // 优化连线过渡动画
-                        link
-                            .transition()
-                            .duration(100) // 加快线条过渡
-                            .ease(d3.easeQuadOut);
-                    }
-                    
-                    // Tooltip内容处理不变
-                    if (d.group === 1) {
-                        const content = `
-                            <div style="font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; text-align: left;">
-                                ${d.singer}
-                            </div>
-                            <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <div style="font-size: 16px; color: #666; text-align: left;">
-                                    歌曲数量: <b>${d.songCount}</b>
-                                </div>
-                            </div>
-                        `;
-                        
-                        showGlobalTooltip(event, content, 280);
-                    } else {
-                        // 歌曲节点tooltip
-                        const songData = singerData.songs.find(s => s.song === d.id);
-                        if (!songData) return;
-                        
-                        // 构建tooltip内容
-                        let tooltipContent = `
-                            <div style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-                                <span>《${d.id}》</span>
-                                <span style="font-size: 14px; font-weight: normal; color: #888; padding: 3px 8px; background: #f8f8f8; border-radius: 12px;">引用字数: ${d.matchlyric_number}</span>
-                            </div>`;
-                            
-                        // 添加引用片段
-                        if (songData.matching_fragments) {
-                            tooltipContent += `
-                                <div style="margin: 12px 0;">
-                                    <div style="font-size: 14px; line-height: 1.6; color: #555; background: #f9f9f9; padding: 10px 12px; border-radius: 6px;">
-                                        ${songData.matching_fragments}
-                                    </div>
-                                </div>`;
+                    // 使用Animation API代替setTimeout和requestAnimationFrame，性能更好
+                    const filterAnimation = nodeImage.node().animate(
+                        [
+                            { filter: "none" },
+                            { filter: `url(#${uniqueId})` }
+                        ],
+                        { 
+                            duration: 150,
+                            fill: "forwards",
+                            easing: "ease-out"
                         }
-                        
-                        // 古诗词引用
-                        if (songData.poem_matches && songData.poem_matches.length > 0) {
-                            tooltipContent += `
-                                <div style="margin: 12px 0;">
-                                    <div style="max-height: 180px; overflow-y: auto;">`;
-                                    
-                            songData.poem_matches.forEach((poem, index) => {
+                    );
+                    
+                    const scaleAnimation = nodeImage.node().animate(
+                        [
+                            { transform: "scale(1)" },
+                            { transform: d.group === 1 ? "scale(1.08)" : "scale(1.15)" }
+                        ],
+                        { 
+                            duration: 150,
+                            fill: "forwards",
+                            easing: "cubic-bezier(0.25, 0.1, 0.25, 1)"
+                        }
+                    );
+                    
+                    // 节点特定的交互 - 使用CSS变量实现更平滑的过渡
+                    if (d.group !== 1) {
+                        // 高亮连接线
+                        link.each(function(l) {
+                            const isRelated = (l.source.id === d.id || l.target.id === d.id);
+                            const lineElement = d3.select(this);
+                            
+                            // 存储原始样式，以便恢复
+                            if (!this.__originalStyle) {
+                                this.__originalStyle = {
+                                    stroke: lineElement.style("stroke"),
+                                    opacity: lineElement.style("stroke-opacity"),
+                                    width: lineElement.style("stroke-width")
+                                };
+                            }
+                            
+                            // 使用CSS变量设置样式，避免回流
+                            lineElement
+                                .style("--target-color", isRelated ? "#FF0000" : defaultLinkColor)
+                                .style("--target-opacity", isRelated ? "0.85" : "0.5")
+                                .style("--target-width", isRelated ? 
+                                    (1 + (l.matchlyric_number / maxMatchLyric) * 2.5) + "px" : 
+                                    (1 + (l.matchlyric_number / maxMatchLyric) * 2) + "px");
+                            
+                            // 应用过渡
+                            this.animate(
+                                [
+                                    { 
+                                        stroke: this.__originalStyle.stroke,
+                                        strokeOpacity: this.__originalStyle.opacity,
+                                        strokeWidth: this.__originalStyle.width
+                                    },
+                                    { 
+                                        stroke: isRelated ? "#FF0000" : defaultLinkColor,
+                                        strokeOpacity: isRelated ? 0.85 : 0.5,
+                                        strokeWidth: isRelated ? 
+                                            (1 + (l.matchlyric_number / maxMatchLyric) * 2.5) + "px" : 
+                                            (1 + (l.matchlyric_number / maxMatchLyric) * 2) + "px"
+                                    }
+                                ],
+                                { duration: 120, fill: "forwards", easing: "ease-out" }
+                            );
+                        });
+                    }
+                    
+                    // Tooltip内容处理，使用RAF确保动画流畅
+                    window.requestAnimationFrame(() => {
+                        // 现有的tooltip内容代码保持不变
+                        if (d.group === 1) {
+                            // 中心节点tooltip内容
+                            const content = `
+                                <div style="font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; text-align: left;">
+                                    ${d.singer}
+                                </div>
+                                <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div style="font-size: 16px; color: #666; text-align: left;">
+                                        歌曲数量: <b>${d.songCount}</b>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            showGlobalTooltip(event, content, 280);
+                        } else {
+                            // 歌曲节点tooltip逻辑保持不变
+                            const songData = singerData.songs.find(s => s.song === d.id);
+                            if (!songData) return;
+                            
+                            // 构建tooltip内容
+                            let tooltipContent = `
+                                <div style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>《${d.id}》</span>
+                                    <span style="font-size: 14px; font-weight: normal; color: #888; padding: 3px 8px; background: #f8f8f8; border-radius: 12px;">引用字数: ${d.matchlyric_number}</span>
+                                </div>`;
+                                
+                            // 添加引用片段部分
+                            if (songData.matching_fragments) {
                                 tooltipContent += `
-                                    <div style="padding: 10px 0; ${index > 0 ? 'border-top: 1px dashed #eee;' : ''}">
-                                        <div style="margin-bottom: 5px;">
-                                            <span style="font-size: 15px; font-weight: 500; color: #333;">《${poem.title}》</span>
-                                            <span style="font-size: 13px; color: #777; font-style: italic; margin-left: 5px;">
-                                                ${poem.writer || '佚名'}
-                                            </span>
+                                    <div style="margin: 12px 0;">
+                                        <div style="font-size: 14px; line-height: 1.6; color: #555; background: #f9f9f9; padding: 10px 12px; border-radius: 6px;">
+                                            ${songData.matching_fragments}
                                         </div>
                                     </div>`;
-                            });
+                            }
                             
-                            tooltipContent += `
-                                    </div>
-                                </div>`;
+                            // 古诗词引用部分
+                            if (songData.poem_matches && songData.poem_matches.length > 0) {
+                                tooltipContent += `
+                                    <div style="margin: 12px 0;">
+                                        <div style="max-height: 180px; overflow-y: auto;">`;
+                                        
+                                // 添加每一首古诗词
+                                songData.poem_matches.forEach((poem, index) => {
+                                    tooltipContent += `
+                                        <div style="padding: 10px 0; ${index > 0 ? 'border-top: 1px dashed #eee;' : ''}">
+                                            <div style="margin-bottom: 5px;">
+                                                <span style="font-size: 15px; font-weight: 500; color: #333;">《${poem.title}》</span>
+                                                <span style="font-size: 13px; color: #777; font-style: italic; margin-left: 5px;">
+                                                    ${poem.writer || '佚名'}
+                                                </span>
+                                            </div>
+                                        </div>`;
+                                });
+                                
+                                tooltipContent += `
+                                        </div>
+                                    </div>`;
+                            }
+                            
+                            showGlobalTooltip(event, tooltipContent, 350);
                         }
-                        
-                        showGlobalTooltip(event, tooltipContent, 350);
-                    }
+                    });
                 })
                 .on("mouseout", function(event, d) {
-                    // 保留滤镜定义，仅清除应用
-                    // svg.selectAll("defs").remove(); // 注释掉这一行，不再每次都删除滤镜
+                    this.__isHovered = false;
                     
-                    // 恢复节点样式
-                    d3.select(this)
-                        .select("image")
-                        .style("filter", null) // 移除滤镜引用
-                        .transition()
-                        .duration(150) // 稍微缩短退出动画
-                        .ease(d3.easeCubicInOut)
-                        .attr("transform", "scale(1)");
+                    // 阻止事件冒泡
+                    event.preventDefault();
+                    event.stopPropagation();
                     
-                    // 恢复连接线样式，优化过渡
-                    link
-                        .transition()
-                        .duration(150) // 缩短过渡时间
-                        .ease(d3.easeQuadInOut)
-                        .style("stroke", defaultLinkColor)
-                        .style("stroke-opacity", 0.6)
-                        .style("stroke-width", d => 1 + (d.matchlyric_number / maxMatchLyric) * 2);
+                    // 获取节点图像
+                    const nodeImage = d3.select(this).select("image");
                     
-                    // 延迟隐藏tooltip
+                    // 使用Animation API恢复原始状态
+                    const filterAnimation = nodeImage.node().animate(
+                        [
+                            { filter: `url(#glow-${singerId}-${d.id.replace(/[^a-zA-Z0-9]/g, '-')})` },
+                            { filter: "none" }
+                        ],
+                        { 
+                            duration: 120, 
+                            fill: "forwards",
+                            easing: "ease-in" 
+                        }
+                    );
+                    
+                    const scaleAnimation = nodeImage.node().animate(
+                        [
+                            { transform: d.group === 1 ? "scale(1.08)" : "scale(1.15)" },
+                            { transform: "scale(1)" }
+                        ],
+                        { 
+                            duration: 120, 
+                            fill: "forwards",
+                            easing: "cubic-bezier(0.25, 0.1, 0.25, 1)" 
+                        }
+                    );
+                    
+                    // 恢复连接线样式
+                    link.each(function(l) {
+                        if (this.__originalStyle) {
+                            const lineElement = d3.select(this);
+                            
+                            this.animate(
+                                [
+                                    { 
+                                        stroke: lineElement.style("stroke"),
+                                        strokeOpacity: lineElement.style("stroke-opacity"),
+                                        strokeWidth: lineElement.style("stroke-width")
+                                    },
+                                    { 
+                                        stroke: this.__originalStyle.stroke,
+                                        strokeOpacity: this.__originalStyle.opacity,
+                                        strokeWidth: this.__originalStyle.width
+                                    }
+                                ],
+                                { duration: 120, fill: "forwards", easing: "ease-in" }
+                            );
+                        }
+                    });
+                    
+                    // 动画完成后清除will-change属性
+                    filterAnimation.onfinish = () => {
+                        nodeImage.style("will-change", "auto");
+                        // 可以选择在这里清除滤镜定义，但为了性能可能保留更好
+                    };
+                    
+                    // 延迟隐藏tooltip，给用户足够时间移动到tooltip上
                     hideGlobalTooltip(150);
                 });
         })
