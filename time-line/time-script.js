@@ -95,10 +95,10 @@ let parsedData = [];
                         <div class="row bottom-align">
                             <div class="year">${d.date.getFullYear()}</div>
                             <div class="comments">
-                                <img src="comment.png" alt="评论图标" class="comment-icon">
+                                <img src="time-line/comment.png" alt="评论图标" class="comment-icon">
                                 ${d.comments}
                             </div>
-                        </div>
+                        </div>time-line/
                     `);
 
                 const tooltipHeight = tooltip.node().offsetHeight;
@@ -173,7 +173,7 @@ let parsedData = [];
            .data(midPoints)
            .enter().append("image")
            .attr("class", "mid-image")
-           .attr("xlink:href", "array.png")
+           .attr("xlink:href", "time-line/array.png")
            .attr("x", d => d - 15) // 图片宽度的一半
            .attr("y", height - 40) // 调整 y 值，使图片与年份对齐
            .attr("width", 30)
