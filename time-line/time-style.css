@@ -1,14 +1,4 @@
-@font-face {
-            font-family: 'DFPSongW12-GB';
-            src: url('DFPGB_S12.ttf') format('truetype');
-        }
-
-        @font-face {
-            font-family: 'DFGB_S7';
-            src: url('DFGB_S7.TTF') format('truetype'); /* 确保路径和格式正确 */
-        }
-
-        body {
+     body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -48,7 +38,7 @@
             text-overflow: ellipsis;
         }
         .tooltip .singer {
-            font-family: 'DFPSongW12-GB';
+            font-family: "S12";
             font-style: normal;
             font-weight: 400;
             font-size: 25px;
@@ -58,7 +48,7 @@
             transform: translateY(1.6px); /* 向下移动1.6px */
         }
         .tooltip .song {
-            font-family: 'DFGB_S7';
+            font-family: "S7";
             font-style: normal;
             font-weight: 400;
             font-size: 18px;
@@ -67,7 +57,7 @@
             color: #000000;
         }
         .tooltip .year {
-            font-family: 'DFPSongW12-GB';
+            font-family: "S12";
             font-style: normal;
             font-weight: 400;
             font-size: 27px;
@@ -78,7 +68,7 @@
             transform: translateY(2.25px); /* 向下移动2.25px */
         }
         .tooltip .comments {
-            font-family: 'DFPSongW12-GB';
+            font-family: "S12";
             font-style: normal;
             font-weight: 400;
             font-size: 18px;
@@ -108,7 +98,7 @@
              transform: translateY(1.2px); /* 向下1.2px */
         }
         .decade-text {
-            font-family: 'DFPSongW12-GB';
+            font-family: "S12";
             font-style: normal;
             font-weight: 400;
             font-size: 20px;
