@@ -40,7 +40,7 @@ let parsedData = [];
 
     function drawChart(data) {
         const svg = d3.select("svg"),
-              width = +svg.attr("width") * 1.4, // 将宽度扩大 1.4 倍
+              width = +svg.attr("width"),
               height = +svg.attr("height"),
               margin = { left: 100 }; // 设置右移的距离
 
