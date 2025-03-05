@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
 }
-.chart {
+.chart, .bee-chart {
     width: 100%;
     height: 500px;
     margin: 50px auto;
@@ -11,15 +11,15 @@ body {
     overflow-y: hidden;
     position: relative;  /* 用于定位内容 */
 }
-.dot {
+.bee-dot {
     fill: #8994DC;
     stroke: transparent;
 }
-.highlight {
+.bee-highlight {
     stroke: black;
     stroke-width: 2px;
 }
-.tooltip {
+.bee-tooltip {
     position: absolute;
     background-color: white;
     border: 1px solid #ccc;
@@ -31,29 +31,36 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     gap: 5px;
+    z-index: 1000; /* 确保在其他元素上方显示 */
 }
-.tooltip .singer-song {
+.bee-tooltip .singer-song {
     font-size: 18px;
     color: black;
     font-family: "S12", serif;  /* 宋体 */
 }
-.tooltip .song {
+.bee-tooltip .song {
     font-size: 16px;
     font-weight: normal;
     color: #333;
 }
-.tooltip .quote {
+.bee-tooltip .quote {
     font-size: 12px;
     color: orange;
 }
-.cluster-label .title {
+.bee-cluster-label .bee-title {
     font-size: 22px;
     fill: #333;
     font-family: "S12", serif;  /* 宋体 */
 }
 
-.cluster-label .author {
+.bee-cluster-label .bee-author {
     font-size: 20px;
     fill: #666;
     font-family: "S7", serif;  /* 楷体 */
+}
+.bee-tooltip-line {
+    stroke: #555;
+    stroke-width: 1.5;
+    stroke-opacity: 0.8;
+    pointer-events: none;
 }
