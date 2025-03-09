@@ -50,6 +50,7 @@
             .${TIME_NS.tooltipClass} {
                 position: absolute;
                 width: auto;
+                max-width: 80%; /* 添加最大宽度，防止tooltip太宽 */
                 background: #FFFFFF;
                 border-radius: 11px;
                 pointer-events: none;
@@ -63,9 +64,11 @@
             .${TIME_NS.tooltipClass} .song,
             .${TIME_NS.tooltipClass} .year,
             .${TIME_NS.tooltipClass} .comments {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                white-space: normal; /* 修改为normal允许换行 */
+                overflow-wrap: break-word; /* 添加词换行 */
+                word-wrap: break-word; /* 兼容旧浏览器 */
+                word-break: break-word; /* 在必要时强制断词 */
+                hyphens: auto; /* 允许连字符 */
             }
             
             .${TIME_NS.tooltipClass} .singer {
