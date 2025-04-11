@@ -43,11 +43,24 @@ async function loadJsonFromGitHub() {
         
         const jsonData = await response.json();
         
-        if (!jsonData || !jsonData.data || jsonData.data.length === 0) {
-            throw new Error('JSON文件中没有数据');
+        // 添加日志检查数据
+        console.log("加载的JSON数据:", jsonData);
+        
+        // 检查数据结构
+        if (!jsonData) {
+            throw new Error('JSON文件为空');
         }
         
-        const ranges = processData(jsonData.data);
+        // 如果jsonData是一个数组，直接使用它
+        const dataToProcess = Array.isArray(jsonData) ? jsonData : (jsonData.data || []);
+        
+        if (dataToProcess.length === 0) {
+            throw new Error('没有找到有效的数据');
+        }
+        
+        console.log("处理的数据数组:", dataToProcess);
+        
+        const ranges = processData(dataToProcess);
         renderVisualization(ranges);
         
     } catch (error) {
@@ -67,7 +80,9 @@ async function handleFile(event) {
 
     try {
         const jsonData = await readJsonFile(file);
-        const ranges = processData(jsonData.data);
+        // 如果jsonData是一个数组，直接使用它
+        const dataToProcess = Array.isArray(jsonData) ? jsonData : (jsonData.data || []);
+        const ranges = processData(dataToProcess);
         renderVisualization(ranges);
     } catch (error) {
         alert(`处理文件时出错: ${error.message}`);
@@ -82,7 +97,6 @@ function readJsonFile(file) {
         reader.onload = (e) => {
             try {
                 const jsonData = JSON.parse(e.target.result);
-                if (!jsonData || !jsonData.data) throw new Error('无效的JSON数据');
                 resolve(jsonData);
             } catch (error) {
                 reject(error);
@@ -95,19 +109,30 @@ function readJsonFile(file) {
 
 // 处理从JSON读取的数据
 function processData(jsonData) {
+    // 添加额外的防御性检查
+    if (!Array.isArray(jsonData)) {
+        console.error("processData: 预期jsonData为数组，但收到:", typeof jsonData);
+        return categorizeData([]);
+    }
+    
     const rawData = jsonData
-        .filter(item => item && item.cite_type && item.fragment_number)
-        .map(item => ({
-            colorCode: parseInt(item.cite_type) || null,
-            value: parseInt(item.fragment_number) || null
-        }))
+        .filter(item => item && typeof item === 'object') // 确保每个项是一个对象
+        .map(item => {
+            // 检查必要的字段是否存在
+            const colorCode = item.cite_type ? parseInt(item.cite_type) : null;
+            const value = item.fragment_number ? parseInt(item.fragment_number) : null;
+            
+            return { colorCode, value };
+        })
         .filter(data => 
             data.colorCode !== null &&
             data.value !== null &&
             [1, 2, 3].includes(data.colorCode) && 
             typeof data.value === 'number'
         );
-
+    
+    console.log("处理后的原始数据:", rawData.length, "条记录");
+    
     return categorizeData(rawData);
 }
 
@@ -138,6 +163,11 @@ function categorizeData(rawData) {
         ranges[key].push(data);
     });
 
+    // 输出分类后的数据
+    Object.entries(ranges).forEach(([key, data]) => {
+        console.log(`范围 ${key}: ${data.length} 条数据`);
+    });
+
     Object.values(ranges).forEach(data => data.sort((a, b) => b.colorCode - a.colorCode));
     return ranges;
 }
@@ -145,7 +175,10 @@ function categorizeData(rawData) {
 // 渲染可视化图表
 function renderVisualization(ranges) {
     const container = document.getElementById('chartContainer');
-    if (!container) return;
+    if (!container) {
+        console.error("找不到chartContainer元素");
+        return;
+    }
     
     container.innerHTML = '';
 
@@ -189,7 +222,9 @@ function renderVisualization(ranges) {
     const order = ['5', '6', '7', '8', '9', '10', '10-20','20-30', '30-50', '50-100', '100以上'];
     
     order.forEach(labelKey => {
-        const dataPoints = ranges[labelKey];
+        const dataPoints = ranges[labelKey] || []; // 添加默认空数组，防止undefined
+        console.log(`渲染 ${labelKey}: ${dataPoints.length} 个点`);
+        
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'category';
 
@@ -216,8 +251,14 @@ function renderVisualization(ranges) {
                 circle.className = 'circle';
                 
                 if (dataIndex < dataPoints.length) {
-                    circle.style.backgroundColor = COLOR_MAP[dataPoints[dataIndex].colorCode];
-                    circle.dataset.colorCode = dataPoints[dataIndex].colorCode;
+                    const dataPoint = dataPoints[dataIndex];
+                    // 额外检查，确保dataPoint和colorCode存在
+                    if (dataPoint && dataPoint.colorCode && COLOR_MAP[dataPoint.colorCode]) {
+                        circle.style.backgroundColor = COLOR_MAP[dataPoint.colorCode];
+                        circle.dataset.colorCode = dataPoint.colorCode;
+                    } else {
+                        circle.style.visibility = 'hidden';
+                    }
                 } else {
                     circle.style.visibility = 'hidden'; // 空白占位
                 }
