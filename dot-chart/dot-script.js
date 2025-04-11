@@ -21,13 +21,6 @@ const LABEL_MAP = {
 
 // 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
-    // 创建一个显示容器，如果不存在
-    if (!document.getElementById('chartContainer')) {
-        const container = document.createElement('div');
-        container.id = 'chartContainer';
-        document.body.appendChild(container);
-    }
-    
     // 保留文件输入功能（可选）
     const fileInput = document.getElementById('fileInput');
     if (fileInput) {
@@ -41,14 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 从GitHub加载JSON文件
 async function loadJsonFromGitHub() {
     try {
-        // 显示加载状态
-        const container = document.getElementById('chartContainer');
-        container.innerHTML = '<div class="loading">正在加载数据，请稍候...</div>';
-        
-        // 使用相同路径但改为JSON文件
         const jsonUrl = 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/dot-data.json';
-        
-        // 尝试直接获取JSON
         const response = await fetch(jsonUrl);
         
         if (!response.ok) {
@@ -57,65 +43,20 @@ async function loadJsonFromGitHub() {
         
         const jsonData = await response.json();
         
-        // 处理JSON数据
-        processJsonData(jsonData);
+        if (!jsonData || !jsonData.data || jsonData.data.length === 0) {
+            throw new Error('JSON文件中没有数据');
+        }
+        
+        const ranges = processData(jsonData.data);
+        renderVisualization(ranges);
         
     } catch (error) {
         console.error('加载JSON文件失败:', error);
         // 出现错误时显示错误信息
         const container = document.getElementById('chartContainer');
         if (container) {
-            container.innerHTML = `
-                <div class="error-message">
-                    <p>加载数据失败: ${error.message}</p>
-                    <p>可能原因：</p>
-                    <ul>
-                        <li>CORS策略限制 - GitHub不允许跨域请求</li>
-                        <li>文件路径不正确或文件不存在</li>
-                        <li>JSON文件格式问题</li>
-                    </ul>
-                    <p>建议添加文件上传功能作为备选方案</p>
-                </div>
-            `;
-            
-            // 添加文件上传控件，如果不存在
-            if (!document.getElementById('fileInput')) {
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.id = 'fileInput';
-                fileInput.accept = '.json';
-                fileInput.addEventListener('change', handleFile);
-                
-                const fileLabel = document.createElement('label');
-                fileLabel.innerHTML = '上传JSON文件：';
-                fileLabel.appendChild(fileInput);
-                
-                container.appendChild(fileLabel);
-            }
+            container.innerHTML = `<div class="error-message">加载数据失败: ${error.message}</div>`;
         }
-    }
-}
-
-// 处理JSON数据
-function processJsonData(jsonData) {
-    try {
-        // 确保数据是正确的格式
-        if (!jsonData || !jsonData.data || !Array.isArray(jsonData.data)) {
-            throw new Error('无效的JSON数据格式，缺少data数组');
-        }
-        
-        console.log('成功读取JSON数据', jsonData.data.length, '行');
-        
-        // 数据处理和可视化
-        const ranges = processData(jsonData.data);
-        renderVisualization(ranges);
-    } catch (error) {
-        console.error('处理JSON数据时出错:', error);
-        const container = document.getElementById('chartContainer');
-        if (container) {
-            container.innerHTML = `<div class="error-message">处理JSON数据失败: ${error.message}</div>`;
-        }
-        throw error; // 重新抛出错误以便于调试
     }
 }
 
@@ -125,97 +66,49 @@ async function handleFile(event) {
     if (!file) return;
 
     try {
-        const container = document.getElementById('chartContainer');
-        container.innerHTML = '<div class="loading">正在处理文件，请稍候...</div>';
-        
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            try {
-                const jsonData = JSON.parse(e.target.result);
-                processJsonData(jsonData);
-            } catch (error) {
-                console.error('处理上传的JSON文件时出错:', error);
-                container.innerHTML = `<div class="error-message">处理文件失败: ${error.message}</div>`;
-            }
-        };
-        
-        reader.onerror = () => {
-            container.innerHTML = '<div class="error-message">文件读取失败</div>';
-        };
-        
-        reader.readAsText(file); // 使用readAsText而不是readAsArrayBuffer
+        const jsonData = await readJsonFile(file);
+        const ranges = processData(jsonData.data);
+        renderVisualization(ranges);
     } catch (error) {
         alert(`处理文件时出错: ${error.message}`);
     }
 }
 
-// 处理从JSON读取的数据
-function processData(dataArray) {
-    // 检查数据并记录
-    console.log('开始处理数据，总行数:', dataArray.length);
-    console.log('第一行示例:', dataArray[0]);
-    
-    // 从JSON数据中提取相关字段
-    const rawData = dataArray
-        .filter((item, index) => {
-            const isValid = item && 
-                            item.cite_type !== undefined && 
-                            item.matchlyric_number !== undefined;
-            if (!isValid && index < 10) {
-                console.warn(`行 ${index + 1} 数据无效:`, item);
+// 读取JSON文件
+function readJsonFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            try {
+                const jsonData = JSON.parse(e.target.result);
+                if (!jsonData || !jsonData.data) throw new Error('无效的JSON数据');
+                resolve(jsonData);
+            } catch (error) {
+                reject(error);
             }
-            return isValid;
-        })
-        .map(item => ({
-            // cite_type对应colorCode
-            colorCode: parseInt(item.cite_type),
-            // matchlyric_number对应value
-            value: parseInt(item.matchlyric_number)
-        }))
-        .filter(data => {
-            const isValid = 
-                data.colorCode !== null &&
-                !isNaN(data.colorCode) &&
-                data.value !== null &&
-                !isNaN(data.value) &&
-                [1, 2, 3].includes(data.colorCode);
-            
-            if (!isValid) {
-                console.log('过滤掉无效数据点:', data);
-            }
-            return isValid;
-        });
-    
-    console.log('处理后有效数据点数量:', rawData.length);
-    
-    // 如果没有有效数据，提供默认数据进行显示
-    if (rawData.length === 0) {
-        console.warn('没有找到有效数据，使用示例数据');
-        // 创建一些示例数据用于测试
-        return createSampleData();
-    }
-    
-    return categorizeData(rawData);
+        };
+        reader.onerror = () => reject(new Error('文件读取失败'));
+        reader.readAsText(file);
+    });
 }
 
-// 创建示例数据（当无法获取实际数据时使用）
-function createSampleData() {
-    const sampleData = {};
-    
-    Object.keys(LABEL_MAP).forEach(key => {
-        sampleData[key] = [];
-        // 为每个类别生成一些随机数据
-        const count = Math.floor(Math.random() * 100) + 5;
-        for (let i = 0; i < count; i++) {
-            sampleData[key].push({
-                colorCode: Math.floor(Math.random() * 3) + 1, // 1, 2, 或 3
-                value: parseInt(key === '100以上' ? 101 : key)
-            });
-        }
-    });
-    
-    return sampleData;
+// 处理从JSON读取的数据
+function processData(jsonData) {
+    const rawData = jsonData
+        .filter(item => item && item.cite_type && item.fragment_number)
+        .map(item => ({
+            colorCode: parseInt(item.cite_type) || null,
+            value: parseInt(item.fragment_number) || null
+        }))
+        .filter(data => 
+            data.colorCode !== null &&
+            data.value !== null &&
+            [1, 2, 3].includes(data.colorCode) && 
+            typeof data.value === 'number'
+        );
+
+    return categorizeData(rawData);
 }
 
 // 将数据分类到不同的范围
@@ -245,109 +138,16 @@ function categorizeData(rawData) {
         ranges[key].push(data);
     });
 
-    // 按颜色代码排序
     Object.values(ranges).forEach(data => data.sort((a, b) => b.colorCode - a.colorCode));
-    
-    // 记录分类结果
-    Object.entries(ranges).forEach(([key, data]) => {
-        console.log(`范围 ${key}: ${data.length} 个数据点`);
-    });
-    
     return ranges;
 }
 
 // 渲染可视化图表
 function renderVisualization(ranges) {
     const container = document.getElementById('chartContainer');
-    if (!container) {
-        console.error('找不到图表容器元素');
-        return;
-    }
+    if (!container) return;
     
     container.innerHTML = '';
-    
-    // 添加样式
-    const style = document.createElement('style');
-    style.textContent = `
-        #chartContainer {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .legend {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-        }
-        .category {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .label {
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .circles-wrapper {
-            overflow-x: auto;
-        }
-        .circle-row {
-            display: flex;
-            margin-bottom: 5px;
-        }
-        .circle {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 2px;
-            transition: opacity 0.3s;
-        }
-        .circle.dimmed {
-            opacity: 0.2;
-        }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            font-style: italic;
-            color: #666;
-        }
-        .error-message {
-            color: #d32f2f;
-            padding: 15px;
-            border: 1px solid #ffcdd2;
-            background-color: #ffebee;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
-        .title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-    `;
-    container.appendChild(style);
-
-    // 添加标题
-    const title = document.createElement('h1');
-    title.className = 'title';
-    title.textContent = '古诗词引用分析可视化';
-    container.appendChild(title);
 
     // 添加图例
     const legend = document.createElement('div');
@@ -367,8 +167,9 @@ function renderVisualization(ranges) {
     // 图例交互逻辑
     legend.querySelectorAll('.legend-item').forEach(legendItem => {
         const colorCode = legendItem.dataset.colorCode;
+        const legendColor = legendItem.querySelector('.legend-color');
         
-        legendItem.addEventListener('mouseenter', () => {
+        legendColor.addEventListener('mouseenter', () => {
             document.querySelectorAll('.circle').forEach(circle => {
                 if (circle.dataset.colorCode !== colorCode) {
                     circle.classList.add('dimmed');
@@ -376,7 +177,7 @@ function renderVisualization(ranges) {
             });
         });
 
-        legendItem.addEventListener('mouseleave', function() {
+        legendColor.addEventListener('mouseleave', function() {
             document.querySelectorAll('.circle').forEach(circle => {
                 circle.classList.remove('dimmed');
             });
@@ -395,7 +196,7 @@ function renderVisualization(ranges) {
         // 添加标签
         const labelDiv = document.createElement('div');
         labelDiv.className = 'label';
-        labelDiv.textContent = LABEL_MAP[labelKey] + ` (${dataPoints.length}个)`;
+        labelDiv.textContent = LABEL_MAP[labelKey];
         categoryDiv.appendChild(labelDiv);
 
         const wrapperDiv = document.createElement('div');
@@ -417,11 +218,6 @@ function renderVisualization(ranges) {
                 if (dataIndex < dataPoints.length) {
                     circle.style.backgroundColor = COLOR_MAP[dataPoints[dataIndex].colorCode];
                     circle.dataset.colorCode = dataPoints[dataIndex].colorCode;
-                    // 添加工具提示
-                    circle.title = `引用类型: ${
-                        dataPoints[dataIndex].colorCode === 3 ? '几个字' : 
-                        dataPoints[dataIndex].colorCode === 2 ? '完整句子' : '整首古诗'
-                    }`;
                 } else {
                     circle.style.visibility = 'hidden'; // 空白占位
                 }
@@ -434,13 +230,4 @@ function renderVisualization(ranges) {
         categoryDiv.appendChild(wrapperDiv);
         container.appendChild(categoryDiv);
     });
-
-    // 添加数据来源说明
-    const sourceInfo = document.createElement('div');
-    sourceInfo.style.textAlign = 'center';
-    sourceInfo.style.marginTop = '30px';
-    sourceInfo.style.fontSize = '12px';
-    sourceInfo.style.color = '#666';
-    sourceInfo.innerHTML = '数据来源: <a href="https://github.com/todayispdxxx/poetry-lyrics" target="_blank">poetry-lyrics GitHub仓库</a>';
-    container.appendChild(sourceInfo);
 }
