@@ -19,22 +19,6 @@ const LABEL_MAP = {
     '100以上': '100个字以上'
 };
 
-// 确保XLSX库已加载
-function ensureXlsxLoaded() {
-    return new Promise((resolve, reject) => {
-        if (window.XLSX) {
-            resolve();
-        } else {
-            // 如果XLSX库未加载，动态加载它
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js';
-            script.onload = () => resolve();
-            script.onerror = () => reject(new Error('Failed to load XLSX library'));
-            document.head.appendChild(script);
-        }
-    });
-}
-
 // 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
     // 创建一个显示容器，如果不存在
@@ -50,57 +34,34 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInput.addEventListener('change', handleFile);
     }
     
-    // 从GitHub加载Excel文件
-    loadExcelFromGitHub();
+    // 从GitHub加载JSON文件
+    loadJsonFromGitHub();
 });
 
-// 从GitHub加载Excel文件
-async function loadExcelFromGitHub() {
+// 从GitHub加载JSON文件
+async function loadJsonFromGitHub() {
     try {
         // 显示加载状态
         const container = document.getElementById('chartContainer');
         container.innerHTML = '<div class="loading">正在加载数据，请稍候...</div>';
         
-        // 确保XLSX库已加载
-        await ensureXlsxLoaded();
+        // 使用相同路径但改为JSON文件
+        const jsonUrl = 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/dot-data.json';
         
-        // 使用代理服务来解决CORS问题
-        const excelUrl = 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/dot-data.xlsx';
-        const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+        // 尝试直接获取JSON
+        const response = await fetch(jsonUrl);
         
-        // 首先尝试直接获取
-        try {
-            const response = await fetch(excelUrl);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP错误! 状态: ${response.status}`);
-            }
-            
-            const arrayBuffer = await response.arrayBuffer();
-            const data = new Uint8Array(arrayBuffer);
-            
-            // 尝试读取Excel
-            processExcelData(data);
-            
-        } catch (directError) {
-            console.warn('直接获取失败，尝试使用CORS代理:', directError);
-            
-            // 如果直接获取失败，尝试使用CORS代理
-            const proxyResponse = await fetch(corsProxy + excelUrl);
-            
-            if (!proxyResponse.ok) {
-                throw new Error(`通过代理获取失败! 状态: ${proxyResponse.status}`);
-            }
-            
-            const arrayBuffer = await proxyResponse.arrayBuffer();
-            const data = new Uint8Array(arrayBuffer);
-            
-            // 处理Excel数据
-            processExcelData(data);
+        if (!response.ok) {
+            throw new Error(`HTTP错误! 状态: ${response.status}`);
         }
         
+        const jsonData = await response.json();
+        
+        // 处理JSON数据
+        processJsonData(jsonData);
+        
     } catch (error) {
-        console.error('加载Excel文件失败:', error);
+        console.error('加载JSON文件失败:', error);
         // 出现错误时显示错误信息
         const container = document.getElementById('chartContainer');
         if (container) {
@@ -111,7 +72,7 @@ async function loadExcelFromGitHub() {
                     <ul>
                         <li>CORS策略限制 - GitHub不允许跨域请求</li>
                         <li>文件路径不正确或文件不存在</li>
-                        <li>Excel文件格式问题</li>
+                        <li>JSON文件格式问题</li>
                     </ul>
                     <p>建议添加文件上传功能作为备选方案</p>
                 </div>
@@ -122,11 +83,11 @@ async function loadExcelFromGitHub() {
                 const fileInput = document.createElement('input');
                 fileInput.type = 'file';
                 fileInput.id = 'fileInput';
-                fileInput.accept = '.xlsx, .xls';
+                fileInput.accept = '.json';
                 fileInput.addEventListener('change', handleFile);
                 
                 const fileLabel = document.createElement('label');
-                fileLabel.innerHTML = '上传Excel文件：';
+                fileLabel.innerHTML = '上传JSON文件：';
                 fileLabel.appendChild(fileInput);
                 
                 container.appendChild(fileLabel);
@@ -135,37 +96,24 @@ async function loadExcelFromGitHub() {
     }
 }
 
-// 处理Excel数据
-function processExcelData(data) {
+// 处理JSON数据
+function processJsonData(jsonData) {
     try {
-        const workbook = XLSX.read(data, { type: 'array' });
-        
-        if (!workbook || !workbook.SheetNames || workbook.SheetNames.length === 0) {
-            throw new Error('无法读取Excel工作簿或工作簿为空');
+        // 确保数据是正确的格式
+        if (!jsonData || !jsonData.data || !Array.isArray(jsonData.data)) {
+            throw new Error('无效的JSON数据格式，缺少data数组');
         }
         
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        
-        if (!worksheet) {
-            throw new Error('无法获取工作表');
-        }
-        
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        
-        if (!jsonData || jsonData.length === 0) {
-            throw new Error('Excel文件中没有数据');
-        }
-        
-        console.log('成功读取Excel数据', jsonData.length, '行');
+        console.log('成功读取JSON数据', jsonData.data.length, '行');
         
         // 数据处理和可视化
-        const ranges = processData(jsonData);
+        const ranges = processData(jsonData.data);
         renderVisualization(ranges);
     } catch (error) {
-        console.error('处理Excel数据时出错:', error);
+        console.error('处理JSON数据时出错:', error);
         const container = document.getElementById('chartContainer');
         if (container) {
-            container.innerHTML = `<div class="error-message">处理Excel数据失败: ${error.message}</div>`;
+            container.innerHTML = `<div class="error-message">处理JSON数据失败: ${error.message}</div>`;
         }
         throw error; // 重新抛出错误以便于调试
     }
@@ -180,17 +128,14 @@ async function handleFile(event) {
         const container = document.getElementById('chartContainer');
         container.innerHTML = '<div class="loading">正在处理文件，请稍候...</div>';
         
-        // 确保XLSX库已加载
-        await ensureXlsxLoaded();
-        
         const reader = new FileReader();
         
         reader.onload = (e) => {
             try {
-                const data = new Uint8Array(e.target.result);
-                processExcelData(data);
+                const jsonData = JSON.parse(e.target.result);
+                processJsonData(jsonData);
             } catch (error) {
-                console.error('处理上传的Excel文件时出错:', error);
+                console.error('处理上传的JSON文件时出错:', error);
                 container.innerHTML = `<div class="error-message">处理文件失败: ${error.message}</div>`;
             }
         };
@@ -199,37 +144,42 @@ async function handleFile(event) {
             container.innerHTML = '<div class="error-message">文件读取失败</div>';
         };
         
-        reader.readAsArrayBuffer(file);
+        reader.readAsText(file); // 使用readAsText而不是readAsArrayBuffer
     } catch (error) {
         alert(`处理文件时出错: ${error.message}`);
     }
 }
 
-// 处理从Excel读取的数据
-function processData(jsonData) {
+// 处理从JSON读取的数据
+function processData(dataArray) {
     // 检查数据并记录
-    console.log('开始处理数据，总行数:', jsonData.length);
-    console.log('第一行示例:', jsonData[0]);
+    console.log('开始处理数据，总行数:', dataArray.length);
+    console.log('第一行示例:', dataArray[0]);
     
-    // 过滤和提取数据
-    const rawData = jsonData
-        .filter((row, index) => {
-            const isValid = row && Array.isArray(row) && row.length >= 14;
+    // 从JSON数据中提取相关字段
+    const rawData = dataArray
+        .filter((item, index) => {
+            const isValid = item && 
+                            item.cite_type !== undefined && 
+                            item.matchlyric_number !== undefined;
             if (!isValid && index < 10) {
-                console.warn(`行 ${index + 1} 数据无效或列数不足:`, row);
+                console.warn(`行 ${index + 1} 数据无效:`, item);
             }
             return isValid;
         })
-        .map(row => ({
-            colorCode: row[11] !== undefined ? Number(row[11]) : null,
-            value: row[13] !== undefined ? Number(row[13]) : null
+        .map(item => ({
+            // cite_type对应colorCode
+            colorCode: parseInt(item.cite_type),
+            // matchlyric_number对应value
+            value: parseInt(item.matchlyric_number)
         }))
         .filter(data => {
             const isValid = 
                 data.colorCode !== null &&
+                !isNaN(data.colorCode) &&
                 data.value !== null &&
-                [1, 2, 3].includes(data.colorCode) && 
-                typeof data.value === 'number';
+                !isNaN(data.value) &&
+                [1, 2, 3].includes(data.colorCode);
             
             if (!isValid) {
                 console.log('过滤掉无效数据点:', data);
@@ -484,4 +434,13 @@ function renderVisualization(ranges) {
         categoryDiv.appendChild(wrapperDiv);
         container.appendChild(categoryDiv);
     });
+
+    // 添加数据来源说明
+    const sourceInfo = document.createElement('div');
+    sourceInfo.style.textAlign = 'center';
+    sourceInfo.style.marginTop = '30px';
+    sourceInfo.style.fontSize = '12px';
+    sourceInfo.style.color = '#666';
+    sourceInfo.innerHTML = '数据来源: <a href="https://github.com/todayispdxxx/poetry-lyrics" target="_blank">poetry-lyrics GitHub仓库</a>';
+    container.appendChild(sourceInfo);
 }
