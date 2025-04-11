@@ -1,6 +1,6 @@
-// 使用闭包封装整个图表功能，避免全局污染
+// 使用立即执行函数封装，避免全局污染
 (function() {
-    // 配置常量（可修改为实例专属配置）
+    // 常量配置
     const CIRCLE_PER_ROW = 50;
     const COLOR_MAP = {
         3: '#1CCEAC',
@@ -21,202 +21,237 @@
         '100以上': '100个字以上'
     };
 
-    class PoetryVisualization {
-        constructor(containerId, fileInputId) {
-            // 实例专属的元素ID
-            this.containerId = containerId;
-            this.fileInputId = fileInputId;
-            this.init();
+    // 主初始化函数
+    function init() {
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', handleFile);
         }
+        loadJsonFromGitHub();
+    }
 
-        init() {
-            // 独立的事件监听（使用箭头函数保持this指向）
-            document.addEventListener('DOMContentLoaded', () => {
-                const fileInput = document.getElementById(this.fileInputId);
-                if (fileInput) {
-                    // 使用bind确保处理函数属于当前实例
-                    fileInput.addEventListener('change', this.handleFile.bind(this));
-                }
-                this.loadJsonFromGitHub();
-            });
-        }
-
-        async loadJsonFromGitHub() {
-            try {
-                const jsonUrl = 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/dot-data.json';
-                const response = await fetch(jsonUrl);
-                if (!response.ok) throw new Error(`HTTP错误! 状态: ${response.status}`);
-                
-                const jsonData = await response.json();
-                console.log("加载的JSON数据样本:", jsonData[0]);
-
-                // 数据清洗和适配
-                const dataToProcess = jsonData.map(item => ({
-                    citeType: item.cite_type || item.citeType,
-                    fragmentNumber: item.fragment_number || item.fragmentNumber
-                })).filter(item => item.citeType !== undefined && item.fragmentNumber !== undefined);
-
-                console.log("有效数据条目数:", dataToProcess.length);
-                this.render(this.processData(dataToProcess));
-            } catch (error) {
-                console.error('加载失败:', error);
-                this.showError(error.message);
-            }
-        }
-
-        async handleFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            try {
-                const jsonData = await this.readJsonFile(file);
-                const dataToProcess = jsonData.map(item => ({
-                    citeType: item.cite_type || item.citeType,
-                    fragmentNumber: item.fragment_number || item.fragmentNumber
-                }));
-                this.render(this.processData(dataToProcess));
-            } catch (error) {
-                this.showError(`文件处理错误: ${error.message}`);
-            }
-        }
-
-        readJsonFile(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        resolve(JSON.parse(e.target.result));
-                    } catch (error) {
-                        reject(error);
-                    }
-                };
-                reader.onerror = () => reject(new Error('文件读取失败'));
-                reader.readAsText(file);
-            });
-        }
-
-        processData(jsonData) {
-            const rawData = jsonData.map(item => {
-                const colorCode = parseInt(item.citeType, 10);
-                const value = parseInt(item.fragmentNumber, 10);
-                if (isNaN(colorCode) || isNaN(value)) {
-                    console.log('无效数据:', item);
-                    return null;
-                }
-                return { colorCode, value };
-            }).filter(data => {
-                const valid = data && [1, 2, 3].includes(data.colorCode) && data.value >= 5;
-                if (!valid) console.log('过滤数据:', data);
-                return valid;
-            });
-
-            console.log("最终有效数据:", rawData.length);
-            return this.categorizeData(rawData);
-        }
-
-        categorizeData(rawData) {
-            const ranges = Object.keys(LABEL_MAP).reduce((acc, key) => {
-                acc[key] = [];
-                return acc;
-            }, {});
-
-            rawData.forEach(data => {
-                const value = data.value;
-                let key;
-
-                if (value === 5) key = '5';
-                else if (value === 6) key = '6';
-                // ...其他分类逻辑保持原样...
-                else if (value > 100) key = '100以上';
-                
-                if (key) ranges[key].push(data);
-            });
-
-            Object.values(ranges).forEach(data => data.sort((a, b) => b.colorCode - a.colorCode));
-            return ranges;
-        }
-
-        render(ranges) {
-            const container = document.getElementById(this.containerId);
-            if (!container) {
-                console.error(`容器元素不存在: ${this.containerId}`);
-                return;
-            }
-            container.innerHTML = '';
-
-            // 生成带命名空间的CSS类名
-            const ns = `poetry-vis-${this.containerId}`;
-            this.createLegend(container, ns);
-            this.renderCategories(container, ranges, ns);
-        }
-
-        createLegend(container, namespace) {
-            const legend = document.createElement('div');
-            legend.className = `${namespace}-legend legend`;
-            legend.innerHTML = `
-                <div class="legend-item" data-color-code="3">
-                    <span class="legend-color" style="background-color: ${COLOR_MAP[3]}"></span>引用几个字
-                </div>
-                <!-- 其他图例项 -->
-            `;
-
-            // 实例专属的事件处理
-            legend.querySelectorAll('.legend-item').forEach(item => {
-                const colorCode = item.dataset.colorCode;
-                item.querySelector('.legend-color').addEventListener('mouseenter', () => {
-                    container.querySelectorAll(`.${namespace}-circle`).forEach(circle => {
-                        circle.classList.toggle('dimmed', circle.dataset.colorCode !== colorCode);
-                    });
-                });
-                item.querySelector('.legend-color').addEventListener('mouseleave', () => {
-                    container.querySelectorAll(`.${namespace}-circle`).forEach(circle => {
-                        circle.classList.remove('dimmed');
-                    });
-                });
-            });
-
-            container.appendChild(legend);
-        }
-
-        renderCategories(container, ranges, namespace) {
-            const order = Object.keys(LABEL_MAP);
-            order.forEach(labelKey => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = `${namespace}-category category`;
-                
-                // 添加标签和圆点行（逻辑保持原样，但使用命名空间类名）
-                const labelDiv = document.createElement('div');
-                labelDiv.className = 'label';
-                labelDiv.textContent = LABEL_MAP[labelKey];
-                categoryDiv.appendChild(labelDiv);
-
-                const wrapperDiv = document.createElement('div');
-                wrapperDiv.className = 'circles-wrapper';
-                
-                // 渲染圆点时使用命名空间类名
-                const circles = ranges[labelKey] || [];
-                circles.forEach((dataPoint, index) => {
-                    const circle = document.createElement('div');
-                    circle.className = `${namespace}-circle circle`;
-                    circle.style.backgroundColor = COLOR_MAP[dataPoint.colorCode];
-                    circle.dataset.colorCode = dataPoint.colorCode;
-                    // ...其他渲染逻辑...
-                });
-
-                container.appendChild(categoryDiv);
-            });
-        }
-
-        showError(message) {
-            const container = document.getElementById(this.containerId);
-            if (container) {
-                container.innerHTML = `<div class="error-message">${message}</div>`;
-            }
+    // GitHub数据加载
+    async function loadJsonFromGitHub() {
+        try {
+            const jsonUrl = 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/dot-data.json';
+            const response = await fetch(jsonUrl);
+            handleResponse(response);
+        } catch (error) {
+            handleError(error);
         }
     }
 
-    // 初始化实例（每个图表使用不同的ID）
-    window.initPoetryVisualization = function(containerId = 'chartContainer', fileInputId = 'fileInput') {
-        new PoetryVisualization(containerId, fileInputId);
-    };
+    // 处理响应
+    async function handleResponse(response) {
+        if (!response.ok) throw new Error(`HTTP错误! 状态: ${response.status}`);
+        
+        const jsonData = await response.json();
+        console.log("原始数据样本:", jsonData[0]);
+        
+        // 数据标准化处理
+        const processedData = normalizeData(jsonData);
+        console.log("标准化数据样本:", processedData.slice(0, 3));
+        
+        // 分类渲染
+        const ranges = processData(processedData);
+        renderVisualization(ranges);
+    }
+
+    // 数据标准化
+    function normalizeData(rawData) {
+        return (rawData.data || rawData).map(item => ({
+            citeType: parseInt(item.cite_type, 10),
+            fragmentNumber: parseInt(item.fragment_number, 10)
+        })).filter(item => 
+            ![item.citeType, item.fragmentNumber].some(isNaN) && 
+            [1, 2, 3].includes(item.citeType) &&
+            item.fragmentNumber >= 5
+        );
+    }
+
+    // 处理文件上传
+    async function handleFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        try {
+            const jsonData = await readJsonFile(file);
+            const processedData = normalizeData(jsonData);
+            const ranges = processData(processedData);
+            renderVisualization(ranges);
+        } catch (error) {
+            showError(`文件处理错误: ${error.message}`);
+        }
+    }
+
+    // 文件读取
+    function readJsonFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                try { resolve(JSON.parse(e.target.result)); } 
+                catch (error) { reject(error); }
+            };
+            reader.onerror = () => reject(new Error('文件读取失败'));
+            reader.readAsText(file);
+        });
+    }
+
+    // 数据处理核心
+    function processData(jsonData) {
+        const rawData = jsonData.map(item => ({
+            colorCode: item.citeType,
+            value: item.fragmentNumber
+        }));
+
+        console.log("有效数据量:", rawData.length);
+        return categorizeData(rawData);
+    }
+
+    // 数据分类
+    function categorizeData(rawData) {
+        const ranges = Object.keys(LABEL_MAP).reduce((acc, key) => {
+            acc[key] = [];
+            return acc;
+        }, {});
+
+        rawData.forEach(({ value }) => {
+            let key = '';
+            if (value <= 10) key = value.toString();
+            else if (value <= 20) key = '10-20';
+            else if (value <= 30) key = '20-30';
+            else if (value <= 50) key = '30-50';
+            else if (value <= 100) key = '50-100';
+            else key = '100以上';
+
+            if (ranges[key]) ranges[key].push({ colorCode, value });
+            else console.warn(`未定义分类键: ${key}`);
+        });
+
+        // 排序并记录
+        Object.entries(ranges).forEach(([key, data]) => {
+            data.sort((a, b) => b.colorCode - a.colorCode);
+            console.log(`分类 ${key}: ${data.length}条`);
+        });
+        
+        return ranges;
+    }
+
+    // 渲染可视化
+    function renderVisualization(ranges) {
+        const container = document.getElementById('chartContainer');
+        if (!container) return console.error("缺少容器元素");
+        
+        container.innerHTML = '';
+        renderLegend(container);
+        renderCategories(container, ranges);
+    }
+
+    // 渲染图例
+    function renderLegend(container) {
+        const legendHTML = Object.entries({
+            3: '引用几个字',
+            2: '引用完整句子',
+            1: '引用整首古诗'
+        }).map(([code, text]) => `
+            <div class="legend-item" data-color-code="${code}">
+                <span class="legend-color" style="background:${COLOR_MAP[code]}"></span>
+                ${text}
+            </div>
+        `).join('');
+
+        const legend = document.createElement('div');
+        legend.className = 'legend';
+        legend.innerHTML = legendHTML;
+        
+        // 添加交互
+        legend.querySelectorAll('.legend-color').forEach(colorElem => {
+            const targetCode = colorElem.parentElement.dataset.colorCode;
+            colorElem.addEventListener('mouseenter', () => 
+                document.querySelectorAll('.circle').forEach(circle => 
+                    circle.classList.toggle('dimmed', circle.dataset.colorCode !== targetCode)
+                )
+            );
+            colorElem.addEventListener('mouseleave', () => 
+                document.querySelectorAll('.circle').forEach(c => c.classList.remove('dimmed'))
+            );
+        });
+
+        container.appendChild(legend);
+    }
+
+    // 渲染分类区块
+    function renderCategories(container, ranges) {
+        Object.entries(LABEL_MAP).forEach(([key, label]) => {
+            const dataPoints = ranges[key] || [];
+            console.log(`渲染分类 ${key}: ${dataPoints.length}点`);
+
+            const category = document.createElement('div');
+            category.className = 'category';
+            
+            // 标签
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'label';
+            labelDiv.textContent = label;
+            category.appendChild(labelDiv);
+
+            // 圆点容器
+            const wrapper = document.createElement('div');
+            wrapper.className = 'circles-wrapper';
+            
+            // 行渲染
+            const totalRows = Math.ceil(dataPoints.length / CIRCLE_PER_ROW);
+            for (let row = 0; row < totalRows; row++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'circle-row';
+                
+                for (let i = 0; i < CIRCLE_PER_ROW; i++) {
+                    const index = row * CIRCLE_PER_ROW + i;
+                    const circle = createCircle(dataPoints[index]);
+                    rowDiv.appendChild(circle);
+                }
+                wrapper.appendChild(rowDiv);
+            }
+
+            // 空状态处理
+            if (!dataPoints.length) {
+                const emptyRow = document.createElement('div');
+                emptyRow.className = 'circle-row empty';
+                emptyRow.textContent = '0个点';
+                wrapper.appendChild(emptyRow);
+            }
+
+            category.appendChild(wrapper);
+            container.appendChild(category);
+        });
+    }
+
+    // 创建单个圆点
+    function createCircle(dataPoint) {
+        const circle = document.createElement('div');
+        circle.className = 'circle';
+        
+        if (dataPoint) {
+            circle.style.backgroundColor = COLOR_MAP[dataPoint.colorCode];
+            circle.dataset.colorCode = dataPoint.colorCode;
+        } else {
+            circle.style.visibility = 'hidden';
+        }
+        
+        return circle;
+    }
+
+    // 错误处理
+    function handleError(error) {
+        console.error('运行错误:', error);
+        const container = document.getElementById('chartContainer');
+        if (container) {
+            container.innerHTML = `<div class="error-message">${
+                error.message || '未知错误'
+            }</div>`;
+        }
+    }
+
+    // 初始化执行
+    document.addEventListener('DOMContentLoaded', init);
 })();
