@@ -42,23 +42,23 @@ async function loadJsonFromGitHub() {
         }
         
         const jsonData = await response.json();
-        
-        // 添加日志检查数据
         console.log("加载的JSON数据:", jsonData);
         
-        // 检查数据结构
         if (!jsonData) {
             throw new Error('JSON文件为空');
         }
         
-        // 如果jsonData是一个数组，直接使用它
-        const dataToProcess = Array.isArray(jsonData) ? jsonData : (jsonData.data || []);
+        // 确保我们使用正确的数据结构
+        const dataToProcess = jsonData.data || jsonData;
         
-        if (dataToProcess.length === 0) {
+        if (!dataToProcess || dataToProcess.length === 0) {
             throw new Error('没有找到有效的数据');
         }
         
-        console.log("处理的数据数组:", dataToProcess);
+        console.log("处理的数据条目数:", dataToProcess.length);
+        
+        // 检查前几个数据项的结构
+        console.log("数据样本:", dataToProcess.slice(0, 3));
         
         const ranges = processData(dataToProcess);
         renderVisualization(ranges);
@@ -80,8 +80,7 @@ async function handleFile(event) {
 
     try {
         const jsonData = await readJsonFile(file);
-        // 如果jsonData是一个数组，直接使用它
-        const dataToProcess = Array.isArray(jsonData) ? jsonData : (jsonData.data || []);
+        const dataToProcess = jsonData.data || jsonData;
         const ranges = processData(dataToProcess);
         renderVisualization(ranges);
     } catch (error) {
@@ -109,29 +108,42 @@ function readJsonFile(file) {
 
 // 处理从JSON读取的数据
 function processData(jsonData) {
-    // 添加额外的防御性检查
     if (!Array.isArray(jsonData)) {
-        console.error("processData: 预期jsonData为数组，但收到:", typeof jsonData);
+        console.error("processData: 预期数据为数组，但收到:", typeof jsonData);
         return categorizeData([]);
     }
     
-    const rawData = jsonData
-        .filter(item => item && typeof item === 'object') // 确保每个项是一个对象
-        .map(item => {
-            // 检查必要的字段是否存在
-            const colorCode = item.cite_type ? parseInt(item.cite_type) : null;
-            const value = item.fragment_number ? parseInt(item.fragment_number) : null;
-            
-            return { colorCode, value };
-        })
-        .filter(data => 
-            data.colorCode !== null &&
-            data.value !== null &&
-            [1, 2, 3].includes(data.colorCode) && 
-            typeof data.value === 'number'
-        );
+    // 尝试辨识数据结构
+    // 输出几个样本项以便检查
+    console.log("数据样本第一项:", JSON.stringify(jsonData[0]));
     
-    console.log("处理后的原始数据:", rawData.length, "条记录");
+    // 从数据中提取必要的字段
+    const rawData = jsonData.map(item => {
+        // 检查是否有cite_type和fragment_number字段
+        let colorCode = null;
+        let value = null;
+        
+        if (item) {
+            // 尝试直接访问这些字段
+            if (item.cite_type !== undefined) {
+                colorCode = parseInt(item.cite_type);
+            }
+            
+            if (item.fragment_number !== undefined) {
+                value = parseInt(item.fragment_number);
+            }
+        }
+        
+        return { colorCode, value };
+    }).filter(data => 
+        data.colorCode !== null && 
+        data.value !== null && 
+        [1, 2, 3].includes(data.colorCode) && 
+        typeof data.value === 'number'
+    );
+    
+    console.log("处理后的有效数据条目数:", rawData.length);
+    console.log("处理后的数据样本:", rawData.slice(0, 3));
     
     return categorizeData(rawData);
 }
@@ -163,7 +175,7 @@ function categorizeData(rawData) {
         ranges[key].push(data);
     });
 
-    // 输出分类后的数据
+    // 输出分类后的数据数量
     Object.entries(ranges).forEach(([key, data]) => {
         console.log(`范围 ${key}: ${data.length} 条数据`);
     });
@@ -222,7 +234,7 @@ function renderVisualization(ranges) {
     const order = ['5', '6', '7', '8', '9', '10', '10-20','20-30', '30-50', '50-100', '100以上'];
     
     order.forEach(labelKey => {
-        const dataPoints = ranges[labelKey] || []; // 添加默认空数组，防止undefined
+        const dataPoints = ranges[labelKey] || [];
         console.log(`渲染 ${labelKey}: ${dataPoints.length} 个点`);
         
         const categoryDiv = document.createElement('div');
@@ -252,7 +264,6 @@ function renderVisualization(ranges) {
                 
                 if (dataIndex < dataPoints.length) {
                     const dataPoint = dataPoints[dataIndex];
-                    // 额外检查，确保dataPoint和colorCode存在
                     if (dataPoint && dataPoint.colorCode && COLOR_MAP[dataPoint.colorCode]) {
                         circle.style.backgroundColor = COLOR_MAP[dataPoint.colorCode];
                         circle.dataset.colorCode = dataPoint.colorCode;
