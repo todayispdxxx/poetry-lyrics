@@ -106,29 +106,26 @@ function readJsonFile(file) {
     });
 }
 
-// 处理从JSON读取的数据
+// 处理从JSON读取的数据 - 修复后的版本
 function processData(jsonData) {
     if (!Array.isArray(jsonData)) {
         console.error("processData: 预期数据为数组，但收到:", typeof jsonData);
         return categorizeData([]);
     }
     
-    // 尝试辨识数据结构
-    // 输出几个样本项以便检查
-    console.log("数据样本第一项:", JSON.stringify(jsonData[0]));
-    
     // 从数据中提取必要的字段
     const rawData = jsonData.map(item => {
-        // 检查是否有cite_type和fragment_number字段
+        // 直接使用字符串类型的cite_type和fragment_number
         let colorCode = null;
         let value = null;
         
         if (item) {
-            // 尝试直接访问这些字段
+            // 将cite_type转换为数字
             if (item.cite_type !== undefined) {
                 colorCode = parseInt(item.cite_type);
             }
             
+            // 将fragment_number转换为数字
             if (item.fragment_number !== undefined) {
                 value = parseInt(item.fragment_number);
             }
@@ -138,12 +135,13 @@ function processData(jsonData) {
     }).filter(data => 
         data.colorCode !== null && 
         data.value !== null && 
-        [1, 2, 3].includes(data.colorCode) && 
-        typeof data.value === 'number'
+        [1, 2, 3].includes(data.colorCode)
     );
     
     console.log("处理后的有效数据条目数:", rawData.length);
-    console.log("处理后的数据样本:", rawData.slice(0, 3));
+    if (rawData.length > 0) {
+        console.log("处理后的数据样本:", rawData.slice(0, 3));
+    }
     
     return categorizeData(rawData);
 }
@@ -165,8 +163,8 @@ function categorizeData(rawData) {
         else if (value === 8) key = '8';
         else if (value === 9) key = '9';
         else if (value === 10) key = '10';
-        else if (value >= 11 && value <= 20) key = '10-20';
-        else if (value >= 21 && value <= 30) key = '20-30';
+        else if (value > 10 && value <= 20) key = '10-20';
+        else if (value > 20 && value <= 30) key = '20-30';
         else if (value > 30 && value <= 50) key = '30-50';
         else if (value > 50 && value <= 100) key = '50-100';
         else if (value > 100) key = '100以上';
