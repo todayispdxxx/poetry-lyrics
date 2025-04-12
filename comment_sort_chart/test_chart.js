@@ -139,7 +139,7 @@ function renderBarChart(chartData, totalComments) {
     barChart.innerHTML = ''; // 清空之前的图表
     
     // 使用屏幕宽度作为基准
-    const maxWidth = window.innerWidth * 0.7; // 使用屏幕宽度的70%
+    const maxWidth = window.innerWidth ; // 使用屏幕宽度的70%
     
     // 使用更大的缩放因子
     const scaleFactor = 1.5;

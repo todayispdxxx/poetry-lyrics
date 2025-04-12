@@ -1,5 +1,3 @@
-
-
 /* 音乐评论分类可视化专用样式 - 添加tc-前缀避免命名冲突 */
 
 .tc-visualization-container * {
@@ -11,7 +9,7 @@
 }
 
 .tc-visualization-container {
-    width: 100vw;
+    width: 1000px;
     max-width: 100%;
     height: auto;
     display: flex;
@@ -22,23 +20,43 @@
     background-color: #f0f0f0;
     padding: 20px;
     border-radius: 8px;
+    margin: 0 auto; /* 添加这行使容器本身居中 */
 }
 
+/* 修改chart-container样式，保留容器居中但内容左对齐 */
 .tc-chart-container {
     width: 100%;
     margin-bottom: 100px;
-    margin-left: 600px; /* 向右移动整个图表 */
+    margin-left: 0; /* 移除左侧偏移 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 改为左对齐 */
 }
 
+/* 修改bar-chart样式，使条形图左对齐 */
 .tc-bar-chart {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    width: 100%; /* 确保条形图占满容器宽度 */
+    align-items: flex-start; /* 改为左对齐 */
 }
 
+/* 修改bar-group样式，确保每个条形图组左对齐 */
 .tc-bar-group {
     display: flex;
     align-items: center;
+    width: 100%; /* 让组可以占满整个宽度 */
+    justify-content: flex-start; /* 左对齐 */
+}
+
+/* 可选：保持条形图本身的样式不变 */
+.tc-bar {
+    height: 30px;
+    border-radius: 4px;
+    display: flex;
+    gap: 3px;
+    justify-content: flex-start; /* 确保条形图内部段落也是左对齐的 */
 }
 
 .tc-bar-label {
@@ -96,6 +114,7 @@
     position: relative;
     overflow: hidden;
     background-color: #f0f0f0;
+    text-align: center; /* 使内容居中 */
 }
 
 .tc-lyrics-row {
