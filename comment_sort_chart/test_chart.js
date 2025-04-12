@@ -1,4 +1,4 @@
-// 分类映射表
+// 分类映射表保持不变
 const categoryMap = {
     "1": { 
         "label": "歌曲相关🎵", 
@@ -30,14 +30,14 @@ const categoryMap = {
     }
 };
 
-// 定义用于生成颜色的函数
+// 定义用于生成颜色的函数 - 保持不变
 function getColorForCategory(mainCat, subCat) {
     const baseColor = categoryMap[mainCat].color;
     const opacity = 0.3 + (Object.keys(categoryMap[mainCat].subcategories).indexOf(subCat) * 0.2);
     return baseColor.replace(')', `, ${opacity})`).replace('rgb', 'rgba');
 }
 
-// 修改读取数据的函数 - 直接从GitHub获取JSON
+// 读取数据函数 - 保持不变
 function readExcelFile() {
     return new Promise((resolve, reject) => {
         // 从GitHub获取JSON数据
@@ -58,6 +58,7 @@ function readExcelFile() {
     });
 }
 
+// processCategories函数 - 保持不变
 function processCategories(data) {
     // 初始化分类计数器和评论存储
     const categoryCounts = {};
@@ -132,30 +133,30 @@ function processCategories(data) {
     return { chartData, commentsByCategory, totalComments };
 }
 
-// 渲染条形图
+// 修改渲染条形图函数中的提示框部分
 function renderBarChart(chartData, totalComments) {
-    const barChart = document.getElementById('barChart');
+    const barChart = document.getElementById('tc-barChart');
     barChart.innerHTML = ''; // 清空之前的图表
     
-    // 进一步增加最大宽度值，让条形图更长
-    const maxWidth = 850; // 再增加到850
+    // 使用屏幕宽度作为基准
+    const maxWidth = window.innerWidth * 0.7; // 使用屏幕宽度的70%
     
     // 使用更大的缩放因子
-    const scaleFactor = 2.0; // 所有条形图等比例放大2.0倍
+    const scaleFactor = 1.5;
     
     chartData.forEach(category => {
         const barGroup = document.createElement('div');
-        barGroup.className = 'bar-group';
+        barGroup.className = 'tc-bar-group';
         
         const label = document.createElement('div');
-        label.className = 'bar-label';
+        label.className = 'tc-bar-label';
         label.textContent = category.label;
         barGroup.appendChild(label);
         
         const bar = document.createElement('div');
-        bar.className = 'bar';
+        bar.className = 'tc-bar';
         
-        // 计算当前分类占总评论的百分比，以此决定条形总长度，并应用缩放因子
+        // 计算当前分类占总评论的百分比
         const barWidth = (category.totalValue / totalComments) * maxWidth * scaleFactor;
         
         // 创建每个细分块
@@ -165,33 +166,60 @@ function renderBarChart(chartData, totalComments) {
             const segmentWidth = segmentPercent * barWidth;
             
             const segmentEl = document.createElement('div');
-            segmentEl.className = 'bar-segment';
+            segmentEl.className = 'tc-bar-segment';
             segmentEl.style.width = `${segmentWidth}px`;
             segmentEl.style.backgroundColor = segment.color;
+            segmentEl.style.position = 'relative'; // 添加相对定位，确保提示框定位正确
             
-            // 添加提示框 - 显示细分类名称和具体数值
+            // 创建全新的提示框 - 使用内联样式确保可见性
             const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
             tooltip.textContent = `${segment.name}: ${segment.value}`;
+            tooltip.style.position = 'absolute';
+            tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            tooltip.style.color = 'white';
+            tooltip.style.padding = '5px 10px';
+            tooltip.style.borderRadius = '4px';
+            tooltip.style.fontSize = '12px';
+            tooltip.style.bottom = '40px';
+            tooltip.style.left = '50%';
+            tooltip.style.transform = 'translateX(-50%)';
+            tooltip.style.whiteSpace = 'nowrap';
+            tooltip.style.visibility = 'hidden'; // 初始隐藏
+            tooltip.style.opacity = '0';
+            tooltip.style.transition = 'opacity 0.3s';
+            tooltip.style.pointerEvents = 'none';
+            tooltip.style.zIndex = '9999'; // 非常高的z-index
+            
             segmentEl.appendChild(tooltip);
+            
+            // 添加鼠标悬停事件
+            segmentEl.addEventListener('mouseenter', () => {
+                tooltip.style.visibility = 'visible';
+                tooltip.style.opacity = '1';
+            });
+            
+            segmentEl.addEventListener('mouseleave', () => {
+                tooltip.style.visibility = 'hidden';
+                tooltip.style.opacity = '0';
+            });
             
             bar.appendChild(segmentEl);
         });
         
         barGroup.appendChild(bar);
-        
         barChart.appendChild(barGroup);
     });
 }
 
-// 根据评论查找对应的颜色
+// 根据评论查找对应的颜色 - 保持不变
 function findCategoryColor(comment) {
     const [mainCat, subCat] = comment.category.split('.');
     return getColorForCategory(mainCat, subCat);
 }
 
+// 修改renderLyrics函数中的事件监听器部分
 function renderLyrics(commentsByCategory) {
-    const lyricsContainer = document.getElementById('lyricsContainer');
+    const lyricsContainer = document.getElementById('tc-lyricsContainer');
     lyricsContainer.innerHTML = ''; // 清空之前的评论
     const rowCount = 6; // 增加行数以填满空间
     
@@ -206,7 +234,7 @@ function renderLyrics(commentsByCategory) {
     // 创建多行歌词
     for (let i = 0; i < rowCount; i++) {
         const lyricsRow = document.createElement('div');
-        lyricsRow.className = 'lyrics-row';
+        lyricsRow.className = 'tc-lyrics-row';
         lyricsRow.style.top = `${i * 50}px`; // 增加间距
         
         // 不同行设置不同的起始位置
@@ -219,58 +247,47 @@ function renderLyrics(commentsByCategory) {
         
         rowLyrics.forEach(commentData => {
             const lyricItem = document.createElement('div');
-            lyricItem.className = 'lyric-item';
+            lyricItem.className = 'tc-lyric-item';
             
             const circle = document.createElement('div');
-            circle.className = 'lyric-circle';
+            circle.className = 'tc-lyric-circle';
             // 根据评论的完整类别信息选择颜色
             const categoryColor = findCategoryColor(commentData);
             circle.style.backgroundColor = categoryColor;
             
             const icon = document.createElement('div');
-            icon.className = 'music-icon';
+            icon.className = 'tc-music-icon';
             icon.innerHTML = '♪';
             circle.appendChild(icon);
             
             const songInfo = document.createElement('div');
-            songInfo.className = 'song-info';
+            songInfo.className = 'tc-song-info';
             songInfo.textContent = `${commentData.song} - ${commentData.artist}`;
-            
-            // 调试日志
-            console.log('Song info created:', {
-                song: commentData.song,
-                artist: commentData.artist,
-                songInfoElement: songInfo
-            });
             
             circle.appendChild(songInfo);
             
             const text = document.createElement('div');
-            text.className = 'lyric-text';
+            text.className = 'tc-lyric-text';
             text.textContent = commentData.text;
             
             lyricItem.appendChild(circle);
             lyricItem.appendChild(text);
             
-            // 事件监听器保持不变
+            // 事件监听器 - 当鼠标悬停时暂停动画
             circle.addEventListener('mouseenter', () => {
-                console.log('Mouse enter circle');  // 调试日志
-                lyricsRow.classList.add('paused');
+                lyricsRow.classList.add('tc-paused');
             });
             
             circle.addEventListener('mouseleave', () => {
-                console.log('Mouse leave circle');  // 调试日志
-                lyricsRow.classList.remove('paused');
+                lyricsRow.classList.remove('tc-paused');
             });
             
             text.addEventListener('mouseenter', () => {
-                console.log('Mouse enter text');  // 调试日志
-                lyricsRow.classList.add('paused');
+                lyricsRow.classList.add('tc-paused');
             });
             
             text.addEventListener('mouseleave', () => {
-                console.log('Mouse leave text');  // 调试日志
-                lyricsRow.classList.remove('paused');
+                lyricsRow.classList.remove('tc-paused');
             });
             
             lyricsRow.appendChild(lyricItem);

@@ -1,178 +1,177 @@
-    
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'S7', 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-        
-        .visualization-container {
-            width: 1000px;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-        
-        .chart-container {
-            width: 95%;
-            margin-bottom: 40px;
-            margin-left: 50px; /* 向右移动整个图表 */
-        }
-        
-        .bar-chart {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .bar-group {
-            display: flex;
-            align-items: center;
-        }
-        
-        .bar-label {
-            width: 120px;
-            text-align: right;
-            padding-right: 10px;
-            font-size: 14px;
-        }
-        
-        .bar {
-            height: 30px;
-            border-radius: 4px;
-            display: flex;
-            gap: 3px;
-        }
-        
-        .bar-segment {
-            height: 100%;
-            transition: opacity 0.3s;
-            cursor: pointer;
-            position: relative;
-            border-radius: 2px;
-        }
-        
-        .bar-segment:hover {
-            opacity: 0.8;
-        }
-        
-        .tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 100;
-        }
-        
-        .bar-segment:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .lyrics-container {
-            width: 100%;
-            height: 300px;
-            position: relative;
-            overflow: hidden;
-            background-color: #f0f0f0;
-        }
-        
-        .lyrics-row {
-            position: absolute;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            white-space: nowrap;
-            will-change: transform;
-            animation: floatLeft 160s linear infinite;
-        }
-        
-        .lyrics-row.paused {
-            animation-play-state: paused;
-        }
-        
-        .lyric-item {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-        .lyric-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-            position: relative;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        
-        .music-icon {
-            color: white;
-            font-size: 14px;
-        }
-        
-        .song-info {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 100;
-        }
-        
-        .lyric-circle:hover .song-info {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .lyric-text {
-            background-color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            font-size: 14px;
-        }
-        
-        @keyframes floatLeft {
-            0% {
-                transform: translateX(100%);
-            }
-            100% {
-                transform: translateX(-120%);
-            }
-        }
+
+
+/* 音乐评论分类可视化专用样式 - 添加tc-前缀避免命名冲突 */
+
+.tc-visualization-container * {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    font-family: 'S7', 'Arial', sans-serif;
+}
+
+.tc-visualization-container {
+    width: 100vw;
+    max-width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.tc-chart-container {
+    width: 100%;
+    margin-bottom: 100px;
+    margin-left: 600px; /* 向右移动整个图表 */
+}
+
+.tc-bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tc-bar-group {
+    display: flex;
+    align-items: center;
+}
+
+.tc-bar-label {
+    width: 120px;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 14px;
+}
+
+.tc-bar {
+    height: 30px;
+    border-radius: 4px;
+    display: flex;
+    gap: 3px;
+}
+
+.tc-bar-segment {
+    height: 100%;
+    transition: opacity 0.3s;
+    cursor: pointer;
+    position: relative;
+    border-radius: 2px;
+}
+
+.tc-bar-segment:hover {
+    opacity: 0.8;
+}
+
+.tc-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.tc-bar-segment:hover .tc-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tc-lyrics-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.tc-lyrics-row {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    white-space: nowrap;
+    will-change: transform;
+    animation: tc-floatLeft 160s linear infinite;
+}
+
+.tc-lyrics-row.tc-paused {
+    animation-play-state: paused;
+}
+
+.tc-lyric-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tc-lyric-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tc-music-icon {
+    color: white;
+    font-size: 14px;
+}
+
+.tc-song-info {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.tc-lyric-circle:hover .tc-song-info {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tc-lyric-text {
+    background-color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-size: 14px;
+}
+
+@keyframes tc-floatLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-120%);
+    }
+}
