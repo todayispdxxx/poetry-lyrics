@@ -18,7 +18,7 @@
     /* 图片相关变量 */
     --preface-width: 400px;
     --preface-height: auto;
-    --preface-top: 110px;
+    --preface-top: 100px;
     
     /* ch1图片相关变量 */
     --ch1-width: 710px;
@@ -92,6 +92,16 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
+}
+
+.text-content{
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 1680px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
 }
 
 #chapter1 {

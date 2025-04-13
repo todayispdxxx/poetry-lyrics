@@ -102,3 +102,19 @@
     transform: translateX(var(--explore-translateX));
     z-index: 3;
 }
+
+/* 添加页面背景色 */
+body {
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+/* 主容器样式 */
+.main-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden; /* 防止内容溢出 */
+    background-color: #f0f0f0; /* 确保主容器也使用相同背景色 */
+}
