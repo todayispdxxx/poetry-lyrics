@@ -27,7 +27,7 @@
 .tc-chart-container {
     width: 100%;
     margin-bottom: 100px;
-    margin-left: 0; /* 移除左侧偏移 */
+    margin-left: 150px; /* 移除左侧偏移 */
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* 改为左对齐 */

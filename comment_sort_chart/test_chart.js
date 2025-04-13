@@ -133,13 +133,13 @@ function processCategories(data) {
     return { chartData, commentsByCategory, totalComments };
 }
 
-// 修改渲染条形图函数中的提示框部分
+// 修改渲染条形图函数，添加事件监听器确保提示框显示
 function renderBarChart(chartData, totalComments) {
     const barChart = document.getElementById('tc-barChart');
     barChart.innerHTML = ''; // 清空之前的图表
     
     // 使用屏幕宽度作为基准
-    const maxWidth = window.innerWidth ; // 使用屏幕宽度的70%
+    const maxWidth = window.innerWidth * 0.9; // 使用屏幕宽度的80%
     
     // 使用更大的缩放因子
     const scaleFactor = 1.5;
@@ -169,11 +169,14 @@ function renderBarChart(chartData, totalComments) {
             segmentEl.className = 'tc-bar-segment';
             segmentEl.style.width = `${segmentWidth}px`;
             segmentEl.style.backgroundColor = segment.color;
-            segmentEl.style.position = 'relative'; // 添加相对定位，确保提示框定位正确
+            segmentEl.style.position = 'relative'; // 确保相对定位以便tooltip正确显示
             
-            // 创建全新的提示框 - 使用内联样式确保可见性
+            // 创建提示框 - 添加内联样式确保可见性
             const tooltip = document.createElement('div');
+            tooltip.className = 'tc-tooltip';
             tooltip.textContent = `${segment.name}: ${segment.value}`;
+            
+            // 添加基本的内联样式确保提示框正常工作
             tooltip.style.position = 'absolute';
             tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
             tooltip.style.color = 'white';
@@ -184,15 +187,15 @@ function renderBarChart(chartData, totalComments) {
             tooltip.style.left = '50%';
             tooltip.style.transform = 'translateX(-50%)';
             tooltip.style.whiteSpace = 'nowrap';
-            tooltip.style.visibility = 'hidden'; // 初始隐藏
+            tooltip.style.visibility = 'hidden';
             tooltip.style.opacity = '0';
             tooltip.style.transition = 'opacity 0.3s';
             tooltip.style.pointerEvents = 'none';
-            tooltip.style.zIndex = '9999'; // 非常高的z-index
+            tooltip.style.zIndex = '9999';
             
             segmentEl.appendChild(tooltip);
             
-            // 添加鼠标悬停事件
+            // 添加鼠标事件监听器
             segmentEl.addEventListener('mouseenter', () => {
                 tooltip.style.visibility = 'visible';
                 tooltip.style.opacity = '1';
@@ -315,6 +318,9 @@ async function initVisualization() {
         console.error('加载数据出错:', error);
         alert('无法加载数据，请检查网络连接或数据格式。');
     }
+    
+    // 在initVisualization函数最后调用
+    addEmergencyTooltip();
 }
 
 // 修改页面加载时直接初始化可视化，无需加载指示器
@@ -322,3 +328,45 @@ document.addEventListener('DOMContentLoaded', () => {
     // 直接初始化可视化
     initVisualization();
 });
+
+// 在initVisualization函数底部添加
+function addEmergencyTooltip() {
+    // 创建全局提示框
+    const body = document.querySelector('body');
+    const emergencyTooltip = document.createElement('div');
+    emergencyTooltip.id = 'emergency-tooltip';
+    emergencyTooltip.style.position = 'fixed';
+    emergencyTooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    emergencyTooltip.style.color = 'white';
+    emergencyTooltip.style.padding = '5px 10px';
+    emergencyTooltip.style.borderRadius = '4px';
+    emergencyTooltip.style.fontSize = '12px';
+    emergencyTooltip.style.zIndex = '100000';
+    emergencyTooltip.style.display = 'none';
+    emergencyTooltip.style.pointerEvents = 'none';
+    body.appendChild(emergencyTooltip);
+    
+    // 为所有segments添加事件
+    const segments = document.querySelectorAll('.tc-bar-segment');
+    segments.forEach(segment => {
+        const segmentData = segment.querySelector('.tc-tooltip').textContent;
+        
+        segment.addEventListener('mouseenter', (e) => {
+            emergencyTooltip.textContent = segmentData;
+            emergencyTooltip.style.display = 'block';
+            
+            // 根据鼠标位置更新位置
+            document.addEventListener('mousemove', updatePosition);
+        });
+        
+        segment.addEventListener('mouseleave', () => {
+            emergencyTooltip.style.display = 'none';
+            document.removeEventListener('mousemove', updatePosition);
+        });
+    });
+    
+    function updatePosition(e) {
+        emergencyTooltip.style.left = (e.clientX + 10) + 'px';
+        emergencyTooltip.style.top = (e.clientY - 30) + 'px';
+    }
+}
