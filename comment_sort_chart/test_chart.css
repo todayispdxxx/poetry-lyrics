@@ -124,7 +124,7 @@
     gap: 30px;
     white-space: nowrap;
     will-change: transform;
-    animation: tc-floatLeft 160s linear infinite;
+    animation: tc-floatLeft 190s linear infinite;
 }
 
 .tc-lyrics-row.tc-paused {

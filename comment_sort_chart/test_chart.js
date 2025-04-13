@@ -277,8 +277,8 @@ function renderLyrics(commentsByCategory) {
             tooltip.style.color = 'white';
             tooltip.style.padding = '6px 12px';
             tooltip.style.borderRadius = '4px';
-            tooltip.style.fontSize = '14px';
-            tooltip.style.fontWeight = 'bold';
+            tooltip.style.fontSize = '12px';
+            tooltip.style.fontWeight = 'normal';
             tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
             tooltip.style.whiteSpace = 'nowrap';
             tooltip.style.display = 'none'; // 初始隐藏
