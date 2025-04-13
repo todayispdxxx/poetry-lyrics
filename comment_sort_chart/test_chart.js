@@ -220,7 +220,7 @@ function findCategoryColor(comment) {
     return getColorForCategory(mainCat, subCat);
 }
 
-// 修改renderLyrics函数中的事件监听器部分
+// 修改renderLyrics函数，添加悬浮提示框功能
 function renderLyrics(commentsByCategory) {
     const lyricsContainer = document.getElementById('tc-lyricsContainer');
     lyricsContainer.innerHTML = ''; // 清空之前的评论
@@ -263,11 +263,26 @@ function renderLyrics(commentsByCategory) {
             icon.innerHTML = '♪';
             circle.appendChild(icon);
             
-            const songInfo = document.createElement('div');
-            songInfo.className = 'tc-song-info';
-            songInfo.textContent = `${commentData.song} - ${commentData.artist}`;
+            // 创建提示框 - 添加到文档根元素而不是圆形内部
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tc-circle-tooltip';
+            tooltip.textContent = `${commentData.song} - ${commentData.artist}`;
             
-            circle.appendChild(songInfo);
+            // 确保提示框处于顶层
+            document.body.appendChild(tooltip);
+            
+            // 设置提示框样式
+            tooltip.style.position = 'fixed'; // 改为fixed定位，避免被父容器裁剪
+            tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+            tooltip.style.color = 'white';
+            tooltip.style.padding = '6px 12px';
+            tooltip.style.borderRadius = '4px';
+            tooltip.style.fontSize = '14px';
+            tooltip.style.fontWeight = 'bold';
+            tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+            tooltip.style.whiteSpace = 'nowrap';
+            tooltip.style.display = 'none'; // 初始隐藏
+            tooltip.style.zIndex = '1000000'; // 非常高的z-index
             
             const text = document.createElement('div');
             text.className = 'tc-lyric-text';
@@ -276,13 +291,21 @@ function renderLyrics(commentsByCategory) {
             lyricItem.appendChild(circle);
             lyricItem.appendChild(text);
             
-            // 事件监听器 - 当鼠标悬停时暂停动画
-            circle.addEventListener('mouseenter', () => {
+            // 事件监听器 - 使用显式坐标计算
+            circle.addEventListener('mouseenter', (e) => {
                 lyricsRow.classList.add('tc-paused');
+                
+                // 计算并设置提示框位置
+                const rect = circle.getBoundingClientRect();
+                tooltip.style.left = `${rect.left + rect.width/2}px`;
+                tooltip.style.top = `${rect.top - 40}px`;
+                tooltip.style.transform = 'translateX(-50%)';
+                tooltip.style.display = 'block';
             });
             
             circle.addEventListener('mouseleave', () => {
                 lyricsRow.classList.remove('tc-paused');
+                tooltip.style.display = 'none';
             });
             
             text.addEventListener('mouseenter', () => {
