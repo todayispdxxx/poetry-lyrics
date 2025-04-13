@@ -3,11 +3,11 @@
     // 创建更具体的命名空间，避免类名冲突
     const BEE_NS = {
         svgId: "bee-chart-svg",
-        dotClass: "bee-dot", // 更具体的类名
-        tooltipClass: "bee-tooltip", // 更具体的类名
-        containerClass: "bee-chart", // 更具体的类名
-        lineClass: "bee-tooltip-line", // 更具体的类名
-        highlightClass: "bee-highlight" // 更具体的类名
+        dotClass: "bee-dot", 
+        tooltipClass: "bee-tooltip", 
+        containerClass: "bee-chart", 
+        lineClass: "bee-tooltip-line", 
+        highlightClass: "bee-highlight" 
     };
 
     // 将函数变量都限定在IIFE内部
@@ -124,15 +124,7 @@
         
         const tooltip = d3.select("body").append("div")
             .attr("class", "bee-tooltip") // 使用特定的类名
-            .style("position", "absolute")
-            .style("opacity", 0)
-            .style("background-color", "white")
-            .style("border", "1px solid #ddd")
-            .style("border-radius", "5px")
-            .style("padding", "10px")
-            .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.2)")
-            .style("pointer-events", "none")
-            .style("z-index", "1000");
+            .style("opacity", 0);
         
         beeTooltip = tooltip; // 保存引用以便后续使用
 
@@ -162,17 +154,17 @@
             for (let j = 0; j < 300; ++j) simulation.tick();
 
             // 绘制气泡点
-            clusterGroup.selectAll(".bee-dot") // 使用特定的类名
+            clusterGroup.selectAll(".bee-dot") 
                 .data(cluster.values)
                 .enter().append("circle")
-                .attr("class", "bee-dot") // 使用特定的类名
+                .attr("class", "bee-dot") 
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y)
                 .attr("r", d => r(d.comments))
-                .attr("fill", "steelblue")
-                .attr("opacity", 0.7)
+                .attr("fill", "#8994DC")
+                .attr("opacity", 1)
                 .on("mouseover", function(event, d) {
-                    d3.select(this).classed("bee-highlight", true) // 使用特定的类名
+                    d3.select(this).classed("bee-highlight", true) 
                                   .attr("fill", "#ff6600")
                                   .attr("opacity", 1);
                     
@@ -185,7 +177,7 @@
                         .style("top", (event.pageY - 28) + "px");
 
                     svg.append("line")
-                        .attr("class", "bee-tooltip-line") // 使用特定的类名
+                        .attr("class", "bee-tooltip-line") 
                         .attr("x1", event.pageX - x(i) - clusterRadius + d.x)
                         .attr("y1", d.y)
                         .attr("x2", event.pageX - x(i) - clusterRadius + d.x)
@@ -194,17 +186,17 @@
                         .attr("stroke-width", 1);
                 })
                 .on("mouseout", function() {
-                    d3.select(this).classed("bee-highlight", false) // 使用特定的类名
-                                  .attr("fill", "steelblue")
-                                  .attr("opacity", 0.7);
+                    d3.select(this).classed("bee-highlight", false) 
+                                  .attr("fill", "#8994DC")
+                                  .attr("opacity", 1);
                     
                     beeTooltip.style("opacity", 0);
-                    svg.selectAll(".bee-tooltip-line").remove(); // 使用特定的类名
+                    svg.selectAll(".bee-tooltip-line").remove(); 
                 });
 
             // 添加集群标签
             clusterGroup.append("text")
-                .attr("class", "bee-cluster-label")  // 使用特定的类名
+                .attr("class", "bee-cluster-label") 
                 .attr("x", 0)
                 .attr("y", 160)
                 .style("text-anchor", "middle")
@@ -216,51 +208,11 @@
                 .join("tspan")
                 .attr("x", 0)
                 .attr("dy", (d, i) => i === 0 ? 0 : "1.5em")
-                .attr("class", d => `bee-${d.type}`)  // 使用特定的类名前缀
+                .attr("class", d => `bee-${d.type}`) 
                 .text(d => d.text);
         });
 
-        // 添加特定于蜂群图的样式
-        addBeeChartStyles();
-    }
-
-    // 添加样式，确保不与time-script.js的样式冲突
-    function addBeeChartStyles() {
-        // 检查是否已经添加过样式
-        if (document.getElementById('bee-chart-styles')) return;
-        
-        const styleEl = document.createElement('style');
-        styleEl.id = 'bee-chart-styles';
-        styleEl.textContent = `
-            .bee-dot {
-                transition: fill 0.3s, opacity 0.3s;
-            }
-            .bee-tooltip {
-                position: absolute;
-                background: white;
-                border: 1px solid #ddd;
-                padding: 10px;
-                border-radius: 5px;
-                box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.2s;
-                z-index: 1000;
-            }
-            .bee-cluster-label {
-                font-family: sans-serif;
-                font-size: 14px;
-            }
-            .bee-title {
-                font-weight: bold;
-            }
-            .bee-author {
-                font-style: italic;
-                fill: #666;
-            }
-        `;
-        
-        document.head.appendChild(styleEl);
+        // 样式已移至bee-style.css，此函数不再需要添加样式
     }
 
     // 添加键盘控制，使用特定的命名空间
@@ -303,12 +255,15 @@
         // 修改container类名以避免冲突
         container.classList.add('bee-chart');
         
+        // 强制设置高度为400px，覆盖可能的其他样式
+        container.style.height = "450px";
+    
         // 检查SVG
         let svg = container.querySelector('svg');
         if (!svg) {
             svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("width", "1000");
-            svg.setAttribute("height", "400");
+            svg.setAttribute("height", "400"); // 与容器相同高度
             container.appendChild(svg);
         }
         
