@@ -426,12 +426,7 @@
     margin-top: 0px; /* 添加负边距使其向上移动 */
 }
 
-#visulization-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    margin-top: 0px; /* 添加负边距使其向上移动 */
-}
+
 /*定义字体*/
 @font-face {
     font-family: 'Songti-SC';
@@ -526,14 +521,7 @@
     margin: 5px 0;
 }
 
-#wordcloud {
-    position: absolute;  /* 使用绝对定位实现自由位置调整 */
-    width: 500px;       /* 设置默认容器宽度 */
-    height: auto;
-    left: 500px;         /* 水平居中 */
-    transform: translateX(-50%);
-    top: 400px;        /* 可调整垂直位置 */
-}
+
 
 #timeline
 {
