@@ -215,16 +215,55 @@
         // 样式已移至bee-style.css，此函数不再需要添加样式
     }
 
-    // 添加键盘控制，使用特定的命名空间
-    function addBeeChartKeyboardControl() {
-        // 移除之前可能存在的相同事件监听器，避免重复
-        document.removeEventListener('keydown', handleBeeChartKeyDown);
+    // 修改键盘和触摸控制功能
+    function addBeeChartControls() {
+        const chart = document.querySelector('.bee-chart');
+        if (!chart) return;
         
-        // 添加新的事件监听器
+        // 移除之前可能存在的事件监听器，避免重复
+        document.removeEventListener('keydown', handleBeeChartKeyDown);
+        chart.removeEventListener('touchstart', handleTouchStart);
+        chart.removeEventListener('touchmove', handleTouchMove);
+        chart.removeEventListener('touchend', handleTouchEnd);
+        
+        // 添加键盘事件监听器
         document.addEventListener('keydown', handleBeeChartKeyDown);
+        
+        // 添加触摸事件监听器
+        chart.addEventListener('touchstart', handleTouchStart, { passive: false });
+        chart.addEventListener('touchmove', handleTouchMove, { passive: false });
+        chart.addEventListener('touchend', handleTouchEnd);
+        
+        // 触摸相关变量
+        let touchStartX = 0;
+        let touchStartScrollLeft = 0;
+        
+        // 触摸开始事件处理
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartScrollLeft = chart.scrollLeft;
+            e.preventDefault(); // 防止页面滚动
+        }
+        
+        // 触摸移动事件处理
+        function handleTouchMove(e) {
+            if (!touchStartX) return;
+            
+            const touchCurrentX = e.touches[0].clientX;
+            const touchDiff = touchStartX - touchCurrentX;
+            
+            // 设置滚动位置
+            chart.scrollLeft = touchStartScrollLeft + touchDiff;
+            e.preventDefault(); // 防止页面滚动
+        }
+        
+        // 触摸结束事件处理
+        function handleTouchEnd() {
+            touchStartX = 0;
+        }
     }
-    
-    // 分离键盘事件处理函数，便于后续移除
+
+    // 键盘事件处理函数保持不变
     function handleBeeChartKeyDown(e) {
         const chart = document.querySelector('.bee-chart');
         if (!chart) return;
@@ -243,7 +282,7 @@
         }
     }
 
-    // 初始化函数
+    // 修改初始化函数，确保容器可滚动
     function initBeeChart() {
         // 处理HTML容器和SVG
         const container = document.querySelector('.chart');
@@ -255,9 +294,11 @@
         // 修改container类名以避免冲突
         container.classList.add('bee-chart');
         
-        // 强制设置高度为400px，覆盖可能的其他样式
+        // 强制设置高度并确保容器可以水平滚动
         container.style.height = "450px";
-    
+        container.style.overflowY = "hidden"; // 禁用垂直滚动
+        container.style.webkitOverflowScrolling = "touch"; // 为iOS设备提供平滑滚动
+        
         // 检查SVG
         let svg = container.querySelector('svg');
         if (!svg) {
@@ -273,8 +314,8 @@
         // 启动数据获取和可视化
         fetchAndProcessData('https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/bee-data.json');
         
-        // 添加键盘控制
-        addBeeChartKeyboardControl();
+        // 添加键盘和触摸控制
+        addBeeChartControls();
     }
 
     // 在DOM加载完成后初始化
