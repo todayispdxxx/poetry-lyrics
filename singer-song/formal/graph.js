@@ -3,56 +3,56 @@ const singers = [
     {
         id: "singer1",
         name: "邓丽君",
-        width: 380,
-        height: 380,
+        width: 350,
+        height: 340,
         image: "./src/image/denglijun.png",
         position: {
-            x: 180,
+            x: 90,
             y: 0
         }
     },
     {
         id: "singer2",
         name: "谷建芬",
-        width: 380,
-        height: 380,
+        width: 350,
+        height: 350,
         image: "./src/image/gujianfen.png",
         position: {
-            x: 530,
+            x: 400,
             y: 50
         }
     },
     {
         id: "singer3",
         name: "费玉清",
-        width: 380,
-        height: 380,
+        width: 350,
+        height: 350,
         image: "./src/image/feiyuqing.png",
         position: {
-            x: 950,
-            y: 440
+            x: 990,
+            y: 400
         }
     },
     {
         id: "singer4",
         name: "戴荃",
         width: 300,
-        height: 400,
+        height: 380,
         image: "./src/image/daiquan.png",
         position: {
-            x: 790,
-            y: 600
+            x: 830,
+            y: 580
         }
     },
     {
         id: "singer5",
         name: "蒋明",
-        width: 350,
-        height: 320,
+        width: 340,
+        height: 280,
         image: "./src/image/jiangming.png",
         position: {
-            x: 450,
-            y: 500
+            x: 540,
+            y: 450
         }
     },
     {
@@ -62,8 +62,8 @@ const singers = [
         height: 350,
         image: "./src/image/mowenwei.png",
         position: {
-            x: 600,
-            y: 1060
+            x: 500,
+            y: 880
         }
     },
     {
@@ -73,19 +73,19 @@ const singers = [
         height: 380,
         image: "./src/image/fenghuangchuanqi.png",
         position: {
-            x: 320,
-            y: 1170
+            x: 250,
+            y: 1080
         }
     },
     {
         id: "singer6",
         name: "王菲",
-        width: 360,
-        height: 375,
+        width: 340,
+        height: 330,
         image: "./src/image/wangfei.png",
         position: {
-            x: 60,
-            y: 960
+            x: 10,
+            y: 900
         }
     },
     {
@@ -95,8 +95,8 @@ const singers = [
         height: 380,
         image: "./src/image/luotianyi.png",
         position: {
-            x: 850,
-            y: 1600
+            x: 950,
+            y: 1450
         }
     },
     {
@@ -106,8 +106,8 @@ const singers = [
         height: 380,
         image: "./src/image/qingxiang.png",
         position: {
-            x: 460,
-            y: 1600
+            x: 620,
+            y: 1450
         }
     }
 ];
@@ -307,11 +307,11 @@ function createSingerGraph(singerId, singerName, width = 800, height = 100, posi
 
             const linkDistanceScale = d3.scaleLinear()
                 .domain([minMatchLyric, maxMatchLyric])
-                .range([65, 140]);
+                .range([40, 120]);
 
             const defaultLinkColor = "#8B8386";
-            const centerNodeSize = 36;
-            const surroundingNodeSize = 20;
+            const centerNodeSize = 34;
+            const surroundingNodeSize = 18;
 
             const nodes = [
                 {
@@ -781,7 +781,7 @@ document.head.appendChild(styleSheet);
 window.onload = function() {
     const container = d3.select("#my_dataviz")
         .style("width", "100vw")
-        .style("height", "2300px")
+        .style("height", "2150px")
         .style("position", "relative");
 
     // 使用singers配置初始化图表
