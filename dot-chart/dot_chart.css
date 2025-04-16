@@ -9,32 +9,28 @@
 }
 
 body {
-    margin: 15px;
+    margin: 25px;
     font-family: Arial, sans-serif;
     background-color: #E5E5E5;
 }
 
-#fileInput {
-    display: block;
-    margin: 15px auto;
-    padding: 8px;
-    border: 2px dashed #5F5F5F;
-    background: #FFFFFF;
-    color: #333;
-}
 
 #chartContainer {
     max-width: 1600px;
     margin: 0 auto;
     padding: 15px;
+    display: flex; /* 添加flex布局 */
+    flex-direction: column; /* 垂直排列子元素 */
+    align-items: center; /* 子元素水平居中 */
 }
 
 .category {
-display: flex;
-margin: 8px 0;
-justify-content: flex-end; /* 水平方向右侧对齐 */
-font-family: 'S12';
-margin-left: auto;        /* 容器整体右移 */
+    display: flex;
+    margin: 8px 0;
+    justify-content: center; /* 修改为居中对齐 */
+    font-family: 'S12';
+    width: 100%; /* 确保宽度充满容器 */
+    max-width: 1200px; /* 限制最大宽度，保持整体布局美观 */
 }
 
 
@@ -108,19 +104,19 @@ margin-left: auto;        /* 容器整体右移 */
 }
 
 .legend {
-display: flex;
-flex-direction: column; /* 竖直排列 */
-align-items: flex-start; /* 靠左对齐 */
-margin-bottom: 20px;
-margin-left: calc(50% + 100px); /* 图例在图表的正上方并右移100px */
-transform: translateX(-50%);
+    display: flex;
+    flex-direction: column; /* 竖直排列 */
+    align-items: center; /* 修改为居中对齐 */
+    margin-bottom: 20px;
+    margin-left: 0; /* 移除原有的左边距 */
+    transform: none; /* 移除原有的变换 */
 }
 
 .legend-item {
-display: flex;
-align-items: center;
-margin-bottom: 10px;
-font-family: 'S7';
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-family: 'S7';
 }
 
 .legend-color {
@@ -137,30 +133,30 @@ font-family: 'S7';
 }
 
 .legend-color:hover {
-transform: scale(1.8); /* 与数据点相同的缩放比例 */
-box-shadow: 0 3px 8px rgba(0,0,0,0.3); /* 相同阴影效果 */
-z-index: 3; /* 高于数据点的z-index */
+    transform: scale(1.8); /* 与数据点相同的缩放比例 */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3); /* 相同阴影效果 */
+    z-index: 3; /* 高于数据点的z-index */
 }
 
 
 /* 新增过渡效果 */
 .circle {
-transition: 
-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-filter 0.3s ease,
-opacity 0.3s ease;
+    transition: 
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.3s ease,
+    opacity 0.3s ease;
 }
 
 /* 新增变灰效果 */
 .circle.dimmed:not(:hover) {
-opacity: 0.3;
-filter: grayscale(80%);
+    opacity: 0.3;
+    filter: grayscale(80%);
 }
 
 /* 保持悬停元素的层级 */
 .circle:hover {
-z-index: 2;
-transform: scale(1.8);
-filter: none !important;
-opacity: 1 !important;
+    z-index: 2;
+    transform: scale(1.8);
+    filter: none !important;
+    opacity: 1 !important;
 }
