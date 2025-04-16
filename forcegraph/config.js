@@ -9,7 +9,7 @@ const CONFIG = {
         width: 1500,      // 主容器宽度
         height: 800,     // 主容器高度
         position: {
-            left: 0,     // 主容器左边距
+            left: -50,     // 主容器左边距
             top: -150       // 主容器上边距
         },
     },
@@ -43,7 +43,7 @@ const CONFIG = {
     initialTransform: {
         x: window.innerWidth * 0.1,  // 左边留10%空间
         y: window.innerHeight * 0.1,  // 上边留10%空间
-        scale: 0.9                    // 初始缩放比例
+        scale: 1                    // 初始缩放比例
     }
 }
 
