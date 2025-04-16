@@ -98,7 +98,7 @@
     position: absolute;
     width: 100%;
     height: auto;
-    top: 1680px;
+    top: 1750px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -473,34 +473,45 @@
     position: absolute;
     width: 100px;
     height: auto;
-    left: 50px;
 }
 
 /* 内容块基础样式 */
 .singer-content1, .singer-content2, .singer-content3, .singer-content4 {
     position: absolute;
+    font-size: 19px;
+    font-family: Songti-SC;
+    line-height: 1.6;
+    color: #000000;
+    text-align: left;
+    margin-top: 20px;  /* 与decoration的间距 */
+    width: 380px;
+}
+.ending {
     font-size: 22px;
     font-family: Songti-SC;
     line-height: 1.6;
     color: #000000;
-    left: 50px;  /* 与装饰对齐 */
+    max-width: var(--title1-content-width);
+    position: relative;
+    top: -200px;
+    margin-left: auto;
+    margin-right: auto;
     text-align: left;
-    margin-top: 20px;  /* 与decoration的间距 */
-    width: 300px;
+   
 }
 
 /* 垂直位置控制 */
-.decoration1 { top: 1000px; }
-.singer-content1 { top: 1020px; }  /* decoration1下方30px */
+.decoration1 { top: 140px;   left: -140px}
+.singer-content1 { top: 160px;left: -140px  /* 与装饰对齐 */ }  /* decoration1下方30px */
 
-.decoration2 { top: 1150px; }
-.singer-content2 { top: 1170px; }
+.decoration2 { top: 280px; }
+.singer-content2 { top: 300px; }
 
-.decoration3 { top: 1300px; }
-.singer-content3 { top: 1320px; }
+.decoration3 { top: 330px; left:-100px}
+.singer-content3 { top: 350px;left:-100px }
 
-.decoration4 { top: 1450px; }
-.singer-content4 { top: 1470px; }
+.decoration4 { top: 450px;left:50px }
+.singer-content4 { top: 470px;left:50px }
 
 /* 个性化位置控制 */
 .singer1 {
