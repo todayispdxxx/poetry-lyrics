@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./bee-swarm/bee-style.css">
     <link rel="stylesheet" href="./timeline/time-style.css">
     <link rel="stylesheet" href="./comment_sort_chart/test_chart.css">
+    <link rel="stylesheet" href="./dot-chart/dot_chart.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="./src/script/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
@@ -75,7 +76,6 @@
         </div>
 
         <div class="chart">
-                    <svg width="1000" height="400"></svg>
                     <script src=./bee-swarm/bee-script.js></script>
         </div>
 
@@ -86,8 +86,8 @@
         </div>
 
         <div class="chart3">
-            <div class="11">
-                <p>第三张图表</p>
+            <div id="chartContainer">
+                <script src="./dot-chart/dot_chart.js"></script>
             </div>
         </div>
 
