@@ -58,9 +58,25 @@
             <p>什么样的流行歌曲更偏爱加入古诗词？这种融合背后是否存在某种规律？我们尝试分析包含古诗词的流行歌曲本身的特征，以及古诗词在这些作品中的使用方式。</p>
         </div>
 
-        <div class="example-image">
-            <img id="example" src="./src/image/example.png" alt="标度图片">
-        </div>
+      <div class="example-image">
+    <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- 小圆 (MIN) - 使用实际最小评论数50 -->
+      <circle cx="150" cy="225" r="4.5" fill="#b8c7dc" />
+      
+      <!-- 大圆 (MAX) - 使用实际最大评论数198846 -->
+      <circle cx="650" cy="225" r="30" fill="#b8c7dc" />
+      
+      <!-- 连接虚线 - 上切线（调整以真正与圆相切） -->
+      <line x1="153" y1="221" x2="625" y2="200" stroke="#888" stroke-width="1" stroke-dasharray="5,5" />
+      
+      <!-- 连接虚线 - 下切线（调整以真正与圆相切） -->
+      <line x1="153" y1="229" x2="625" y2="250" stroke="#888" stroke-width="1" stroke-dasharray="5,5" />
+      
+      <!-- 标签 -->
+      <text x="150" y="280" text-anchor="middle" font-family="serif" font-size="24" font-weight="bold" fill="black">MIN : 50</text>
+      <text x="650" y="280" text-anchor="middle" font-family="serif" font-size="24" font-weight="bold" fill="black">MAX : 198846</text>
+    </svg>
+</div>
 
         <div class="chart1">
             <div class="chart1-container">
