@@ -344,12 +344,13 @@
         // 修改container类名以避免冲突
         container.classList.add('bee-chart');
         
-        // 强制设置高度并确保容器可以水平滚动
-        container.style.height = "450px";
-        container.style.overflowY = "hidden"; // 禁用垂直滚动
-        container.style.webkitOverflowScrolling = "touch"; // 为iOS设备提供平滑滚动
-        container.style.cursor = "grab"; // 添加抓取光标，表明可拖动
-        
+       // 在 initBeeChart 函数中修改容器样式设置
+       container.style.height = "450px";
+       container.style.overflowY = "hidden"; 
+       container.style.overflowX = "auto"; // 确保可以水平滚动
+       container.style.webkitOverflowScrolling = "touch";
+       container.style.cursor = "grab";
+       container.style.touchAction = "pan-x"; // 添加标准触摸操作属性，替代ms-touch-action
         // 检查SVG
         let svg = container.querySelector('svg');
         if (!svg) {
