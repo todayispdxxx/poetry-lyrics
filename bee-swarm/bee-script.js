@@ -225,6 +225,9 @@
         chart.removeEventListener('touchstart', handleTouchStart);
         chart.removeEventListener('touchmove', handleTouchMove);
         chart.removeEventListener('touchend', handleTouchEnd);
+        chart.removeEventListener('mousedown', handleMouseDown);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
         
         // 添加键盘事件监听器
         document.addEventListener('keydown', handleBeeChartKeyDown);
@@ -234,9 +237,19 @@
         chart.addEventListener('touchmove', handleTouchMove, { passive: false });
         chart.addEventListener('touchend', handleTouchEnd);
         
+        // 添加鼠标拖动事件监听器
+        chart.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        
         // 触摸相关变量
         let touchStartX = 0;
         let touchStartScrollLeft = 0;
+        
+        // 鼠标拖动相关变量
+        let isDragging = false;
+        let mouseStartX = 0;
+        let mouseStartScrollLeft = 0;
         
         // 触摸开始事件处理
         function handleTouchStart(e) {
@@ -260,6 +273,43 @@
         // 触摸结束事件处理
         function handleTouchEnd() {
             touchStartX = 0;
+        }
+        
+        // 鼠标按下事件处理
+        function handleMouseDown(e) {
+            isDragging = true;
+            mouseStartX = e.clientX;
+            mouseStartScrollLeft = chart.scrollLeft;
+            
+            // 更改光标样式以指示拖动
+            chart.style.cursor = 'grabbing';
+            chart.style.userSelect = 'none';
+            
+            // 防止默认行为，如文本选择
+            e.preventDefault();
+        }
+        
+        // 鼠标移动事件处理
+        function handleMouseMove(e) {
+            if (!isDragging) return;
+            
+            const mouseDiff = mouseStartX - e.clientX;
+            chart.scrollLeft = mouseStartScrollLeft + mouseDiff;
+            
+            // 防止默认行为，如文本选择
+            e.preventDefault();
+        }
+        
+        // 鼠标释放事件处理
+        function handleMouseUp() {
+            isDragging = false;
+            
+            // 恢复光标样式
+            const chart = document.querySelector('.bee-chart');
+            if (chart) {
+                chart.style.cursor = 'grab';
+                chart.style.userSelect = '';
+            }
         }
     }
 
@@ -298,6 +348,7 @@
         container.style.height = "450px";
         container.style.overflowY = "hidden"; // 禁用垂直滚动
         container.style.webkitOverflowScrolling = "touch"; // 为iOS设备提供平滑滚动
+        container.style.cursor = "grab"; // 添加抓取光标，表明可拖动
         
         // 检查SVG
         let svg = container.querySelector('svg');
