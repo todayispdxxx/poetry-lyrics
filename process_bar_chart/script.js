@@ -324,9 +324,9 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .attr("y1", height/2 - margin.top)
           .attr("x2", calculatedWidth - margin.left - margin.right - decorationPadding - decorationRadius * 2 - 5)  // 终点向左移动
           .attr("y2", height/2 - margin.top)
-          .attr("stroke", "#cccccc")
-          .attr("stroke-width", 1.0)
-          .attr("stroke-dasharray", "3,3");
+          .attr("stroke", "#aaaaaa")
+          .attr("stroke-width", 3.0)
+          .attr("stroke-dasharray", "6,1");
 
         // 添加头尾装饰点
         currentChart.selectAll(".endpoint")
@@ -335,7 +335,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .attr("class", "endpoint")
           .attr("cx", (d, i) => i === 0 ? decorationPadding + decorationRadius * 2 : calculatedWidth - margin.left - margin.right - decorationPadding - decorationRadius * 2)
           .attr("cy", height/2 - margin.top)
-          .attr("r", decorationRadius)
+          .attr("r", 5)
           .attr("fill", "#666666")
           .style("pointer-events", "none") // 防止装饰点干扰鼠标事件
           .style("display", "block"); // 确保装饰点显示
@@ -436,7 +436,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             prevEnd = xPos;
             return xPos;
           })
-          .attr("y", height/2 - margin.top - 4)
+          .attr("y", height/2 - margin.top -6)
           .attr("width", d => {
             // 根据字符数量计算宽度
             const charCount = d.end - d.start + 1;
@@ -446,12 +446,12 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             return Math.max(minWidth, Math.min(charCount * charWidth * 1, maxWidth));
           })
           .attr("height", 12)
-          .attr("rx", 4)
-          .attr("ry", 4)
+          .attr("rx", 6)
+          .attr("ry", 6)
           .attr("fill", chartColors[index])  // 使用对应索引的颜色
           .style("stroke", "#666666")
           .style("stroke-width", "1px")
-          .style("opacity", 0.7)
+          .style("opacity", 1)
           .style("transition", "all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)")
           .on("mouseenter", function(event, d) {
             clearTimeout(tooltipTimeout);
