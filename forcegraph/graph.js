@@ -160,8 +160,8 @@ function createForceGraph(data, config) {
 
     svg.call(zoom)
        .call(zoom.transform, d3.zoomIdentity
-            .translate(510, 250)
-            .scale(0.35));
+            .translate(330, 270)
+            .scale(0.28));
 
     const nodeLinks = new Map();
     const connectedNodes = new Map();
