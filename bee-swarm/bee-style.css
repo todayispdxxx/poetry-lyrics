@@ -33,6 +33,7 @@ body {
     grid-template-columns: 1fr;
     gap: 5px;
     z-index: 1000; /* 确保在其他元素上方显示 */
+    max-width: 300px;
 }
 .bee-tooltip .singer-song {
     font-size: 18px;
@@ -45,8 +46,10 @@ body {
     color: #333;
 }
 .bee-tooltip .quote {
-    font-size: 12px;
+    font-size: 10px;
     color: orange;
+    font-family:"Songti-SC";
+    
 }
 .bee-cluster-label .bee-title {
     font-size: 22px;

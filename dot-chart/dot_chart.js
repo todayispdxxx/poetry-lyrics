@@ -176,13 +176,13 @@
         legend.className = 'legend';
         legend.innerHTML = `
             <div class="legend-item" data-color-code="3">
-                <span class="legend-color" style="background-color: ${COLOR_MAP[3]}"></span>引用若干个字
+                <span class="legend-color" style="background-color: ${COLOR_MAP[3]}"></span>碎片引用
             </div>
             <div class="legend-item" data-color-code="2">
-                <span class="legend-color" style="background-color: ${COLOR_MAP[2]}"></span>引用完整句子
+                <span class="legend-color" style="background-color: ${COLOR_MAP[2]}"></span>金句镶嵌
             </div>
             <div class="legend-item" data-color-code="1">
-                <span class="legend-color" style="background-color: ${COLOR_MAP[1]}"></span>引用整首古诗
+                <span class="legend-color" style="background-color: ${COLOR_MAP[1]}"></span>整首复刻
             </div>
         `;
     

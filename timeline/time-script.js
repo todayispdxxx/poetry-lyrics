@@ -24,7 +24,7 @@
             /* 将原始样式完全复制，只是更改类名 */
             .${TIME_NS.containerClass} {
                 width: 100%;
-                height: 800px;
+                height: 650px;
                 margin: 50px auto;
                 position: relative; /* 添加相对定位 */
             }
@@ -295,7 +295,7 @@
         // D3 v7中的力布局
         const simulation = d3.forceSimulation(filteredData)
             .force("x", d3.forceX(d => x(d.date)).strength(7))
-            .force("y", d3.forceY(height / 2).strength(0.1))
+            .force("y", d3.forceY(height / 2).strength(0.3))
             .force("collide", d3.forceCollide().radius(d => rScale(d.comments) + 2));
 
         // 完全计算位置后再绘制节点
@@ -313,7 +313,13 @@
            .style("opacity", 0) // 起始不可见
            .on("mouseover", function(event, d) {
                 d3.select(this).classed(TIME_NS.highlightClass, true);
-                
+                mainG.append("image")
+    .attr("class", "hover-image")
+    .attr("xlink:href", "./timeline/disk1.png") // 你想展示的图片
+    .attr("x", d.x - rScale(d.comments))
+    .attr("y", d.y - rScale(d.comments))
+    .attr("width", rScale(d.comments) * 2)
+    .attr("height", rScale(d.comments) * 2).attr("pointer-events", "none");
                 // 使用与原始代码完全相同的结构
                 timelineTooltip.html(`
                     <div class="image"></div>
@@ -418,6 +424,7 @@
                 svg.selectAll(`.${TIME_NS.lineClass}`).remove();
                 
                 // 移除setTimeout，因为我们立即移除连接线
+                mainG.selectAll(".hover-image").remove();
             });
 
         // 添加时间标注
@@ -483,7 +490,7 @@
             console.log(`Timeline: 在.${TIME_NS.containerClass}容器中创建新的SVG元素`);
             svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("width", "1000");
-            svg.setAttribute("height", "800");
+            svg.setAttribute("height", "600");
             container.appendChild(svg);
         }
         

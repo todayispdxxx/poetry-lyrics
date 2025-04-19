@@ -66,7 +66,7 @@
                     values: values,
                     totalComments: d3.sum(values, d => d.comments)
                 }))
-                .sort((a, b) => b.totalComments - a.totalComments);
+                .sort((a, b) => b.values.length - a.values.length);
 
             // 绘制图表
             drawBeeChart(clusteredData);
@@ -114,9 +114,9 @@
         // 设置坐标轴
         const x = d3.scaleLinear()
                     .domain([0, data.length])
-                    .range([140, data.length * 350 + 140]);
+                    .range([140, data.length * 250 + 140]);
 
-        svg.attr("width", data.length * 350 + 140);
+        svg.attr("width", data.length * 250 + 140);
 
         // 创建特定于蜂群图的tooltip，避免与time-script.js冲突
         // 首先检查是否已存在
@@ -167,6 +167,15 @@
                     d3.select(this).classed("bee-highlight", true) 
                                   .attr("fill", "#ff6600")
                                   .attr("opacity", 1);
+
+                     d3.select(this.parentNode).append("image")
+                     .attr("class", "hover-image")
+                     .attr("xlink:href", "./timeline/disk1.png")
+                     .attr("x", d.x - r(d.comments))
+                     .attr("y", d.y - r(d.comments))
+                     .attr("width", r(d.comments) * 2)
+                     .attr("height", r(d.comments) * 2)
+                     .attr("pointer-events", "none");            
                     
                     beeTooltip.style("opacity", 1)
                         .html(`
@@ -189,7 +198,9 @@
                     d3.select(this).classed("bee-highlight", false) 
                                   .attr("fill", "#8994DC")
                                   .attr("opacity", 1);
-                    
+                     // 移除图像
+    d3.select(this.parentNode).selectAll(".hover-image").remove();
+
                     beeTooltip.style("opacity", 0);
                     svg.selectAll(".bee-tooltip-line").remove(); 
                 });
@@ -351,6 +362,9 @@
        container.style.webkitOverflowScrolling = "touch";
        container.style.cursor = "grab";
        container.style.touchAction = "pan-x"; // 添加标准触摸操作属性，替代ms-touch-action
+       container.style.scrollbarWidth = "none";      // Firefox
+container.style.msOverflowStyle = "none";     // IE 10+
+container.classList.add("no-scrollbar");      // Chrome/Safari
         // 检查SVG
         let svg = container.querySelector('svg');
         if (!svg) {

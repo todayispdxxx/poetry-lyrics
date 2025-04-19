@@ -84,36 +84,41 @@
    图片样式
    ======================================= */
 
-#preface {
-    position: absolute;
-    width: var(--preface-width);
-    height: var(--preface-height);
-    top: var(--preface-top);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
+.chapter-image {
+    display: block;
+  margin: 200px auto 0px;
+    width: auto;
+    height: 75px;
+ 
 }
 
-.text-content{
-    position: absolute;
-    width: 100%;
-    height: auto;
-    top: 1725px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    text-indent: 2em; /* 首行缩进 */
-}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 
-#chapter1 {
-    position: absolute;
+ 
+.text-content {
+    max-width: 850px;        /* 限定宽度*/
+    margin: 50px auto 0px;    /* 顶部间距 100px，水平居中（auto） */
+    padding: 0 50px;         /* 给左右留点白边 */
+    font-size: 19px;
+    font-family: "Songti-SC", serif;
+    line-height: 1.5;
+    text-align: left;
+    text-indent: 2em;
+    color: #000;
+  }
+
+/* #chapter1 {
+    display: block;
+    margin: 200px auto 0px;
     width: var(--ch1-width);
     height: var(--ch1-height);
     top: var(--ch1-top);
-    left: 50%;
+    /* left: 50%;
     transform: translateX(-50%);
-    z-index: 4;
-}
+    z-index: 4; */
+/* } */ 
 
 #chapter2 {
     position: absolute;
@@ -129,16 +134,7 @@
    文本样式
    ======================================= */
 
-.text-content {
-    font-size: 19px;
-    font-family: Songti-SC;
-    text-align: left;
-    line-height: 1.5;
-    padding: 20px 20px;
-    max-width: 832px;
-    margin: var(--text-top) auto 0;
-    color: #000000;
-}
+
 
 /* =======================================
    章节样式
@@ -345,7 +341,7 @@
 /* 图表1样式 */
 .chart1-container {
     width: 100%;
-    margin-top: var(--chart1-margin-top);
+    margin-top: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -439,10 +435,10 @@
     margin-top: 0px; /* 添加负边距使其向上移动 */
 }
 
-#timeline {
+.timeline {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    height: 600px;
     margin-top: 0px; /* 添加负边距使其向上移动 */
 }
 
