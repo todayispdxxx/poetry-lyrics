@@ -7,6 +7,7 @@
   border-radius: 3px; /* 圆角边框 */
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* 添加阴影 */
   overflow-x: hidden;
+  font-family: "Songti-SC";
 }
 
 /* 优化内容间距 */

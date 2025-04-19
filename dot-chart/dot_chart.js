@@ -8,19 +8,19 @@
     };
     
     const LABEL_MAP = {
-        '5': '5个字',
-        '6': '6个字',
-        '7': '7个字', 
-        '8': '8个字',
-        '9': '9个字',
-        '10': '10个字',
-        '10-20': '11~20个字',
-        '20-30': '21~30个字',
-        '30-50': '31~50个字',
-        '50-100': '51~100个字',
-        '100以上': '100个字以上'
+        '5': '5',
+        '6': '6',
+        '7': '7', 
+        '8': '8',
+        '9': '9',
+        '10': '10',
+        '10-20': '11~20',
+        '20-30': '21~30',
+        '30-50': '31~50',
+        '50-100': '51~100',
+        '100以上': '>100'
     };
-    
+    const diskImageUrl = './timeline/disk1.png';
   
     // 页面加载完成后自动获取数据
     document.addEventListener('DOMContentLoaded', function() {
@@ -152,15 +152,16 @@
         tooltip.className = 'dot-tooltip';
         tooltip.style.position = 'fixed';
         tooltip.style.visibility = 'hidden';
-        tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        tooltip.style.color = 'white';
+        tooltip.style.backgroundColor = '#ffffff';     // 白色背景
+        tooltip.style.color = '#000000';               // 黑色文字
+        tooltip.style.border = '1px solid #ccc';       // 可选：淡灰色边框
         tooltip.style.padding = '8px 12px';
         tooltip.style.borderRadius = '4px';
         tooltip.style.fontSize = '14px';
         tooltip.style.zIndex = '99999'; // 更高的z-index确保在其他元素之上
         tooltip.style.pointerEvents = 'none';
         tooltip.style.maxWidth = '300px';
-        tooltip.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        
         document.body.appendChild(tooltip);
         
         const container = document.getElementById('chartContainer');
@@ -263,6 +264,11 @@
                         
                         // 添加鼠标悬浮事件
                         circle.addEventListener('mouseenter', (e) => {
+                            circle.style.backgroundImage = `url(${diskImageUrl})`;
+                            circle.style.backgroundSize = 'cover';
+                            circle.style.backgroundColor = 'transparent';  // 避免原色叠加
+
+
                             const songInfo = data.actual_song && data.actual_song !== '未知' ? 
                                 `<b>歌曲:</b> ${data.actual_song}` : '';
                             const singerInfo = data.actual_singer && data.actual_singer !== '未知' ? 
@@ -278,10 +284,14 @@
                                 `<b>诗词:</b> ${data.poemtitle} ${data.poemwriter && data.poemwriter !== '未知' ? `(${data.poemwriter})` : ''}` : '';
                             
                             // 构建提示框内容
-                            tooltip.innerHTML = [songInfo, singerInfo, fragmentInfo, poemInfo, noteInfo]
-                                .filter(item => item !== '')
-                                .join('<br>');
-                                
+                            tooltip.innerHTML = `
+                            <div class="tooltip-title-line">
+                             <span class="tooltip-singer">${data.actual_singer}</span> 
+                            <span class="tooltip-song">《${data.actual_song}》</span>
+                              
+                            </div>
+                            <div class="tooltip-quote">引用字数：${data.value}</div>
+                          `;    
                             // 优化的提示框定位 - 确保显示在数据点上方
                             const rect = e.target.getBoundingClientRect();
                             
@@ -308,6 +318,8 @@
                         
                         circle.addEventListener('mouseleave', () => {
                             tooltip.style.visibility = 'hidden';
+                            circle.style.backgroundImage = 'none';
+circle.style.backgroundColor = COLOR_MAP[data.colorCode];
                         });
                     } else {
                         circle.style.visibility = 'hidden'; // 空白占位

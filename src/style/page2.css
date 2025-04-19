@@ -432,7 +432,7 @@
     position: relative;
     width: 100vw;
     height: 100vh;
-    margin-top: 0px; /* 添加负边距使其向上移动 */
+    margin-top: 200px;
 }
 
 .timeline {
@@ -479,6 +479,7 @@
     position: absolute;
     width: 100px;
     height: auto;
+    opacity: 1;
 }
 
 /* 内容块基础样式 */
@@ -489,8 +490,10 @@
     line-height: 1.5;
     color: #000000;
     text-align: left;
-    margin-top: 20px;  /* 与decoration的间距 */
-    width: 380px;
+    margin-top: 40px;  /* 与decoration的间距 */
+    width: 420px;
+    text-indent: 2em;
+    margin: 70px 0 ;
 }
 .ending {
     font-size: 19px;
@@ -509,16 +512,16 @@
 
 /* 垂直位置控制 */
 .decoration1 { top: 40px;   left: -140px}
-.singer-content1 { top: 60px;left: -140px  /* 与装饰对齐 */ }  /* decoration1下方30px */
+.singer-content1 { top: 120px;left: -140px  /* 与装饰对齐 */ }  /* decoration1下方30px */
 
-.decoration2 { top: 160px; }
-.singer-content2 { top: 180px; }
+.decoration2 { top: 200px; }
+.singer-content2 { top: 260px; }
 
-.decoration3 { top: 220px; left:-100px}
-.singer-content3 { top: 240px;left:-100px }
+.decoration3 { top: 290px; left:-100px}
+.singer-content3 { top: 350px;left:-100px }
 
-.decoration4 { top: 360px;left:50px }
-.singer-content4 { top: 380px;left:50px }
+.decoration4 { top:400px;left:50px }
+.singer-content4 { top: 460px;left:50px }
 
 /* 个性化位置控制 */
 .singer1 {

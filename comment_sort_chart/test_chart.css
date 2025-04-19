@@ -9,7 +9,7 @@
 }
 
 .tc-visualization-container {
-    width: 1000px;
+    width: 100vw;
     max-width: 100%;
     height: auto;
     display: flex;
@@ -25,12 +25,8 @@
 
 /* 修改chart-container样式，保留容器居中但内容左对齐 */
 .tc-chart-container {
-    width: 100%;
-    margin-bottom: 100px;
-    margin-left: 150px; /* 移除左侧偏移 */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* 改为左对齐 */
+    width: 600px;               /* ✅ 自动适应内容宽度 */
+    margin: 50px auto 100px;             /* ✅ 水平居中 */
 }
 
 /* 修改bar-chart样式，使条形图左对齐 */

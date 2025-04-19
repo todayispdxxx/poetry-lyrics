@@ -13,7 +13,24 @@ body {
     background-color: #E5E5E5;
 }
 
-
+.tooltip-song {
+    font-size: 18px;
+    color: black;
+    font-family: "S12", serif;  /* 宋体 */
+  }
+  
+  .tooltip-singer {
+    font-size: 16px;
+    font-weight: normal;
+    font-family: "S12", serif;
+    color: #333;
+  }
+  
+  .tooltip-quote {
+    font-size: 10px;
+    color: orange;
+    font-family:"Songti-SC";
+  }
 #chartContainer {
     max-width: 1600px;
     height: 900px;
@@ -36,14 +53,15 @@ body {
 
 
 .label {
-    width: 130px;
-    padding: 10px 5px;
+    width: 100px;
+    padding: 10px 20px;
     position: sticky;
     left: 0;
     z-index: 2;
-    font-size: 14px;
+    font-size: 19px;
     color: #333;
     font-weight: normal;
+    text-align: right;
 }
 
 .circles-wrapper {

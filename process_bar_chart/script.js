@@ -15,27 +15,32 @@ const maxChartWidth = 1200; // 最大图表宽度
 
 // 定义每个图表的颜色配置
 const chartColors = [
-    "#FD8C90",  // 第一个图表的颜色
-    "#FFD363",  // 第二个图表的颜色
-    "#1CCEAC",  // 第三个图表的颜色
-    "#1CCEAC",  // 第四个图表的颜色
+    "#1CCEAC",  // 第一个图表的颜色(fd是红)
+    "#1CCEAC",  // 第二个图表的颜色（ff是黄）
+    "#FFD363",  // 第三个图表的颜色（1c是绿）
+    "#FFD363" ,  // 第四个图表的颜色
     "#FD8C90",  // 第五个图表的颜色
-    "#FFD363",  // 第六个图表的颜色
-    "#1CCEAC",  // 第七个图表的颜色
-    "#FFD363"   // 第八个图表的颜色
+    "#FD8C90",  // 第六个图表的颜色
+    "#FD8C90",  // 第七个图表的颜色
+    "#FD8C90"   // 第八个图表的颜色
 ];
 
 // 定义每个图表的图片路径
 const imageUrls = [
     "src/image/fhcq_barimg.png",  // 第一个图表的图片 中国喜事
-    "src/image/dlj_barimg.png",  // 第二个图表的图片 但愿人长久
-    "src/image/myf_barimg.png",  // 第三个图表的图片 相思
-    "src/image/ppx_barimg.png",  // 第四个图表的图片 琵琶行
     "src/image/yl_barimg.png",  // 第五个图表的图片 秋水
-    "src/image/mam_barimg.png",  // 第六个图表的图片 床前明月光
+    "src/image/myf_barimg.png",  // 第三个图表的图片 相思
     "src/image/zyj_barimg.png",  // 第七个图表的图片 煎饼侠
+    "src/image/mam_barimg.png",  // 第六个图表的图片 床前明月光
+    "src/image/dlj_barimg.png",  // 第二个图表的图片 但愿人长久   
+    "src/image/ppx_barimg.png",  // 第四个图表的图片 琵琶行
+    
     "src/image/wf_barimg.png"  // 第八个图表的图片 致青春
 ];
+
+const chartIntros = new Array(8).fill(false); // 每首歌是否展示介绍
+const introHeights = new Array(8).fill(60);   // 每段介绍的高度（可自定义）
+const diskImage = "./timeline/disk2.png";
 
 // 创建主SVG容器
 const mainSvg = d3.select("#chart")
@@ -188,14 +193,14 @@ function processLyricAndMatches(lyric, matchingFragments) {
 
 // 定义要显示的8首歌曲信息
 const songsToDisplay = [
-    { song: "中国喜事", singer: "凤凰传奇" },
-    { song: "但愿人长久", singer: "邓丽君" },
-    { song: "相思", singer: "毛阿敏" },
-    { song: "琵琶行", singer: "奇然, 沈谧仁" },
-    { song: "秋水", singer: "银临" },
-    { song: "床前明月光", singer: "梅艳芳" },
-    { song: "煎饼侠", singer: "赵英俊" },
-    { song: "致青春", singer: "王菲" }
+    { song: "中国喜事", singer: "凤凰传奇", intro:"现代歌把文言变成现代语（春飞得意马蹄疾变成春风得意马疾驰" },
+    { song: "秋水", singer: "银临", intro:"古风歌曲，原曲古诗词进行改编" },
+    { song: "相思", singer: "毛阿敏", intro:"作为典故化用"  },      
+    { song: "煎饼侠", singer: "赵英俊" , intro:"引用诗词进行评判和古诗新用" },
+    // { song: "致青春", singer: "王菲" },
+    { song: "床前明月光", singer: "梅艳芳", intro:"歌曲里引用了整首古诗词"  },
+    { song: "但愿人长久", singer: "邓丽君" , intro:"全首都是古诗词，为古诗词谱曲，想要表达的意境也是古诗词的" },
+    { song: "琵琶行", singer: "奇然, 沈谧仁" , intro:"有多首古诗词，为古诗词填上去掉，为了方便学生背诵古诗词" }
 ];
 
 // 创建tooltip（使用body作为父容器）
@@ -341,9 +346,12 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .attr("y", height/2 - margin.top - 50)
           .attr("width", 90)
           .attr("height", 90)
+          .attr("preserveAspectRatio", "xMidYMid meet")
           .attr("xlink:href", imageUrls[index])  // 使用对应索引的图片
           .style("border", "2px solid black")
-          .style("border-radius", "50%");
+          .style("border-radius", "50%")
+          .style("cursor", "pointer")
+          .on("click", () => toggleIntro(index, songData));
 
         // 添加标题组
         const titleGroup = currentChart.append("g")
@@ -635,4 +643,49 @@ function updateTooltipPosition(event) {
     tooltip
         .style("left", `${tooltipX}px`)
         .style("top", `${tooltipY}px`);
+}
+
+function toggleIntro(clickedIndex, songData) {
+  chartIntros[clickedIndex] = !chartIntros[clickedIndex];
+
+  const chart = charts[clickedIndex];
+
+   // ✅ 切换图片为碟片或原图
+   chart.select("image")
+   .transition()
+   .duration(200)
+   .attr("xlink:href", chartIntros[clickedIndex] ? diskImage : imageUrls[clickedIndex]);
+
+  if (chartIntros[clickedIndex]) {
+    chart.append("text")
+        .attr("class", "intro-text")
+        .attr("x", 0)
+        .attr("y", height + 30)
+        .style("font-family", "S12")
+        .style("font-size", "14px")
+        .style("fill", "#333")
+        .style("opacity", 0) 
+        .text(songData.intro || "这是一段歌曲介绍...")
+        .transition()
+    .duration(400)
+    .style("opacity", 1);  // 过渡到可见
+  } else {
+    chart.select(".intro-text")
+  .transition()
+  .duration(200)
+  .style("opacity", 0)
+  .remove();
+  }
+
+  // ✅ 关键改动：每次都重新计算所有图的位置
+  let offset = 0;
+  charts.forEach((c, i) => {
+    const extra = chartIntros[i] ? introHeights[i] : 0;
+    c.transition()
+      .duration(300)
+      .attr("transform", `translate(${margin.left + 40}, ${i * (height + 50) + margin.top + offset})`);
+    offset += extra;
+  });
+
+  
 }

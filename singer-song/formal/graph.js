@@ -310,7 +310,7 @@ function createSingerGraph(singerId, singerName, width = 800, height = 100, posi
                 .range([40, 120]);
 
             const defaultLinkColor = "#8B8386";
-            const centerNodeSize = 34;
+            const centerNodeSize = 70;
             const surroundingNodeSize = 18;
 
             const nodes = [
@@ -781,7 +781,7 @@ document.head.appendChild(styleSheet);
 window.onload = function() {
     const container = d3.select("#my_dataviz")
         .style("width", "100vw")
-        .style("height", "2150px")
+        .style("height", "1940px")
         .style("position", "relative");
 
     // 使用singers配置初始化图表

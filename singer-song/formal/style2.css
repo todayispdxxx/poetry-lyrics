@@ -27,6 +27,7 @@
     z-index: 1000;
     max-width: 300px;
     opacity: 0;
+    
 }
 
 .d3-tooltip .tooltip-title {
@@ -36,9 +37,11 @@
     font-size: 15px;
     border-bottom: 1px solid #edf2f7;
     padding-bottom: 6px;
+    
 }
 
 .d3-tooltip .tooltip-content {
     color: #4a5568;
     font-size: 13px;
 }
+
