@@ -18,12 +18,12 @@
     /* 图片相关变量 */
     --preface-width: 400px;
     --preface-height: auto;
-    --preface-top: 100px;
+    --preface-top: 150px;
     
     /* ch1图片相关变量 */
     --ch1-width: 710px;
     --ch1-height: auto;
-    --ch1-top: -130px;
+    --ch1-top: -170px;
 
    /* ch2图片相关变量 */
     --ch2-width: 630px;
@@ -98,10 +98,11 @@
     position: absolute;
     width: 100%;
     height: auto;
-    top: 1700px;
+    top: 1725px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
+    text-indent: 2em; /* 首行缩进 */
 }
 
 #chapter1 {
@@ -129,10 +130,10 @@
    ======================================= */
 
 .text-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.6;
+    line-height: 1.5;
     padding: 20px 20px;
     max-width: 832px;
     margin: var(--text-top) auto 0;
@@ -197,84 +198,91 @@
    ======================================= */
 
 .title1-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
-    margin-top: 230px;
+    margin-top: 250px;
     max-width: var(--title1-content-width);
     padding: 0px;
     margin-left: auto;
     margin-right: auto;
     text-align: left;
+    text-indent: 2em;
 }
 
 .title2-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     max-width: var(--title2-content-width);
     padding: 10px;
     margin: 30px auto;
     text-align: left;
+    text-indent: 2em;
 }
 
 .title3-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     max-width: var(--title3-content-width);
     padding: 10px;
     margin: 30px auto;
     text-align: left;
+    text-indent: 2em;
 }
 
 .title4-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     max-width: var(--title4-content-width);
     padding: 10px;
     margin: 30px auto;
     text-align: left;
+    text-indent: 2em;
 }
 
 .title5-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     max-width: var(--title5-content-width);
     padding: 50px;  
     margin: var(--title5-margin-top) auto 100px;  /* 修改顶部间距 */
     text-align: left;
+    text-indent: 2em;
 }
 
 .title6-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     max-width: var(--title6-content-width);
     padding: 10px;
     margin: -150px auto 0;
     text-align: left;
     margin-top: -200px;
+    text-indent: 2em;
 }
 
 /* title7 相关样式 */
 .title7-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.6;
+    line-height: 1.5;
     padding: 20px 20px;
     max-width: 832px;
     margin: 50px auto 40px;  /* 减少顶部边距 */
     color: #000000;
+    text-indent: 2em;
 }
 
 .title7-content p {
@@ -283,14 +291,15 @@
 
 /* title8 相关样式 */
 .title8-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.6;
+    line-height: 1.5;
     padding: 20px 20px;
     max-width: 832px;
     margin: 50px auto 0;  /* 减少顶部边距 */
     color: #000000;
+    text-indent: 2em;
 }
 
 .title8-content p {
@@ -299,14 +308,15 @@
 
 /* title9 相关样式 */
 .title9-content {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
     text-align: left;
-    line-height: 1.6;
+    line-height: 1.5;
     padding: 20px 20px;
     max-width: 832px;
     margin: 50px auto 0;  /* 减少顶部边距 */
     color: #000000;
+    text-indent: 2em;
 }
 
 .title9-content p {
@@ -342,9 +352,9 @@
 }
 
 .chart1-container p {
-    font-size: 18px;
+    font-size: 19px;
     font-family: Songti SC;
-    line-height: 1.8;
+    line-height: 1.5;
     color: #333;
     margin-bottom: 10px;
     text-align: center;
@@ -373,9 +383,9 @@
 }
 
 .chart2-container p {
-    font-size: 18px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #666;
     margin-bottom: 50px;
     margin-top: -100px;
@@ -398,9 +408,9 @@
 }
 
 .chart3-container p {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     margin-bottom: 10px;
     text-align: center;
@@ -478,18 +488,18 @@
 /* 内容块基础样式 */
 .singer-content1, .singer-content2, .singer-content3, .singer-content4 {
     position: absolute;
-    font-size: 19px;
+    font-size: 18px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     text-align: left;
     margin-top: 20px;  /* 与decoration的间距 */
     width: 380px;
 }
 .ending {
-    font-size: 22px;
+    font-size: 19px;
     font-family: Songti-SC;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     max-width: var(--title1-content-width);
     position: relative;
@@ -497,21 +507,22 @@
     margin-left: auto;
     margin-right: auto;
     text-align: left;
+    text-indent: 2em;
    
 }
 
 /* 垂直位置控制 */
-.decoration1 { top: 140px;   left: -140px}
-.singer-content1 { top: 160px;left: -140px  /* 与装饰对齐 */ }  /* decoration1下方30px */
+.decoration1 { top: 40px;   left: -140px}
+.singer-content1 { top: 60px;left: -140px  /* 与装饰对齐 */ }  /* decoration1下方30px */
 
-.decoration2 { top: 280px; }
-.singer-content2 { top: 300px; }
+.decoration2 { top: 160px; }
+.singer-content2 { top: 180px; }
 
-.decoration3 { top: 330px; left:-100px}
-.singer-content3 { top: 350px;left:-100px }
+.decoration3 { top: 220px; left:-100px}
+.singer-content3 { top: 240px;left:-100px }
 
-.decoration4 { top: 450px;left:50px }
-.singer-content4 { top: 470px;left:50px }
+.decoration4 { top: 360px;left:50px }
+.singer-content4 { top: 380px;left:50px }
 
 /* 个性化位置控制 */
 .singer1 {
