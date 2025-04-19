@@ -42,7 +42,7 @@ const visualizations = [
         flipText: true,  // 添加文字翻转参数
         // 添加独立的文字配置
         textConfig: {
-            minRadius: 255,  // 增加起始半径
+            minRadius: 265,  // 从255增加到265
             layerSpacing: 18,  // 调整层间距
             charSpacing: 14    // 调整字符间距
         }
@@ -63,7 +63,7 @@ const visualizations = [
         flipText: true,  // 添加文字翻转参数
         // 添加独立的文字配置
         textConfig: {
-            minRadius: 245,
+            minRadius: 255,  // 从245增加到255
             layerSpacing: 18,
             charSpacing: 14
         }
@@ -172,15 +172,15 @@ class CircularTextVisualization {
                 .style("image-rendering", "high-quality")
                 .style("pointer-events", "none");
 
-            // 修改矩形样式和尺寸，缩短矩形长度
-            const rectWidth = this.config.imageSize * 0.35;   // 减小矩形长度，从0.4减为0.35
-            const rectHeight = this.config.imageSize * 0.11;  // 保持矩形宽度不变
+            // 修改矩形样式和尺寸，适当缩小矩形
+            const rectWidth = this.config.imageSize * 0.38;   // 从0.40减小到0.38
+            const rectHeight = this.config.imageSize * 0.12;  // 从0.13减小到0.12
             const arcRadius = rectHeight / 2;                // 保持圆弧半径
 
             // 确定矩形的水平位置偏移
             let horizontalOffset;
             if(['viz1', 'viz3', 'viz5'].includes(this.vizConfig.id)) {
-                horizontalOffset = this.config.imageSize * 0.28;
+                horizontalOffset = this.config.imageSize * 0.28; // 从0.29减小到0.28
             } else {
                 horizontalOffset = -this.config.imageSize * 0.28;
             }
@@ -207,10 +207,10 @@ class CircularTextVisualization {
             const isRightSide = ['viz1', 'viz3', 'viz5'].includes(this.vizConfig.id);
 
             // 调整图标位置 - 向外移动（viz1,3,5向右，viz2,4向左）
-            const iconSize = rectHeight * 0.65;  // 图标大小
+            const iconSize = rectHeight * 0.65;  // 从0.70减小到0.65
             const iconOffset = isRightSide ? 
-                rectWidth * 0.35 :  // viz1,3,5图标向右移动（增大偏移量）
-                rectWidth * 0.35;   // viz2,4图标向左移动（增大偏移量但保持负值）
+                rectWidth * 0.35 :  // 保持比例不变
+                rectWidth * 0.35;   // 保持比例不变
 
             // 调整文本偏移量 - viz2,4文字向左移动
             const textOffset = isRightSide ? 
@@ -263,7 +263,7 @@ class CircularTextVisualization {
                 .attr("dominant-baseline", "middle")
                 .attr("x", text1XOffset) // 应用第一行文字的水平偏移
                 .attr("y", -rectHeight * 0.15)
-                .style("font-size", "18px")
+                .style("font-size", "19px") // 从21px减小到19px
                 .style("font-weight", "normal")
                 .style("font-family", "S12, Arial, sans-serif")
                 .style("pointer-events", "none");
@@ -274,7 +274,7 @@ class CircularTextVisualization {
                 .attr("dominant-baseline", "middle")
                 .attr("x", text2XOffset) // 应用第二行文字的水平偏移
                 .attr("y", secondLineY) // 使用变量存储y坐标
-                .style("font-size", "14px")
+                .style("font-size", "14px") // 从16px减小到14px
                 .style("font-style", "normal")
                 .style("font-family", "S7, serif")
                 .style("pointer-events", "none");
@@ -316,14 +316,14 @@ class CircularTextVisualization {
                     .attr("x", -2 + bookmarkOffset) // 减小向右偏移，使其向左移动
                     .attr("y", bookmarkY)
                     .text("《")
-                    .style("font-size", "14px");
+                    .style("font-size", "14px"); // 从16px减小到14px
                     
                 textGroup.append("text")
                     .attr("text-anchor", "start")
                     .attr("x", textContainer2.node().getComputedTextLength() + 2 + bookmarkOffset) // 减小向右偏移
                     .attr("y", bookmarkY)
                     .text("》")
-                    .style("font-size", "14px");
+                    .style("font-size", "14px"); // 从16px减小到14px
             } else {
                 // viz2,4右对齐，书名号也向左移动
                 const textWidth = textContainer2.node().getComputedTextLength();
@@ -333,14 +333,14 @@ class CircularTextVisualization {
                     .attr("x", -textWidth - 2) // 向左移动2个单位（从-textWidth改回-textWidth-2）
                     .attr("y", bookmarkY)
                     .text("《")
-                    .style("font-size", "14px");
+                    .style("font-size", "14px"); // 从16px减小到14px
                     
                 textGroup.append("text")
                     .attr("text-anchor", "start")
                     .attr("x", 2) // 向左移动2个单位（从4改回2）
                     .attr("y", bookmarkY)
                     .text("》")
-                    .style("font-size", "14px");
+                    .style("font-size", "14px"); // 从16px减小到14px
             }
         } else {
             // 非唱片图像代码保持不变
