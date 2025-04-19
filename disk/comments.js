@@ -219,7 +219,7 @@ class CircularTextVisualization {
 
             // 添加矢量图标位置，向外移动
             rectContainer.append("image")
-                .attr("xlink:href", "src/image/vector.png")
+                .attr("xlink:href", "src/image/Vector.png")
                 .attr("width", iconSize)
                 .attr("height", iconSize)
                 .attr("x", isRightSide ? 
