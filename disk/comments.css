@@ -6,7 +6,6 @@ body {
 }
 
 #visualization {
-    margin: 0px;
     width: 1200px;
     height: auto;
     overflow: hidden;
@@ -42,3 +41,4 @@ body {
 .image-container image {
     filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));
 }
+
