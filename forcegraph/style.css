@@ -1,16 +1,22 @@
 /* 提示框样式 */
 .tooltip {
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 12px;
-    border-radius: 4px;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.95); /* 半透明背景 */
+    border: 1px solid #2d3436;
+    border-radius: 8px;
+    pointer-events: none; /* 禁止鼠标交互 */
     font-size: 14px;
-    line-height: 1.4;
-    max-width: 300px;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    width: 300px; /* 设置固定宽度 */
+    line-height: 1.6;
+    position: absolute;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transform: translateY(-10px); /* 默认偏移 */
+    box-sizing: border-box; /* 确保padding不影响整体尺寸 */
+    overflow-y: auto; /* 内容过多时可以滚动 */
 }
-
 
 .tooltip-content h4 {
     margin: 0 0 8px 0;
@@ -31,22 +37,6 @@
 .link.highlighted {
     stroke: #FFD700 !important;
     stroke-width: 4px !important;
-}
-.tooltip {
-    padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.95); /* 半透明背景 */
-    border: 1px solid #2d3436;
-    border-radius: 8px;
-    pointer-events: none; /* 禁止鼠标交互 */
-    font-size: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    max-width: 300px;
-    line-height: 1.6;
-    position: absolute;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
-    transform: translateY(-10px); /* 默认偏移 */
 }
 
 .tooltip.hidden {

@@ -131,7 +131,6 @@ function createForceGraph(data, config) {
             border: 1px solid #ddd;
             border-radius: 4px;
             pointer-events: none;
-            font-size: 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             position: absolute;
             opacity: 0;
@@ -264,12 +263,12 @@ function createForceGraph(data, config) {
         const content = document.createElement('div');
         content.className = 'tooltip-content';
         content.innerHTML = ` 
-            <h4 style="margin:0 0 8px;color:${d.group === 1 ? '#FFB6C1' : '#87CEEB'}">${d.id}</h4>
-            <p style="margin:4px 0">类型: ${d.group === 1 ? '歌手' : '诗词'}</p>
+            <h4 style="margin:0 0 8px;color:${d.group === 1 ? '#FFB6C1' : '#87CEEB'};font-family:'S12';font-size:20px;font-weight:normal;">${d.id}</h4>
+            <p style="margin:4px 0;font-family:"S7"">类型: ${d.group === 1 ? '歌手' : '诗词'}</p>
             ${d.group === 1 
-                ? `<p style="margin:4px 0">演唱古诗词数: ${d.poemCount}</p>`
-                : `<p style="margin:4px 0">作者: ${d.writer}</p>
-                   <p style="margin:4px 0">被演唱次数: ${d.singerCount}</p>`
+                ? `<p style="margin:4px 0;font-family:'S7'">演唱古诗词数: ${d.poemCount}</p>`
+                : `<p style="margin:4px 0;font-family:'S7'">作者: ${d.writer}</p>
+                   <p style="margin:4px 0;font-family:'S7'">被演唱次数: ${d.singerCount}</p>`
             }
         `;
         return content.outerHTML;
