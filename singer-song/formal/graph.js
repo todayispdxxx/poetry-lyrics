@@ -573,15 +573,16 @@ function createSingerGraph(singerId, singerName, width = 800, height = 100, posi
                     // Tooltip内容处理，使用RAF确保动画流畅
                     window.requestAnimationFrame(() => {
                         // 现有的tooltip内容代码保持不变
+                        // 修改歌手节点tooltip内容
                         if (d.group === 1) {
                             // 中心节点tooltip内容
                             const content = `
-                                <div style="font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; text-align: left;">
+                                <div style="font-size: 20px; font-weight: normal; color: #333; margin-bottom: 8px; text-align: left; font-family: 'S12', serif;">
                                     ${d.singer}
                                 </div>
                                 <div style="height: 1px; background: #ddd; margin: 8px 0"></div>
                                 <div style="display: flex; justify-content: space-between;">
-                                    <div style="font-size: 16px; color: #666; text-align: left;">
+                                    <div style="font-size: 16px; color: #666; text-align: left; font-family: 'S12', serif; font-weight: normal;">
                                         歌曲数量: <b>${d.songCount}</b>
                                     </div>
                                 </div>
@@ -589,14 +590,14 @@ function createSingerGraph(singerId, singerName, width = 800, height = 100, posi
                             
                             showGlobalTooltip(event, content, 280);
                         } else {
-                            // 歌曲节点tooltip逻辑保持不变
+                            // 歌曲节点tooltip内容
                             const songData = singerData.songs.find(s => s.song === d.id);
                             if (!songData) return;
                             
-                            // 构建tooltip内容
+                            // 构建tooltip内容 - 修改歌曲名为S12字体且normal粗细
                             let tooltipContent = `
-                                <div style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-                                    <span>《${d.id}》</span>
+                                <div style="font-size: 18px; font-weight: normal; color: #333; margin-bottom: 10px; padding-bottom: 10px;border-bottom: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-family: 'S12', serif;">《${d.id}》</span>
                                     <span style="font-size: 14px; font-weight: normal; color: #888; padding: 3px 8px; background: #f8f8f8; border-radius: 12px;">引用字数: ${d.matchlyric_number}</span>
                                 </div>`;
                                 
