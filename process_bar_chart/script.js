@@ -215,7 +215,7 @@ const tooltip = d3.select("body")  // 改为选择body
     .style("padding", "8px")
     .style("font-size", "12px")
     .style("pointer-events", "auto")
-    .style("max-width", "350px")
+    .style("max-width", "420px") // 从350px增加到420px
     .style("word-wrap", "break-word")
     .style("overflow-y", "auto")
     .style("max-height", "200px");
@@ -451,7 +451,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
           .attr("fill", chartColors[index])  // 使用对应索引的颜色
           .style("stroke", "#666666")
           .style("stroke-width", "1px")
-          .style("opacity", 1)
+          .style("opacity", 0.7)  // 将初始透明度修改为0.7
           .style("transition", "all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)")
           .on("mouseenter", function(event, d) {
             clearTimeout(tooltipTimeout);
@@ -467,6 +467,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
                 let tooltipContent = `
                     <div class="tooltip-content">
                         <div class="song-lyric">
+                            <div style="font-family: 'S12'; font-size: 18px; margin-bottom: 5px;color:#000000;">歌曲：《${songData.actual_song}》</div>
                             <div class="lyric-text">${
                                 songData.lyric ? 
                                 processLyricAndMatches(songData.lyric, songData.matching_fragments) : 
@@ -512,7 +513,7 @@ d3.json("https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads
             
                     tooltipContent += `
                     <div class="match-item">
-                        <div class="source">《${match.title}》</div>
+                        <div class="source" style="font-family: 'S12'; font-size: 18px; color: #444444;">诗词：《${match.title}》</div>
                         <div class="content">${highlighted}</div>
                     </div>
                     ${index < matches.length-1 ? '<div class="divider"></div>' : ''}
@@ -650,11 +651,11 @@ function toggleIntro(clickedIndex, songData) {
 
   const chart = charts[clickedIndex];
 
-   // ✅ 切换图片为碟片或原图
-   chart.select("image")
-   .transition()
-   .duration(200)
-   .attr("xlink:href", chartIntros[clickedIndex] ? diskImage : imageUrls[clickedIndex]);
+  // ✅ 切换图片为碟片或原图
+  chart.select("image")
+    .transition()
+    .duration(200)
+    .attr("xlink:href", chartIntros[clickedIndex] ? diskImage : imageUrls[clickedIndex]);
 
   if (chartIntros[clickedIndex]) {
     chart.append("text")
@@ -665,16 +666,16 @@ function toggleIntro(clickedIndex, songData) {
         .style("font-size", "14px")
         .style("fill", "#333")
         .style("opacity", 0) 
-        .text(songData.intro || "这是一段歌曲介绍...")
+        .text(songsToDisplay[clickedIndex].intro || "这是一段歌曲介绍...")
         .transition()
-    .duration(400)
-    .style("opacity", 1);  // 过渡到可见
+        .duration(400)
+        .style("opacity", 1);  // 过渡到可见
   } else {
     chart.select(".intro-text")
-  .transition()
-  .duration(200)
-  .style("opacity", 0)
-  .remove();
+      .transition()
+      .duration(200)
+      .style("opacity", 0)
+      .remove();
   }
 
   // ✅ 关键改动：每次都重新计算所有图的位置
@@ -686,6 +687,4 @@ function toggleIntro(clickedIndex, songData) {
       .attr("transform", `translate(${margin.left + 40}, ${i * (height + 50) + margin.top + offset})`);
     offset += extra;
   });
-
-  
 }
