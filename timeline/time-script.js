@@ -58,7 +58,7 @@
                 /* 移除transition属性，实现立即显示和隐藏 */
                 padding: 10px;
                 box-sizing: border-box;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); /* 添加阴影效果 */
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
             }
             
             .${TIME_NS.tooltipClass} .singer,
