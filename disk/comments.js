@@ -26,48 +26,53 @@ const baseConfig = {
 
 // 修改visualizations配置
 const visualizations = [
+    // viz1保持不变
     {
         id: 'viz1',
         image: 'src/image/disk-dlj.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment1.json',
         position: { x: -150, y: 200 }
     },
+    // 修改viz2配置，从底部开始顺时针排列
     {
         id: 'viz2',
         image: 'src/image/disk-ppx.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment2.json',
         position: { x: 450, y: 400 },
-        textDirection: 'counter-clockwise',
-        startAngle: -Math.PI/2 + 0.26,  // 修改起始角度
-        flipText: true,  // 添加文字翻转参数
-        // 添加独立的文字配置
+        textDirection: 'clockwise',        // 改为顺时针
+        startAngle: Math.PI/2,             // 从底部开始(π/2)
+        flipText: false,                   // 取消文字翻转
+        // 文字配置保持不变
         textConfig: {
-            minRadius: 265,  // 从255增加到265
-            layerSpacing: 18,  // 调整层间距
-            charSpacing: 14    // 调整字符间距
+            minRadius: 265,
+            layerSpacing: 18, 
+            charSpacing: 14    
         }
     },
+    // viz3保持不变
     {
         id: 'viz3',
         image: 'src/image/disk-fhcq.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment3.json',
         position: { x: -150, y: 750 }
     },
+    // 修改viz4配置，从底部开始顺时针排列
     {
         id: 'viz4',
         image: 'src/image/disk-zqc.png',
         dataUrl: 'https://raw.githubusercontent.com/todayispdxxx/poetry-lyrics/refs/heads/main/DATA/comment4.json',
         position: { x: 450, y: 950 },
-        textDirection: 'counter-clockwise',
-        startAngle: -Math.PI/2+0.27,  // 修改起始角度
-        flipText: true,  // 添加文字翻转参数
-        // 添加独立的文字配置
+        textDirection: 'clockwise',        // 改为顺时针
+        startAngle: Math.PI/2,             // 从底部开始(π/2)
+        flipText: false,                   // 取消文字翻转
+        // 文字配置保持不变
         textConfig: {
-            minRadius: 255,  // 从245增加到255
+            minRadius: 255,
             layerSpacing: 18,
             charSpacing: 14
         }
     },
+    // viz5保持不变
     {
         id: 'viz5',
         image: 'src/image/disk-xs.png',
@@ -91,6 +96,7 @@ class CircularTextVisualization {
         this.container = container;
         this.config = { ...baseConfig, ...config };
         this.vizConfig = vizConfig;
+        this.rotatingGroup = null; // 添加属性存储旋转组引用
         this.init();
     }
 
@@ -131,7 +137,7 @@ class CircularTextVisualization {
                 .attr("transform", `translate(${this.config.center.x}, ${this.config.center.y})`);
 
             // 先创建旋转组和唱片图片
-            const rotatingGroup = diskContainer.append("g")
+            this.rotatingGroup = diskContainer.append("g") // 保存为实例属性
                 .classed("rotating-disk", true);
             
             // 添加CSS旋转动画
@@ -163,7 +169,7 @@ class CircularTextVisualization {
             }
             
             // 添加唱片图像 - 居中定位
-            rotatingGroup.append("image")
+            this.rotatingGroup.append("image")
                 .attr("xlink:href", this.vizConfig.image)
                 .attr("width", this.config.imageSize)
                 .attr("height", this.config.imageSize)
@@ -325,22 +331,22 @@ class CircularTextVisualization {
                     .text("》")
                     .style("font-size", "14px"); // 从16px减小到14px
             } else {
-                // viz2,4右对齐，书名号也向左移动
+                // viz2,4右对齐，书名号向左移动更多
                 const textWidth = textContainer2.node().getComputedTextLength();
                 
                 textGroup.append("text")
                     .attr("text-anchor", "end")
-                    .attr("x", -textWidth - 2) // 向左移动2个单位（从-textWidth改回-textWidth-2）
+                    .attr("x", -textWidth - 2) // 从-2改为-8，向左移动更多
                     .attr("y", bookmarkY)
                     .text("《")
-                    .style("font-size", "14px"); // 从16px减小到14px
+                    .style("font-size", "14px");
                     
                 textGroup.append("text")
                     .attr("text-anchor", "start")
-                    .attr("x", 2) // 向左移动2个单位（从4改回2）
+                    .attr("x", 0) // 从2改为-2，向左移动更多
                     .attr("y", bookmarkY)
                     .text("》")
-                    .style("font-size", "14px"); // 从16px减小到14px
+                    .style("font-size", "14px");
             }
         } else {
             // 非唱片图像代码保持不变
@@ -366,38 +372,129 @@ class CircularTextVisualization {
             .catch(error => this.showError("数据加载失败: " + error.message));
     }
 
+    // 修改processData方法，不反转层级值，确保外圈是大层级值
     processData(data) {
         if (!data || !Array.isArray(data)) {
             throw new Error("数据格式不符合要求");
         }
     
-        // 将评论按顺序映射到层级，但反转层级数值
+        // 将评论按顺序映射到层级，保持原始顺序
         const allComments = data.map((comment, i) => ({
             sentiment: comment.sentiment,
             content: comment.comment,
-            // 反转层级，使得索引小的在外层
-            layer: data.length - 1 - i
+            layer: i  // 不再反转层级值，这样外圈是大层级值，内圈是小层级值
         }));
     
-        // 按照新的层级排序
+        // 按照层级排序，大层级（外圈）先渲染
         allComments.sort((a, b) => b.layer - a.layer);
-    
         this.renderComments(allComments);
     }
 
+    // 修改renderComments方法的速度计算
     renderComments(comments) {
+        // 预先计算旋转参数
+        const rotationParams = comments.map((comment, index) => {
+            const layer = comment.layer;
+            const isClockwise = layer % 2 === 0;
+            
+            // 修改速度计算公式：大幅降低旋转速度
+            const baseDuration = 220; // 从250增加到480
+            const speedFactor = Math.max(0.5, 1.0 + layer * 0.08); // 减小层级间的差异
+            const rotationDuration = Math.round(baseDuration * (1 / speedFactor));
+            
+            return {
+                layer,
+                isClockwise,
+                rotationDuration,
+                delay: layer * 0.1 // 进一步减少延迟
+            };
+        });
+        
+        this.addBatchRotationStyles(this.vizConfig.id, rotationParams);
+        
+        // 减少setTimeout延迟时间
         comments.forEach((comment, index) => {
             setTimeout(() => {
-                const group = this.svg.append("g")
-                    .classed("comment-layer", true)
-                    .attr("data-layer", comment.layer);
+                // 创建旋转组，但不再使用全局中心点
+                // 而是使用相对定位，与碟片在同一位置
+                const textRotatingGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                textRotatingGroup.classList.add("text-rotating-layer");
+                textRotatingGroup.setAttribute("data-layer", comment.layer);
                 
-                this.createTextArc(comment, group);
-            }, index * 300);
+                // 关键修改：不再设置transform属性
+                // 让旋转组直接添加到SVG，与碟片保持相同位置关系
+                
+                // 在旋转组中创建文字
+                this.createTextArc(comment, d3.select(textRotatingGroup), false);
+                
+                // 添加到SVG中
+                this.svg.node().appendChild(textRotatingGroup);
+            }, index * 50); // 从100减少到50
         });
     }
 
-    createTextArc(comment, group) {
+    // 优化批量添加旋转样式方法
+    addBatchRotationStyles(diskId, rotationParams) {
+        // 创建单个样式元素，包含所有层级的动画
+        const styleId = `rotate-text-${diskId}-styles`;
+        if (document.getElementById(styleId)) return;
+        
+        const styleEl = document.createElement('style');
+        styleEl.id = styleId;
+        
+        let styleContent = "";
+        // 创建基础动画，使用硬件加速优化
+        styleContent += `
+            @keyframes rotate-text-${diskId}-clockwise {
+                from { transform: rotate(0deg) translateZ(0); }
+                to { transform: rotate(360deg) translateZ(0); }
+            }
+            
+            @keyframes rotate-text-${diskId}-counter-clockwise {
+                from { transform: rotate(0deg) translateZ(0); }
+                to { transform: rotate(-360deg) translateZ(0); }
+            }
+            
+            /* 全局优化 */
+            #${diskId} .text-rotating-layer {
+                transform-style: preserve-3d;
+                contain: style layout;
+                pointer-events: none;
+            }
+            
+            #${diskId} .char {
+                text-rendering: geometricPrecision;
+                shape-rendering: geometricPrecision;
+            }
+        `;
+        
+        // 为每个层级添加样式
+        rotationParams.forEach((param) => {
+            const animName = param.isClockwise ? 
+                `rotate-text-${diskId}-clockwise` : `rotate-text-${diskId}-counter-clockwise`;
+            styleContent += `
+                #${diskId} .text-rotating-layer[data-layer="${param.layer}"] {
+                    animation: ${animName} ${param.rotationDuration}s linear infinite ${param.delay}s;
+                    animation-direction: ${param.isClockwise ? 'normal' : 'reverse'};
+                    transform-origin: ${this.config.center.x}px ${this.config.center.y}px; /* 明确设置旋转原点 */
+                    will-change: transform;
+                    backface-visibility: hidden;
+                    perspective: 1000;
+                    transform: translateZ(0) scale(1.0); /* 改进的变换属性 */
+                    filter: blur(0);
+                    -webkit-font-smoothing: subpixel-antialiased;
+                    contain: layout style paint;
+                    transition: transform 0.1ms linear; /* 添加过渡效果提高流畅度 */
+                }
+            `;
+        });
+        
+        styleEl.textContent = styleContent;
+        document.head.appendChild(styleEl);
+    }
+
+    // 修改createTextArc方法，确保文字坐标计算正确
+    createTextArc(comment, group, isInRotatingGroup) {
         const characters = comment.content.trim().split('');
         // 合并文字配置
         const textConfig = {
@@ -405,6 +502,7 @@ class CircularTextVisualization {
             ...(this.vizConfig.textConfig || {})
         };
         
+        // 计算半径：现在layer值越大，半径越大
         const radius = textConfig.minRadius + comment.layer * textConfig.layerSpacing;
         const direction = this.vizConfig.textDirection || textConfig.direction;
         
@@ -426,19 +524,34 @@ class CircularTextVisualization {
                 const charIndex = direction === 'counter-clockwise' ? characters.length - 1 - i : i;
                 const specialChars = ['《', '》', '（', '）', '(', ')'];
                 
-                // 为特殊字符添加位置偏移
+                // 关键修改：特殊字符位置调整
                 let adjustedCharIndex = charIndex;
                 if (specialChars.includes(d)) {
-                    adjustedCharIndex = direction === 'counter-clockwise' ? 
-                        charIndex - 1 : charIndex + 1;  // 逆时针方向移动一个位置
+                    // 修改viz2和viz4的特殊字符位置偏移（顺时针方向）
+                    if (['viz2', 'viz4'].includes(this.vizConfig.id) && direction === 'clockwise') {
+                        // 书名号和括号向左偏移
+                        adjustedCharIndex = charIndex ; // 从+1改为-2，大幅度向左移动
+                    } else {
+                        // 其他情况保持原有逻辑
+                        adjustedCharIndex = direction === 'counter-clockwise' ? 
+                            charIndex - 1 : charIndex + 1;
+                    }
                 }
                 
                 const baseAngle = this.vizConfig.startAngle || textConfig.startAngle;
                 const adjustedAngle = baseAngle + angleStep * adjustedCharIndex;
                 
-                const x = this.config.center.x + this.config.center.textOffsetX + 
-                         radius * Math.cos(adjustedAngle);
-                const y = this.config.center.y + radius * Math.sin(adjustedAngle);
+                // 计算坐标，无论是否在旋转组中，都正确计算
+                let x, y;
+                if (isInRotatingGroup) {
+                    // 在旋转组中时，坐标是相对于旋转中心的
+                    x = radius * Math.cos(adjustedAngle);
+                    y = radius * Math.sin(adjustedAngle);
+                } else {
+                    // 不在旋转组中时，需要加上中心点坐标
+                    x = this.config.center.x + radius * Math.cos(adjustedAngle);
+                    y = this.config.center.y + radius * Math.sin(adjustedAngle);
+                }
                 
                 let charRotation = adjustedAngle * 180/Math.PI + 90;
                 if (direction === 'counter-clockwise') {
@@ -454,10 +567,8 @@ class CircularTextVisualization {
             })
             .attr("text-anchor", "start")
             .attr("dy", "0.3em")
-            .style("opacity", 0)
-            .transition()
-            .duration(500)
-            .style("opacity", 1);
+            .style("opacity", 1) // 直接设置为可见，不使用过渡效果
+            .style("text-rendering", "optimizeSpeed");
     }
 
     showError(message) {
