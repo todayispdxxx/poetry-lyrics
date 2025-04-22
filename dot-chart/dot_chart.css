@@ -113,14 +113,6 @@ body {
     z-index: 2;
 }
 
-::-webkit-scrollbar {
-    height: 6px;
-    background: #E5E5E5;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #5F5F5F;
-}
 
 .legend {
     display: flex;
