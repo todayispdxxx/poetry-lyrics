@@ -48,7 +48,7 @@ const singers = [
         id: "singer5",
         name: "蒋明",
         width: 340,
-        height: 280,
+        height: 300,
         image: "./src/image/jiangming.png",
         position: {
             x: 540,
