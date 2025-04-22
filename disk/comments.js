@@ -142,7 +142,7 @@ class CircularTextVisualization {
             
             // 添加CSS旋转动画
             const diskId = this.vizConfig.id;
-            const rotationDuration = 36; // 秒/圈
+            const rotationDuration = 25; // 秒/圈
             const direction = ['viz2', 'viz4'].includes(diskId) ? 'reverse' : 'normal';
             
             if (!document.getElementById(`disk-style-${diskId}`)) {
@@ -398,7 +398,7 @@ class CircularTextVisualization {
             const isClockwise = layer % 2 === 0;
             
             // 修改速度计算公式：大幅降低旋转速度
-            const baseDuration = 220; // 从250增加到480
+            const baseDuration = 200; // 从250增加到480
             const speedFactor = Math.max(0.5, 1.0 + layer * 0.08); // 减小层级间的差异
             const rotationDuration = Math.round(baseDuration * (1 / speedFactor));
             
